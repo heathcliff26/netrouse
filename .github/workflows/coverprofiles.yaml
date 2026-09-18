@@ -12,4 +12,4 @@ jobs:
     secrets: inherit
     permissions: {}
     with:
-      coveralls: true
+      script: hack/containerized make coverprofile

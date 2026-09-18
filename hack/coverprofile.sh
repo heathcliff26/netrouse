@@ -12,7 +12,6 @@ if [ ! -d "${OUT_DIR}" ]; then
     mkdir "${OUT_DIR}"
 fi
 
-sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
 make test
 go tool cover -html "coverprofile.out" -o "${OUT_DIR}/index.html"
 
