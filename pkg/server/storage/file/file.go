@@ -73,6 +73,12 @@ func NewFileBackend(cfg FileBackendConfig) (*FileBackend, error) {
 	return fb, nil
 }
 
+func NewEmptyBackend() *FileBackend {
+	return &FileBackend{
+		storage: &types.HostsFile{},
+	}
+}
+
 // Add a new host, overwrite existing host name if it already exists.
 // Ensures that the MAC address is unique and uppercase.
 func (fb *FileBackend) AddHost(host types.Host) error {
