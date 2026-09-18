@@ -6,6 +6,7 @@ import (
 
 	"github.com/alicebob/miniredis/v2"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/file"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/testsuite"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
 	"github.com/stretchr/testify/assert"
@@ -110,6 +111,9 @@ func TestNewStorage(t *testing.T) {
 	})
 
 	t.Run("OverwriteConfigWhenReadonlyBackend", func(t *testing.T) {
+		if testsuite.IsRoot() {
+			t.Skip("Running as root")
+		}
 		assert := assert.New(t)
 
 		path := t.TempDir() + "/test.yaml"

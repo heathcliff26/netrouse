@@ -2,6 +2,7 @@ package config
 
 import (
 	"log/slog"
+	"os"
 	"testing"
 
 	"github.com/heathcliff26/netrouse/pkg/server/storage"
@@ -220,6 +221,7 @@ func TestGetPath(t *testing.T) {
 
 	for _, tCase := range tMatrix {
 		t.Run(tCase.Name, func(t *testing.T) {
+			os.Unsetenv("container")
 			if tCase.Container {
 				t.Setenv("container", "podman")
 			}

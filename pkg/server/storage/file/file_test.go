@@ -50,6 +50,9 @@ func TestNewFileBackend(t *testing.T) {
 	})
 
 	t.Run("UnreadableHostsFile", func(t *testing.T) {
+		if testsuite.IsRoot() {
+			t.Skip("Running as root")
+		}
 		assert := assert.New(t)
 		path := dir + "/unreadable-hosts-file.yaml"
 
@@ -57,8 +60,7 @@ func TestNewFileBackend(t *testing.T) {
 
 		fb, err := NewFileBackend(FileBackendConfig{Path: path})
 		assert.Nil(fb, "File backend should be nil")
-		assert.Error(err, "Should fail to create file backend with unreadable file")
-		assert.Contains(err.Error(), "failed to read storage file", "Error should contain message")
+		assert.ErrorContains(err, "failed to read storage file", "Should fail to create file backend with unreadable file")
 	})
 
 	t.Run("InvalidHostsFile", func(t *testing.T) {
@@ -109,15 +111,17 @@ func TestNewFileBackend(t *testing.T) {
 	})
 
 	t.Run("SaveFailure", func(t *testing.T) {
+		if testsuite.IsRoot() {
+			t.Skip("Running as root")
+		}
 		assert := assert.New(t)
 		path := dir + "/failed-to-save-hosts-file.yaml"
 
 		require.NoError(t, copyFile("testdata/duplicates.yaml", path, 0444), "Failed to copy file")
 
 		fb, err := NewFileBackend(FileBackendConfig{Path: path})
-		assert.Error(err, "Should fail to save changed hosts file")
 		assert.Nil(fb, "File backend should be nil")
-		assert.Contains(err.Error(), "failed to save storage file after ensuring unique, uppercase MAC addresses:", "Error should contain message")
+		assert.ErrorContains(err, "failed to save storage file after ensuring unique, uppercase MAC addresses:", "Should fail to save changed hosts file")
 	})
 
 	t.Run("OptionalAttributes", func(t *testing.T) {
@@ -141,6 +145,9 @@ func TestNewFileBackend(t *testing.T) {
 }
 
 func TestReadonly(t *testing.T) {
+	if testsuite.IsRoot() {
+		t.Skip("Running as root")
+	}
 	assert := assert.New(t)
 	require := require.New(t)
 	path := t.TempDir() + "/readonly-hosts-file.yaml"

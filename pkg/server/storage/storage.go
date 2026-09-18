@@ -77,6 +77,14 @@ func NewStorage(cfg StorageConfig) (*Storage, error) {
 	return s, nil
 }
 
+// Create a new storage backend from the given backend
+// This is used for testing purposes
+func NewStorageFromBackend(backend types.StorageBackend, readonly bool) *Storage {
+	return &Storage{
+		backend: backend,
+	}
+}
+
 type indexValues struct {
 	Readonly bool
 	Hosts    []types.Host
