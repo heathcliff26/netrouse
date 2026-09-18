@@ -14,9 +14,7 @@ import (
 )
 
 // Used to change the new app function for testing
-var newApp = func() fyne.App {
-	return fApp.NewWithID("io.github.heathcliff26.netrouse")
-}
+var newApp = fApp.New
 
 //go:embed translations
 var translationsFS embed.FS
