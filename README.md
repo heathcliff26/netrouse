@@ -25,9 +25,9 @@ It can be used directly via the cli, or remotely via a web interface.
 ## Usage
 
 ### CLI Args
-```
+```bash
 $ netrouse help
-netrouse power on other devices on the network via Wake-on-Lan
+NetRouse power on other devices on the network via Wake-on-Lan
 
 Usage:
   netrouse [flags]
@@ -49,7 +49,7 @@ Use "netrouse [command] --help" for more information about a command.
 ### Using the image
 
 When using the container image, please note that the server needs to run with `--net host` to send the magic packets.
-```
+```bash
 $ podman run -d --net host -v /path/to/config.yaml:/config/config.yaml ghcr.io/heathcliff26/netrouse:latest
 ```
 If you want to use it with persistent data, run it with `-v netrouse-data:/data`. With the default configuration it will write data to `/data/hosts.yaml`.
@@ -62,10 +62,11 @@ If you encounter `socket: permission denied` errors when checking if a host is o
 
 ### Image location
 
-| Container Registry                                                                                     | Image                                      |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| Container Registry                                                                            | Image                             |
+| --------------------------------------------------------------------------------------------- | --------------------------------- |
 | [Github Container](https://github.com/users/heathcliff26/packages/container/package/netrouse) | `ghcr.io/heathcliff26/netrouse`   |
-| [Docker Hub](https://hub.docker.com/r/heathcliff26/netrouse)                  | `docker.io/heathcliff26/netrouse` |
+| [Docker Hub](https://hub.docker.com/r/heathcliff26/netrouse)                                  | `docker.io/heathcliff26/netrouse` |
+| [Quay.io](https://quay.io/heathcliff26/netrouse)                                              | `quay.io/heathcliff26/netrouse`   |
 
 ### Tags
 
