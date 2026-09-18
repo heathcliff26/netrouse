@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"testing"
 
-	"github.com/heathcliff26/go-wol/pkg/server/storage"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/file"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/valkey"
+	"github.com/heathcliff26/netrouse/pkg/server/storage"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/file"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -170,8 +170,8 @@ func TestEnvSubstitution(t *testing.T) {
 		t.Run(tCase.Name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			t.Setenv("GOWOL_LOG_LEVEL", "debug")
-			t.Setenv("GOWOL_PORT", "1234")
+			t.Setenv("NETROUSE_LOG_LEVEL", "debug")
+			t.Setenv("NETROUSE_PORT", "1234")
 
 			c, err := LoadConfig("testdata/env-config.yaml", tCase.Env, "")
 			if tCase.Env {

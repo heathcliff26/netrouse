@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	api "github.com/heathcliff26/go-wol/pkg/server/api/v1"
-	"github.com/heathcliff26/go-wol/pkg/server/config"
-	"github.com/heathcliff26/go-wol/pkg/server/storage"
-	"github.com/heathcliff26/go-wol/static"
+	api "github.com/heathcliff26/netrouse/pkg/server/api/v1"
+	"github.com/heathcliff26/netrouse/pkg/server/config"
+	"github.com/heathcliff26/netrouse/pkg/server/storage"
+	"github.com/heathcliff26/netrouse/static"
 	"github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 

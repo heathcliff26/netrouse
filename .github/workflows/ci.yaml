@@ -89,8 +89,8 @@ jobs:
       - unit-tests
     with:
       release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      artifact: "dist/go-wol*"
-      artifact-name: "go-wol"
+      artifact: "dist/netrouse*"
+      artifact-name: "netrouse"
       cmd: "make release"
     secrets: inherit
 

@@ -1,6 +1,6 @@
 package v1
 
-//	@title			go-wol API
+//	@title			NetRouse API
 //	@version		1.0
 //	@description	Manage known hosts and send magic packets.
 
@@ -17,11 +17,11 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/heathcliff26/go-wol/pkg/ping"
-	"github.com/heathcliff26/go-wol/pkg/server/storage"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/types"
-	"github.com/heathcliff26/go-wol/pkg/utils"
-	"github.com/heathcliff26/go-wol/pkg/wol"
+	"github.com/heathcliff26/netrouse/pkg/ping"
+	"github.com/heathcliff26/netrouse/pkg/server/storage"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
+	"github.com/heathcliff26/netrouse/pkg/utils"
+	"github.com/heathcliff26/netrouse/pkg/wol"
 )
 
 type Response struct {

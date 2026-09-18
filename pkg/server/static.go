@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/heathcliff26/go-wol/pkg/version"
+	"github.com/heathcliff26/netrouse/pkg/version"
 	"github.com/heathcliff26/simple-fileserver/pkg/filesystem"
 )
 

@@ -6,12 +6,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/heathcliff26/go-wol/pkg/server/storage"
+	"github.com/heathcliff26/netrouse/pkg/server/storage"
 	"go.yaml.in/yaml/v3"
 )
 
 const (
-	DEFAULT_CONFIG_PATH           = "/etc/go-wol/config.yaml"
+	DEFAULT_CONFIG_PATH           = "/etc/netrouse/config.yaml"
 	DEFAULT_CONFIG_PATH_CONTAINER = "/config/config.yaml"
 
 	DEFAULT_LOG_LEVEL   = "info"

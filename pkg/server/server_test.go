@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/heathcliff26/go-wol/pkg/server/config"
-	"github.com/heathcliff26/go-wol/pkg/server/storage"
-	"github.com/heathcliff26/go-wol/static"
+	"github.com/heathcliff26/netrouse/pkg/server/config"
+	"github.com/heathcliff26/netrouse/pkg/server/storage"
+	"github.com/heathcliff26/netrouse/static"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -57,6 +57,6 @@ jobs:
       update: ${{ inputs.update }}
       tag: ${{ inputs.tag }}
       release-artifacts: "release/*"
-      artifacts: "go-wol"
+      artifacts: "netrouse"
       prerelease: ${{ inputs.prerelease }}
     secrets: inherit

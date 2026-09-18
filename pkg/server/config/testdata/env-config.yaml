@@ -1,4 +1,4 @@
 ---
-logLevel: "${GOWOL_LOG_LEVEL}"
+logLevel: "${NETROUSE_LOG_LEVEL}"
 server:
-  port: ${GOWOL_PORT}
+  port: ${NETROUSE_PORT}

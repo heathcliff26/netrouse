@@ -1,4 +1,4 @@
-module github.com/heathcliff26/go-wol
+module github.com/heathcliff26/netrouse
 
 go 1.27.0
 

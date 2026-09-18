@@ -1,7 +1,7 @@
 SHELL := bash
 
 REPOSITORY ?= localhost
-CONTAINER_NAME ?= go-wol
+CONTAINER_NAME ?= netrouse
 TAG ?= latest
 
 # Build the binary
@@ -10,7 +10,7 @@ build:
 
 # Run the server on port 8080 to quickly test changes
 run: build
-	bin/go-wol server --log debug
+	bin/netrouse server --log debug
 
 # Build the container image
 image:

@@ -7,7 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const Name = "go-wol"
+const (
+	Name = "NetRouse"
+)
 
 // Create a new version command with the given app name
 func NewCommand() *cobra.Command {

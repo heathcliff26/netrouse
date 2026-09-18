@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/heathcliff26/go-wol/pkg/version"
-	"github.com/heathcliff26/go-wol/static"
+	"github.com/heathcliff26/netrouse/pkg/version"
+	"github.com/heathcliff26/netrouse/static"
 	"github.com/stretchr/testify/assert"
 )
 

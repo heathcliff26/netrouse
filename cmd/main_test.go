@@ -18,7 +18,7 @@ func TestMain(t *testing.T) {
 
 	assert := assert.New(t)
 
-	assert.Contains(output, "go-wol")
+	assert.Contains(output, "netrouse")
 	assert.Contains(output, "Usage:")
 	assert.Contains(output, "Available Commands:")
 }

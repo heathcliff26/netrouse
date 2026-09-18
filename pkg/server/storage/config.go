@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/heathcliff26/go-wol/pkg/server/storage/file"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/valkey"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/file"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
 )
 
 const (
