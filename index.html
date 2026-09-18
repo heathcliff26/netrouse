@@ -55,47 +55,47 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/heathcliff26/go-wol/cmd/cmd.go (92.3%)</option>
+				<option value="file0">github.com/heathcliff26/netrouse/cmd/cmd.go (92.9%)</option>
 				
-				<option value="file1">github.com/heathcliff26/go-wol/cmd/main.go (75.0%)</option>
+				<option value="file1">github.com/heathcliff26/netrouse/cmd/main.go (75.0%)</option>
 				
-				<option value="file2">github.com/heathcliff26/go-wol/pkg/ping/ping.go (91.4%)</option>
+				<option value="file2">github.com/heathcliff26/netrouse/pkg/ping/ping.go (91.4%)</option>
 				
-				<option value="file3">github.com/heathcliff26/go-wol/pkg/server/api/v1/api.go (94.2%)</option>
+				<option value="file3">github.com/heathcliff26/netrouse/pkg/server/api/v1/api.go (94.2%)</option>
 				
-				<option value="file4">github.com/heathcliff26/go-wol/pkg/server/cmd.go (86.2%)</option>
+				<option value="file4">github.com/heathcliff26/netrouse/pkg/server/cmd.go (86.2%)</option>
 				
-				<option value="file5">github.com/heathcliff26/go-wol/pkg/server/config/config.go (100.0%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/server/config/config.go (100.0%)</option>
 				
-				<option value="file6">github.com/heathcliff26/go-wol/pkg/server/server.go (91.8%)</option>
+				<option value="file6">github.com/heathcliff26/netrouse/pkg/server/server.go (91.8%)</option>
 				
-				<option value="file7">github.com/heathcliff26/go-wol/pkg/server/static.go (100.0%)</option>
+				<option value="file7">github.com/heathcliff26/netrouse/pkg/server/static.go (100.0%)</option>
 				
-				<option value="file8">github.com/heathcliff26/go-wol/pkg/server/storage/config.go (100.0%)</option>
+				<option value="file8">github.com/heathcliff26/netrouse/pkg/server/storage/config.go (100.0%)</option>
 				
-				<option value="file9">github.com/heathcliff26/go-wol/pkg/server/storage/file/config.go (100.0%)</option>
+				<option value="file9">github.com/heathcliff26/netrouse/pkg/server/storage/file/config.go (100.0%)</option>
 				
-				<option value="file10">github.com/heathcliff26/go-wol/pkg/server/storage/file/file.go (97.9%)</option>
+				<option value="file10">github.com/heathcliff26/netrouse/pkg/server/storage/file/file.go (97.9%)</option>
 				
-				<option value="file11">github.com/heathcliff26/go-wol/pkg/server/storage/storage.go (93.0%)</option>
+				<option value="file11">github.com/heathcliff26/netrouse/pkg/server/storage/storage.go (93.0%)</option>
 				
-				<option value="file12">github.com/heathcliff26/go-wol/pkg/server/storage/testsuite/basic.go (100.0%)</option>
+				<option value="file12">github.com/heathcliff26/netrouse/pkg/server/storage/testsuite/basic.go (100.0%)</option>
 				
-				<option value="file13">github.com/heathcliff26/go-wol/pkg/server/storage/testsuite/race.go (100.0%)</option>
+				<option value="file13">github.com/heathcliff26/netrouse/pkg/server/storage/testsuite/race.go (100.0%)</option>
 				
-				<option value="file14">github.com/heathcliff26/go-wol/pkg/server/storage/testsuite/utils.go (100.0%)</option>
+				<option value="file14">github.com/heathcliff26/netrouse/pkg/server/storage/testsuite/utils.go (100.0%)</option>
 				
-				<option value="file15">github.com/heathcliff26/go-wol/pkg/server/storage/valkey/utils.go (88.9%)</option>
+				<option value="file15">github.com/heathcliff26/netrouse/pkg/server/storage/valkey/utils.go (88.9%)</option>
 				
-				<option value="file16">github.com/heathcliff26/go-wol/pkg/server/storage/valkey/valkey.go (93.7%)</option>
+				<option value="file16">github.com/heathcliff26/netrouse/pkg/server/storage/valkey/valkey.go (93.7%)</option>
 				
-				<option value="file17">github.com/heathcliff26/go-wol/pkg/utils/utils.go (100.0%)</option>
+				<option value="file17">github.com/heathcliff26/netrouse/pkg/utils/utils.go (100.0%)</option>
 				
-				<option value="file18">github.com/heathcliff26/go-wol/pkg/version/version.go (84.6%)</option>
+				<option value="file18">github.com/heathcliff26/netrouse/pkg/version/version.go (84.6%)</option>
 				
-				<option value="file19">github.com/heathcliff26/go-wol/pkg/wol/cmd.go (95.2%)</option>
+				<option value="file19">github.com/heathcliff26/netrouse/pkg/wol/cmd.go (95.2%)</option>
 				
-				<option value="file20">github.com/heathcliff26/go-wol/pkg/wol/wol.go (93.9%)</option>
+				<option value="file20">github.com/heathcliff26/netrouse/pkg/wol/wol.go (93.9%)</option>
 				
 				</select>
 			</div>
@@ -121,21 +121,24 @@
 		<pre class="file" id="file0" style="display: none">package main
 
 import (
-        "github.com/heathcliff26/go-wol/pkg/server"
-        "github.com/heathcliff26/go-wol/pkg/version"
-        "github.com/heathcliff26/go-wol/pkg/wol"
+        "strings"
+
+        "github.com/heathcliff26/netrouse/pkg/server"
+        "github.com/heathcliff26/netrouse/pkg/version"
+        "github.com/heathcliff26/netrouse/pkg/wol"
         "github.com/spf13/cobra"
 )
 
 func NewRootCommand() *cobra.Command {
-        <span class="cov10" title="2">cobra.AddTemplateFunc(
+        <span class="cov10" title="2">name := strings.ToLower(version.Name)
+        cobra.AddTemplateFunc(
                 "ProgramName", func() string </span>{
-                        <span class="cov0" title="0">return version.Name
+                        <span class="cov0" title="0">return name
 </span>                },
         )
 
         <span class="cov10" title="2">rootCmd := &amp;cobra.Command{
-                Use:   version.Name,
+                Use:   name,
                 Short: version.Name + " power on other devices on the network via Wake-on-Lan",
                 RunE: func(cmd *cobra.Command, _ []string) error </span>{
                         <span class="cov1" title="1">return cmd.Help()
@@ -172,7 +175,7 @@ func main() {
 import (
         "time"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
         probing "github.com/prometheus-community/pro-bing"
 )
 
@@ -222,7 +225,7 @@ func PingHosts(hosts []types.Host) []types.HostStatus {
 		
 		<pre class="file" id="file3" style="display: none">package v1
 
-//        @title                        go-wol API
+//        @title                        NetRouse API
 //        @version                1.0
 //        @description        Manage known hosts and send magic packets.
 
@@ -239,11 +242,11 @@ import (
         "log/slog"
         "net/http"
 
-        "github.com/heathcliff26/go-wol/pkg/ping"
-        "github.com/heathcliff26/go-wol/pkg/server/storage"
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
-        "github.com/heathcliff26/go-wol/pkg/utils"
-        "github.com/heathcliff26/go-wol/pkg/wol"
+        "github.com/heathcliff26/netrouse/pkg/ping"
+        "github.com/heathcliff26/netrouse/pkg/server/storage"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/utils"
+        "github.com/heathcliff26/netrouse/pkg/wol"
 )
 
 type Response struct {
@@ -474,7 +477,7 @@ import (
         "fmt"
         "os"
 
-        "github.com/heathcliff26/go-wol/pkg/server/config"
+        "github.com/heathcliff26/netrouse/pkg/server/config"
         "github.com/spf13/cobra"
 )
 
@@ -539,12 +542,12 @@ import (
         "os"
         "strings"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage"
+        "github.com/heathcliff26/netrouse/pkg/server/storage"
         "go.yaml.in/yaml/v3"
 )
 
 const (
-        DEFAULT_CONFIG_PATH           = "/etc/go-wol/config.yaml"
+        DEFAULT_CONFIG_PATH           = "/etc/netrouse/config.yaml"
         DEFAULT_CONFIG_PATH_CONTAINER = "/config/config.yaml"
 
         DEFAULT_LOG_LEVEL   = "info"
@@ -686,10 +689,10 @@ import (
         "strings"
         "time"
 
-        api "github.com/heathcliff26/go-wol/pkg/server/api/v1"
-        "github.com/heathcliff26/go-wol/pkg/server/config"
-        "github.com/heathcliff26/go-wol/pkg/server/storage"
-        "github.com/heathcliff26/go-wol/static"
+        api "github.com/heathcliff26/netrouse/pkg/server/api/v1"
+        "github.com/heathcliff26/netrouse/pkg/server/config"
+        "github.com/heathcliff26/netrouse/pkg/server/storage"
+        "github.com/heathcliff26/netrouse/static"
         "github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 
@@ -779,7 +782,7 @@ import (
         "net/http"
         "strings"
 
-        "github.com/heathcliff26/go-wol/pkg/version"
+        "github.com/heathcliff26/netrouse/pkg/version"
         "github.com/heathcliff26/simple-fileserver/pkg/filesystem"
 )
 
@@ -806,8 +809,8 @@ func StaticFileServer(root embed.FS) http.Handler {
 		<pre class="file" id="file8" style="display: none">package storage
 
 import (
-        "github.com/heathcliff26/go-wol/pkg/server/storage/file"
-        "github.com/heathcliff26/go-wol/pkg/server/storage/valkey"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/file"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
 )
 
 const (
@@ -858,7 +861,7 @@ import (
         "strings"
         "sync"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
         "go.yaml.in/yaml/v3"
 )
 
@@ -1018,11 +1021,11 @@ import (
         "log/slog"
         "os"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/file"
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
-        "github.com/heathcliff26/go-wol/pkg/server/storage/valkey"
-        "github.com/heathcliff26/go-wol/pkg/version"
-        "github.com/heathcliff26/go-wol/static"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/file"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
+        "github.com/heathcliff26/netrouse/pkg/version"
+        "github.com/heathcliff26/netrouse/static"
 
         "go.yaml.in/yaml/v3"
 )
@@ -1174,7 +1177,7 @@ import (
         "fmt"
         "testing"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
         "github.com/stretchr/testify/assert"
         "github.com/stretchr/testify/require"
 )
@@ -1318,7 +1321,7 @@ import (
         "sync"
         "testing"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
 )
 
 // These tests do not run any checks themselves, they rely on race detection for that.
@@ -1398,7 +1401,7 @@ func RunStorageBackendRaceTests(t *testing.T, factory StorageBackendFactory) {
 import (
         "testing"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
         "github.com/stretchr/testify/require"
 )
 
@@ -1445,7 +1448,7 @@ import (
         "log/slog"
         "strings"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
 )
 
 const (
@@ -1509,7 +1512,7 @@ import (
         "strings"
         "time"
 
-        "github.com/heathcliff26/go-wol/pkg/server/storage/types"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
         "github.com/valkey-io/valkey-go"
 )
 
@@ -1726,7 +1729,9 @@ import (
         "github.com/spf13/cobra"
 )
 
-const Name = "go-wol"
+const (
+        Name = "NetRouse"
+)
 
 // Create a new version command with the given app name
 func NewCommand() *cobra.Command {
