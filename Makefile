@@ -5,11 +5,16 @@ CONTAINER_NAME ?= netrouse
 TAG ?= latest
 
 # Build all binaries
-build: build-cli
+build: build-cli build-gui
 
 # Build the binary
 build-cli:
 	hack/build.sh
+
+# Build the GUI
+build-gui: tools
+	hack/fyne-metadata.sh
+	"$(shell pwd)/bin/fyne" build -o "$(shell pwd)/bin/netrouse-gui" --release ./cmd/gui
 
 # Run the server on port 8080 to quickly test changes
 run: build-cli
@@ -21,7 +26,7 @@ image:
 
 # Build all artifacts used for release, except the container images
 release:
-	hack/release.sh
+	hack/containerized hack/release.sh
 
 # Run unit-tests with race detection and coverage
 test:
@@ -66,6 +71,10 @@ gosec:
 clean:
 	hack/clean.sh
 
+# Install the tools required for building the app
+tools:
+	GOBIN="$(shell pwd)/bin" go install tool
+
 # Show this help message
 help:
 	@echo "Available targets:"
@@ -77,6 +86,7 @@ help:
 .PHONY: \
 	build \
 	build-cli \
+	build-gui \
 	run \
 	image \
 	release \
@@ -91,5 +101,6 @@ help:
 	generate-swagger \
 	gosec \
 	clean \
+	tools \
 	help \
 	$(NULL)

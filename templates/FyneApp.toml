@@ -1,0 +1,11 @@
+Website = "https://github.com/heathcliff26/netrouse"
+
+[Details]
+Icon = "../../packages/io.github.heathcliff26.netrouse.png"
+Name = "NetRouse"
+ID = "io.github.heathcliff26.netrouse"
+Version = "${RELEASE_VERSION}"
+Build = 0
+
+[Migrations]
+fyneDo = true
