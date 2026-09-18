@@ -169,6 +169,16 @@ func TestFileTestsuiteRace(t *testing.T) {
 	testsuite.RunStorageBackendRaceTests(t, newStorageBackendFactory(t))
 }
 
+func TestNewEmptyBackend(t *testing.T) {
+	assert := assert.New(t)
+
+	fb := NewEmptyBackend()
+	assert.NotNil(fb, "File backend should not be nil")
+	assert.Equal(&types.HostsFile{}, fb.storage, "File backend storage should be empty")
+	err := fb.save()
+	assert.Error(err, "Should fail to save")
+}
+
 func newStorageBackendFactory(t *testing.T) testsuite.StorageBackendFactory {
 	t.Helper()
 	dir := t.TempDir()
