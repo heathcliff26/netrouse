@@ -19,6 +19,17 @@ func init() {
 	}
 }
 
+// Path to hosts file for local hosts
 func HostsFile() string {
 	return filepath.Join(configFolder, hostsFileName)
+}
+
+// Path to config folder
+func ConfigFolder() string {
+	return configFolder
+}
+
+// Set the config folder path, used for testing
+func SetConfigFolder(path string) {
+	configFolder = path
 }

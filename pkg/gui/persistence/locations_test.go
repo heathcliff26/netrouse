@@ -10,9 +10,9 @@ import (
 func TestHostsFile(t *testing.T) {
 	assert := assert.New(t)
 
-	oldFolder := configFolder
+	oldFolder := ConfigFolder()
 	t.Cleanup(func() {
-		configFolder = oldFolder
+		SetConfigFolder(oldFolder)
 	})
 
 	configFolder = "test"
