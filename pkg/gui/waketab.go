@@ -18,12 +18,6 @@ import (
 )
 
 const (
-	hostStatusUnknown = iota
-	hostStatusOnline
-	hostStatusOffline
-)
-
-const (
 	hostStatusUnknownStr = "⚪"
 	hostStatusOnlineStr  = "🟢"
 	hostStatusOfflineStr = "🔴"
@@ -37,16 +31,16 @@ type wakeTab struct {
 	client client.Client
 }
 
-func newTabFromRemote(window fyne.Window, remote *RemoteServer) *wakeTab {
-	tab := &wakeTab{
-		remote: remote,
-		window: window,
-		client: client.NewAPIClient(remote.URL),
-	}
-	tab.tab = container.NewTabItemWithIcon(remote.Name, theme.ComputerIcon(), nil)
-	tab.update()
-	return tab
-}
+// func newTabFromRemote(window fyne.Window, remote *RemoteServer) *wakeTab {
+// 	tab := &wakeTab{
+// 		remote: remote,
+// 		window: window,
+// 		client: client.NewAPIClient(remote.URL),
+// 	}
+// 	tab.tab = container.NewTabItemWithIcon(remote.Name, theme.ComputerIcon(), nil)
+// 	tab.update()
+// 	return tab
+// }
 
 func newLocalTab(window fyne.Window) *wakeTab {
 	tab := &wakeTab{

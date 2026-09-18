@@ -42,7 +42,7 @@ coverprofile:
 
 # Run linter
 lint:
-	golangci-lint run -v
+	golangci-lint run -v --timeout 300s
 
 # Format the code
 fmt:

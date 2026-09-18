@@ -5,7 +5,6 @@ import (
 	"encoding/json/v2"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/heathcliff26/netrouse/pkg/server/storage"
@@ -460,20 +459,7 @@ func TestHostStatusHandler(t *testing.T) {
 }
 
 func TestStorageErrors(t *testing.T) {
-	hostsFile := t.TempDir() + "/hosts.yaml"
-
-	cfg := storage.StorageConfig{
-		Type: "file",
-		File: file.FileBackendConfig{
-			Path: hostsFile,
-		},
-	}
-
-	storageBackend, err := storage.NewStorage(cfg)
-	require.NoError(t, err, "Should create file backend without error")
-
-	require.NoError(t, os.Chmod(hostsFile, 0444), "Should set file permissions without error")
-
+	storageBackend := storage.NewStorageFromBackend(file.NewEmptyBackend(), false)
 	router := NewRouter(storageBackend)
 
 	t.Run("AddHost", func(t *testing.T) {
@@ -514,7 +500,7 @@ func TestStorageErrors(t *testing.T) {
 		assert.Equal(http.StatusInternalServerError, rr.Result().StatusCode, "Should return correct status code")
 
 		var res Response
-		err = json.Unmarshal(rr.Body.Bytes(), &res)
+		err := json.Unmarshal(rr.Body.Bytes(), &res)
 		assert.NoError(err, "Response should be json")
 
 		expectedResponse := Response{

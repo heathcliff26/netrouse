@@ -1,6 +1,7 @@
 package testsuite
 
 import (
+	"os/user"
 	"testing"
 
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
@@ -40,4 +41,12 @@ func addHosts(t *testing.T, backend types.StorageBackend) {
 		err := backend.AddHost(host)
 		require.NoError(t, err, "AddHost failed for %s", host.Name)
 	}
+}
+
+func IsRoot() bool {
+	currentUser, err := user.Current()
+	if err != nil {
+		return false
+	}
+	return currentUser.Uid == "0"
 }

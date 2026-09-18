@@ -52,9 +52,11 @@ on:
 
 jobs:
   lint:
-    uses: heathcliff26/ci/.github/workflows/golang-lint.yaml@main
+    uses: heathcliff26/ci/.github/workflows/golang-fyne-lint.yaml@main
     permissions:
       contents: read
+    with:
+      cmd: hack/containerized make lint
 
   gosec:
     uses: heathcliff26/ci/.github/workflows/golang-gosec.yaml@main
@@ -68,9 +70,7 @@ jobs:
       contents: read
     with:
       coveralls: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
-      cmd: |
-        sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
-        make test
+      cmd: hack/containerized make test
 
   validate:
     uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
