@@ -4,12 +4,15 @@ REPOSITORY ?= localhost
 CONTAINER_NAME ?= netrouse
 TAG ?= latest
 
+# Build all binaries
+build: build-cli
+
 # Build the binary
-build:
+build-cli:
 	hack/build.sh
 
 # Run the server on port 8080 to quickly test changes
-run: build
+run: build-cli
 	bin/netrouse server --log debug
 
 # Build the container image
@@ -73,6 +76,7 @@ help:
 
 .PHONY: \
 	build \
+	build-cli \
 	run \
 	image \
 	release \

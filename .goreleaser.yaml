@@ -5,12 +5,10 @@ version: 2
 
 project_name: netrouse
 
-env:
-  - CGO_ENABLED=0
-
 builds:
-  - binary: "{{ .ProjectName }}"
-    main: ./cmd
+  - id: cli
+    binary: "{{ .ProjectName }}"
+    main: ./cmd/cli
     goos:
       - linux
     goarch:
@@ -20,9 +18,14 @@ builds:
       - -trimpath
     ldflags:
       - -s
+    env:
+      - CGO_ENABLED=0
 
 archives:
-  - formats: ["binary"]
+  - id: binary
+    ids:
+      - cli
+    formats: ["binary"]
 
 changelog:
   disable: true
