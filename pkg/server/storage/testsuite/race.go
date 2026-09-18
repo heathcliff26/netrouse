@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/heathcliff26/go-wol/pkg/server/storage/types"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 )
 
 // These tests do not run any checks themselves, they rely on race detection for that.

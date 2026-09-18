@@ -1,16 +1,16 @@
-[![CI](https://github.com/heathcliff26/go-wol/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/heathcliff26/go-wol/actions/workflows/ci.yaml)
-[![Coverage Status](https://coveralls.io/repos/github/heathcliff26/go-wol/badge.svg)](https://coveralls.io/github/heathcliff26/go-wol)
-[![Editorconfig Check](https://github.com/heathcliff26/go-wol/actions/workflows/editorconfig-check.yaml/badge.svg?event=push)](https://github.com/heathcliff26/go-wol/actions/workflows/editorconfig-check.yaml)
-[![Generate go test cover report](https://github.com/heathcliff26/go-wol/actions/workflows/go-testcover-report.yaml/badge.svg)](https://github.com/heathcliff26/go-wol/actions/workflows/go-testcover-report.yaml)
+[![CI](https://github.com/heathcliff26/netrouse/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/heathcliff26/netrouse/actions/workflows/ci.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/heathcliff26/netrouse/badge.svg)](https://coveralls.io/github/heathcliff26/netrouse)
+[![Editorconfig Check](https://github.com/heathcliff26/netrouse/actions/workflows/editorconfig-check.yaml/badge.svg?event=push)](https://github.com/heathcliff26/netrouse/actions/workflows/editorconfig-check.yaml)
+[![Generate go test cover report](https://github.com/heathcliff26/netrouse/actions/workflows/go-testcover-report.yaml/badge.svg)](https://github.com/heathcliff26/netrouse/actions/workflows/go-testcover-report.yaml)
 
-# go-wol
+# NetRouse
 
 This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
 It can be used directly via the cli, or remotely via a web interface.
 
 ## Table of Contents
 
-- [go-wol](#go-wol)
+- [NetRouse](#netrouse)
   - [Table of Contents](#table-of-contents)
   - [Usage](#usage)
     - [CLI Args](#cli-args)
@@ -26,12 +26,12 @@ It can be used directly via the cli, or remotely via a web interface.
 
 ### CLI Args
 ```
-$ go-wol help
-go-wol power on other devices on the network via Wake-on-Lan
+$ netrouse help
+netrouse power on other devices on the network via Wake-on-Lan
 
 Usage:
-  go-wol [flags]
-  go-wol [command]
+  netrouse [flags]
+  netrouse [command]
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
@@ -41,18 +41,18 @@ Available Commands:
   wol         Send a magic packet to the given mac address
 
 Flags:
-  -h, --help   help for go-wol
+  -h, --help   help for netrouse
 
-Use "go-wol [command] --help" for more information about a command.
+Use "netrouse [command] --help" for more information about a command.
 ```
 
 ### Using the image
 
 When using the container image, please note that the server needs to run with `--net host` to send the magic packets.
 ```
-$ podman run -d --net host -v /path/to/config.yaml:/config/config.yaml ghcr.io/heathcliff26/go-wol:latest
+$ podman run -d --net host -v /path/to/config.yaml:/config/config.yaml ghcr.io/heathcliff26/netrouse:latest
 ```
-If you want to use it with persistent data, run it with `-v go-wol-data:/data`. With the default configuration it will write data to `/data/hosts.yaml`.
+If you want to use it with persistent data, run it with `-v netrouse-data:/data`. With the default configuration it will write data to `/data/hosts.yaml`.
 
 The image can be run without configuration, it will simply use the default values.
 
@@ -64,8 +64,8 @@ If you encounter `socket: permission denied` errors when checking if a host is o
 
 | Container Registry                                                                                     | Image                                      |
 | ------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| [Github Container](https://github.com/users/heathcliff26/packages/container/package/go-wol) | `ghcr.io/heathcliff26/go-wol`   |
-| [Docker Hub](https://hub.docker.com/r/heathcliff26/go-wol)                  | `docker.io/heathcliff26/go-wol` |
+| [Github Container](https://github.com/users/heathcliff26/packages/container/package/netrouse) | `ghcr.io/heathcliff26/netrouse`   |
+| [Docker Hub](https://hub.docker.com/r/heathcliff26/netrouse)                  | `docker.io/heathcliff26/netrouse` |
 
 ### Tags
 
@@ -82,7 +82,7 @@ There are different flavors of the image:
 An example configuration with comments and default values for the server can be found [here](examples/config.yaml).
 
 The default paths for the configuration file are:
-    - standalone:   `/etc/go-wol/config.yaml`
+    - standalone:   `/etc/netrouse/config.yaml`
     - in container: `/config/config.yaml`
 
 ## Development

@@ -21,14 +21,14 @@ RUN GOOS=linux GOARCH="${TARGETARCH}" hack/build.sh
 # Create final docker image
 FROM scratch AS final-stage
 
-COPY --from=build-stage /app/bin/go-wol /go-wol
+COPY --from=build-stage /app/bin/netrouse /netrouse
 
 USER 65534:65534
 
 WORKDIR /data
 VOLUME /data
 
-ENTRYPOINT ["/go-wol"]
+ENTRYPOINT ["/netrouse"]
 
 CMD ["server"]
 

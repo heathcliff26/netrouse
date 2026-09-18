@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/heathcliff26/go-wol/pkg/server/config"
+	"github.com/heathcliff26/netrouse/pkg/server/config"
 	"github.com/spf13/cobra"
 )
 

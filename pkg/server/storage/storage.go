@@ -9,11 +9,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/heathcliff26/go-wol/pkg/server/storage/file"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/types"
-	"github.com/heathcliff26/go-wol/pkg/server/storage/valkey"
-	"github.com/heathcliff26/go-wol/pkg/version"
-	"github.com/heathcliff26/go-wol/static"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/file"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/valkey"
+	"github.com/heathcliff26/netrouse/pkg/version"
+	"github.com/heathcliff26/netrouse/static"
 
 	"go.yaml.in/yaml/v3"
 )

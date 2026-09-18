@@ -11,7 +11,7 @@ GOARCH="${GOARCH:-$(go env GOARCH)}"
 
 GO_LD_FLAGS="${GO_LD_FLAGS:-"-s"}"
 
-output_name="${bin_dir}/go-wol"
+output_name="${bin_dir}/netrouse"
 if [ "${1}" != "" ]; then
     output_name="${bin_dir}/${1}"
 fi

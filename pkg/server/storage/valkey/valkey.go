@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/heathcliff26/go-wol/pkg/server/storage/types"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/valkey-io/valkey-go"
 )
 

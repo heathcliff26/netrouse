@@ -3,7 +3,7 @@
 
 version: 2
 
-project_name: go-wol
+project_name: netrouse
 
 env:
   - CGO_ENABLED=0
