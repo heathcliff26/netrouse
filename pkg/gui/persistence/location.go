@@ -8,7 +8,7 @@ import (
 var configFolder string
 
 const (
-	hostsFileName = "hosts.json"
+	hostsFileName = "hosts.yaml"
 )
 
 func init() {
