@@ -63,15 +63,15 @@
 				
 				<option value="file3">github.com/heathcliff26/netrouse/pkg/client/client.go (0.0%)</option>
 				
-				<option value="file4">github.com/heathcliff26/netrouse/pkg/gui/app.go (0.0%)</option>
+				<option value="file4">github.com/heathcliff26/netrouse/pkg/gui/app.go (94.3%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/localclient.go (0.0%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/localclient.go (92.6%)</option>
 				
-				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/persistence/location.go (60.0%)</option>
+				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/persistence/location.go (71.4%)</option>
 				
 				<option value="file7">github.com/heathcliff26/netrouse/pkg/gui/persistence/locations_linux.go (88.9%)</option>
 				
-				<option value="file8">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (0.0%)</option>
+				<option value="file8">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (23.4%)</option>
 				
 				<option value="file9">github.com/heathcliff26/netrouse/pkg/ping/ping.go (91.4%)</option>
 				
@@ -264,9 +264,7 @@ import (
 )
 
 // Used to change the new app function for testing
-var newApp = func() fyne.App {
-        <span class="cov0" title="0">return fApp.NewWithID("io.github.heathcliff26.netrouse")
-</span>}
+var newApp = fApp.New
 
 //go:embed translations
 var translationsFS embed.FS
@@ -280,25 +278,25 @@ type App struct {
 }
 
 func New() *App {
-        <span class="cov0" title="0">err := lang.AddTranslationsFS(translationsFS, "translations")
+        <span class="cov8" title="1">err := lang.AddTranslationsFS(translationsFS, "translations")
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load translations", slog.Any("error", err))
 </span>        }
 
-        <span class="cov0" title="0">app := newApp()
+        <span class="cov8" title="1">app := newApp()
         main := app.NewWindow(version.Name)
 </span>
-        <span class="cov0" title="0">a := &amp;App{
+        <span class="cov8" title="1">a := &amp;App{
                 app:  app,
                 main: main,
 </span>        }
-        <span class="cov0" title="0">a.tabLocal = newLocalTab(a.main)
+        <span class="cov8" title="1">a.tabLocal = newLocalTab(a.main)
         a.tabSettings = a.newSettingsTab()
         a.main.SetContent(a.newTabs())
         a.main.Resize(fyne.NewSize(450, 600))
         a.main.Show()
 </span>
-        <span class="cov0" title="0">return a</span>
+        <span class="cov8" title="1">return a</span>
 }
 
 func (a *App) Run() {
@@ -306,20 +304,20 @@ func (a *App) Run() {
 </span>}
 
 func (a *App) newTabs() *container.AppTabs {
-        <span class="cov0" title="0">items := make([]*container.TabItem, 0, len(a.tabs)+2)
+        <span class="cov8" title="1">items := make([]*container.TabItem, 0, len(a.tabs)+2)
         items = append(items, a.tabLocal.tab)
         for _, tab := range a.tabs </span>{
                 <span class="cov0" title="0">items = append(items, tab.tab)
 </span>        }
-        <span class="cov0" title="0">items = append(items, a.tabSettings)
+        <span class="cov8" title="1">items = append(items, a.tabSettings)
 </span>
-        <span class="cov0" title="0">tabs := container.NewAppTabs(items...)
+        <span class="cov8" title="1">tabs := container.NewAppTabs(items...)
         tabs.SetTabLocation(container.TabLocationLeading)
         return tabs</span>
 }
 
 func (a *App) newSettingsTab() *container.TabItem {
-        <span class="cov0" title="0">return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), widget.NewLabel("TODO"))
+        <span class="cov8" title="1">return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), widget.NewLabel("TODO"))
 </span>}
 </pre>
 		
@@ -344,62 +342,62 @@ type localClient struct {
 }
 
 func newLocalClient() (client.Client, error) {
-        <span class="cov0" title="0">path := persistence.HostsFile()
+        <span class="cov10" title="7">path := persistence.HostsFile()
         err := os.MkdirAll(filepath.Dir(path), 0755)
         if err != nil </span>{
-                <span class="cov0" title="0">return &amp;localClient{
+                <span class="cov1" title="1">return &amp;localClient{
                         store: file.NewEmptyBackend(),
                 }, err
 </span>        }
-        <span class="cov0" title="0">cfg := file.FileBackendConfig{
+        <span class="cov9" title="6">cfg := file.FileBackendConfig{
                 Path: persistence.HostsFile(),
 </span>        }
-        <span class="cov0" title="0">store, err := file.NewFileBackend(cfg)
+        <span class="cov9" title="6">store, err := file.NewFileBackend(cfg)
         if err != nil </span>{
                 <span class="cov0" title="0">store = file.NewEmptyBackend()
 </span>        }
-        <span class="cov0" title="0">return &amp;localClient{
+        <span class="cov9" title="6">return &amp;localClient{
                 store: store,
         }, err</span>
 }
 
 // Add a new host, overwrite existing host name if it already exists.
 func (lc *localClient) AddHost(host types.Host) error {
-        <span class="cov0" title="0">return lc.store.AddHost(host)
+        <span class="cov6" title="3">return lc.store.AddHost(host)
 </span>}
 
 // Return all hosts
 func (lc *localClient) GetHosts() ([]types.Host, error) {
-        <span class="cov0" title="0">return lc.store.GetHosts()
+        <span class="cov6" title="3">return lc.store.GetHosts()
 </span>}
 
 // Remove a host, ignore if the host does not exist
 func (lc *localClient) RemoveHost(mac string) error {
-        <span class="cov0" title="0">return lc.store.RemoveHost(mac)
+        <span class="cov1" title="1">return lc.store.RemoveHost(mac)
 </span>}
 
 // Return the current status of all hosts
 func (lc *localClient) Status() ([]types.HostStatus, error) {
-        <span class="cov0" title="0">hosts, err := lc.store.GetHosts()
+        <span class="cov1" title="1">hosts, err := lc.store.GetHosts()
         if err != nil </span>{
                 <span class="cov0" title="0">return nil, err
 </span>        }
-        <span class="cov0" title="0">hostsToCheck := make([]types.Host, 0, len(hosts))
+        <span class="cov1" title="1">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov0" title="0">if host.Address != "" </span>{
-                        <span class="cov0" title="0">hostsToCheck = append(hostsToCheck, host)
+                <span class="cov4" title="2">if host.Address != "" </span>{
+                        <span class="cov1" title="1">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
-        <span class="cov0" title="0">return ping.PingHosts(hostsToCheck), nil</span>
+        <span class="cov1" title="1">return ping.PingHosts(hostsToCheck), nil</span>
 }
 
 // Send a magic packet to wake a host
 func (lc *localClient) Wake(mac string) error {
-        <span class="cov0" title="0">packet, err := wol.CreatePacket(mac)
+        <span class="cov4" title="2">packet, err := wol.CreatePacket(mac)
         if err != nil </span>{
-                <span class="cov0" title="0">return err
+                <span class="cov1" title="1">return err
 </span>        }
-        <span class="cov0" title="0">return packet.Send("")</span>
+        <span class="cov1" title="1">return packet.Send("")</span>
 }
 </pre>
 		
@@ -417,15 +415,26 @@ const (
 )
 
 func init() {
-        <span class="cov8" title="1">err := initConfigFolder()
+        <span class="cov3" title="2">err := initConfigFolder()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to find config location, defaulting to current directory", "error", err)
                 configFolder = "."
 </span>        }
 }
 
+// Path to hosts file for local hosts
 func HostsFile() string {
-        <span class="cov8" title="1">return filepath.Join(configFolder, hostsFileName)
+        <span class="cov10" title="14">return filepath.Join(configFolder, hostsFileName)
+</span>}
+
+// Path to config folder
+func ConfigFolder() string {
+        <span class="cov7" title="7">return configFolder
+</span>}
+
+// Set the config folder path, used for testing
+func SetConfigFolder(path string) {
+        <span class="cov9" title="13">configFolder = path
 </span>}
 </pre>
 		
@@ -442,17 +451,17 @@ import (
 )
 
 func initConfigFolder() error {
-        <span class="cov10" title="3">xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
+        <span class="cov10" title="4">xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
         if xdgConfigHome != "" </span>{
                 <span class="cov1" title="1">configFolder = xdgConfigHome
                 return nil
 </span>        }
 
-        <span class="cov6" title="2">home, err := os.UserHomeDir()
+        <span class="cov8" title="3">home, err := os.UserHomeDir()
         if err != nil </span>{
                 <span class="cov0" title="0">return err
 </span>        }
-        <span class="cov6" title="2">configFolder = filepath.Join(home, ".config", strings.ToLower(version.Name))
+        <span class="cov8" title="3">configFolder = filepath.Join(home, ".config", strings.ToLower(version.Name))
         return nil</span>
 }
 </pre>
@@ -502,41 +511,41 @@ type wakeTab struct {
 // }
 
 func newLocalTab(window fyne.Window) *wakeTab {
-        <span class="cov0" title="0">tab := &amp;wakeTab{
+        <span class="cov8" title="1">tab := &amp;wakeTab{
                 tab:    container.NewTabItemWithIcon(lang.L("Local"), theme.HomeIcon(), nil),
                 window: window,
 </span>        }
-        <span class="cov0" title="0">client, err := newLocalClient()
+        <span class="cov8" title="1">client, err := newLocalClient()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("failed to create local client", "error", err)
                 dialog.ShowError(err, window)
 </span>        }
-        <span class="cov0" title="0">tab.client = client
+        <span class="cov8" title="1">tab.client = client
         err = tab.fetchHosts()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("failed to fetch hosts", "error", err)
                 dialog.ShowError(err, window)
 </span>        }
-        <span class="cov0" title="0">return tab</span>
+        <span class="cov8" title="1">return tab</span>
 }
 
 func (t *wakeTab) update() {
-        <span class="cov0" title="0">var titleStr string
+        <span class="cov8" title="1">var titleStr string
         if t.remote == nil </span>{
-                <span class="cov0" title="0">titleStr = lang.L("Local Devices")
+                <span class="cov8" title="1">titleStr = lang.L("Local Devices")
 </span>        } else {
                 <span class="cov0" title="0">titleStr = lang.L("Devices") + ": " + t.remote.Name
 </span>        }
-        <span class="cov0" title="0">title := widget.NewLabel(titleStr)
+        <span class="cov8" title="1">title := widget.NewLabel(titleStr)
         title.TextStyle = fyne.TextStyle{Bold: true}
         addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
 </span>
-        <span class="cov0" title="0">hosts := make([]fyne.CanvasObject, 0, len(t.hosts))
+        <span class="cov8" title="1">hosts := make([]fyne.CanvasObject, 0, len(t.hosts))
         for _, host := range t.hosts </span>{
                 <span class="cov0" title="0">hosts = append(hosts, host.object)
 </span>        }
 
-        <span class="cov0" title="0">t.tab.Content = container.NewBorder(
+        <span class="cov8" title="1">t.tab.Content = container.NewBorder(
                 container.NewHBox(layout.NewSpacer(), title, layout.NewSpacer()),
                 container.NewHBox(layout.NewSpacer(), addButton, layout.NewSpacer()),
                 nil,
@@ -621,16 +630,16 @@ func (t *wakeTab) removeHost(mac string) {
 }
 
 func (t *wakeTab) fetchHosts() error {
-        <span class="cov0" title="0">hosts, err := t.client.GetHosts()
+        <span class="cov8" title="1">hosts, err := t.client.GetHosts()
         if err != nil </span>{
                 <span class="cov0" title="0">return err
 </span>        }
 
-        <span class="cov0" title="0">t.hosts = make([]*hostWidget, 0, len(hosts))
+        <span class="cov8" title="1">t.hosts = make([]*hostWidget, 0, len(hosts))
         for _, host := range hosts </span>{
                 <span class="cov0" title="0">t.hosts = append(t.hosts, newHostWidget(t, host))
 </span>        }
-        <span class="cov0" title="0">t.update()
+        <span class="cov8" title="1">t.update()
         return nil</span>
 }
 
@@ -688,44 +697,44 @@ import (
 // Ping all the hosts and return their status.
 // Will return the first error encountered, if any.
 func PingHosts(hosts []types.Host) []types.HostStatus {
-        <span class="cov9" title="9">res := make(chan types.HostStatus, 1)
+        <span class="cov9" title="10">res := make(chan types.HostStatus, 1)
 </span>
-        <span class="cov9" title="9">for _, host := range hosts </span>{
-                <span class="cov10" title="10">status := types.HostStatus{
+        <span class="cov9" title="10">for _, host := range hosts </span>{
+                <span class="cov10" title="11">status := types.HostStatus{
                         MAC:     host.MAC,
                         Address: host.Address,
 </span>                }
 
-                <span class="cov10" title="10">go func() </span>{
-                        <span class="cov10" title="10">pinger, err := probing.NewPinger(host.Address)
+                <span class="cov10" title="11">go func() </span>{
+                        <span class="cov10" title="11">pinger, err := probing.NewPinger(host.Address)
                         if err != nil </span>{
                                 <span class="cov1" title="1">status.Error = err.Error()
                                 res &lt;- status
                                 return
 </span>                        }
 
-                        <span class="cov9" title="9">pinger.Count = 1
+                        <span class="cov9" title="10">pinger.Count = 1
                         pinger.Timeout = 200 * time.Millisecond
 </span>
-                        <span class="cov9" title="9">err = pinger.Run()
+                        <span class="cov9" title="10">err = pinger.Run()
                         if err != nil </span>{
                                 <span class="cov0" title="0">status.Error = err.Error()
                                 res &lt;- status
                                 return
 </span>                        }
-                        <span class="cov9" title="9">stats := pinger.Statistics()
+                        <span class="cov9" title="10">stats := pinger.Statistics()
 </span>
-                        <span class="cov9" title="9">status.Online = stats != nil &amp;&amp; stats.PacketsRecv &gt; 0
+                        <span class="cov9" title="10">status.Online = stats != nil &amp;&amp; stats.PacketsRecv &gt; 0
                         res &lt;- status</span>
                 }()
         }
 
-        <span class="cov9" title="9">results := make([]types.HostStatus, len(hosts))
+        <span class="cov9" title="10">results := make([]types.HostStatus, len(hosts))
         for i := range results </span>{
-                <span class="cov10" title="10">status := &lt;-res
+                <span class="cov10" title="11">status := &lt;-res
                 results[i] = status
 </span>        }
-        <span class="cov9" title="9">return results</span>
+        <span class="cov9" title="10">return results</span>
 }
 </pre>
 		
@@ -1378,21 +1387,21 @@ type FileBackend struct {
 }
 
 func NewFileBackend(cfg FileBackendConfig) (*FileBackend, error) {
-        <span class="cov4" title="43">fb := &amp;FileBackend{
+        <span class="cov5" title="49">fb := &amp;FileBackend{
                 path: cfg.Path,
                 storage: &amp;types.HostsFile{
                         Hosts: []types.Host{},
                 },
 </span>        }
 
-        <span class="cov4" title="43">f, err := os.ReadFile(cfg.Path)
+        <span class="cov5" title="49">f, err := os.ReadFile(cfg.Path)
         if os.IsNotExist(err) </span>{
-                <span class="cov4" title="34">slog.Info("File not found, creating new file", slog.String("path", cfg.Path))
+                <span class="cov4" title="40">slog.Info("File not found, creating new file", slog.String("path", cfg.Path))
                 err := fb.save()
                 if err != nil </span>{
                         <span class="cov0" title="0">return nil, fmt.Errorf("failed to create new storage file: %w", err)
 </span>                }
-                <span class="cov4" title="34">return fb, nil</span>
+                <span class="cov4" title="40">return fb, nil</span>
         } else <span class="cov3" title="9">if err != nil </span>{
                 <span class="cov0" title="0">return nil, fmt.Errorf("failed to read storage file: %w", err)
 </span>        }
@@ -1434,7 +1443,7 @@ func NewFileBackend(cfg FileBackendConfig) (*FileBackend, error) {
 }
 
 func NewEmptyBackend() *FileBackend {
-        <span class="cov1" title="2">return &amp;FileBackend{
+        <span class="cov2" title="3">return &amp;FileBackend{
                 storage: &amp;types.HostsFile{},
 </span>        }
 }
@@ -1442,30 +1451,30 @@ func NewEmptyBackend() *FileBackend {
 // Add a new host, overwrite existing host name if it already exists.
 // Ensures that the MAC address is unique and uppercase.
 func (fb *FileBackend) AddHost(host types.Host) error {
-        <span class="cov6" title="161">fb.lock.Lock()
+        <span class="cov6" title="164">fb.lock.Lock()
         defer fb.lock.Unlock()
 </span>
-        <span class="cov6" title="161">host.MAC = strings.ToUpper(host.MAC)
+        <span class="cov6" title="164">host.MAC = strings.ToUpper(host.MAC)
         for i, h := range fb.storage.Hosts </span>{
-                <span class="cov10" title="5047">if h.MAC == host.MAC </span>{
+                <span class="cov10" title="5048">if h.MAC == host.MAC </span>{
                         <span class="cov1" title="2">fb.storage.Hosts[i] = host
                         return fb.save()
 </span>                }
         }
 
-        <span class="cov6" title="159">fb.storage.Hosts = append(fb.storage.Hosts, host)
+        <span class="cov6" title="162">fb.storage.Hosts = append(fb.storage.Hosts, host)
         return fb.save()</span>
 }
 
 // Remove a host, ignore if the host does not exist
 func (fb *FileBackend) RemoveHost(mac string) error {
-        <span class="cov5" title="106">fb.lock.Lock()
+        <span class="cov5" title="107">fb.lock.Lock()
         defer fb.lock.Unlock()
 </span>
-        <span class="cov5" title="106">uppercaseMAC := strings.ToUpper(mac)
+        <span class="cov5" title="107">uppercaseMAC := strings.ToUpper(mac)
         for i, host := range fb.storage.Hosts </span>{
-                <span class="cov7" title="406">if host.MAC == uppercaseMAC </span>{
-                        <span class="cov2" title="5">fb.storage.Hosts = append(fb.storage.Hosts[:i], fb.storage.Hosts[i+1:]...)
+                <span class="cov7" title="407">if host.MAC == uppercaseMAC </span>{
+                        <span class="cov2" title="6">fb.storage.Hosts = append(fb.storage.Hosts[:i], fb.storage.Hosts[i+1:]...)
                         return fb.save()
 </span>                }
         }
@@ -1488,10 +1497,10 @@ func (fb *FileBackend) GetHost(mac string) (types.Host, error) {
 
 // Return all hosts
 func (fb *FileBackend) GetHosts() ([]types.Host, error) {
-        <span class="cov6" title="116">fb.lock.RLock()
+        <span class="cov6" title="120">fb.lock.RLock()
         defer fb.lock.RUnlock()
 </span>
-        <span class="cov6" title="116">return append([]types.Host{}, fb.storage.Hosts...), nil
+        <span class="cov6" title="120">return append([]types.Host{}, fb.storage.Hosts...), nil
 </span>}
 
 // Check if the storage backend is readonly
@@ -1506,18 +1515,18 @@ func (fb *FileBackend) Readonly() (bool, error) {
 }
 
 func (fb *FileBackend) save() error {
-        <span class="cov6" title="203">data, err := yaml.Marshal(fb.storage)
+        <span class="cov6" title="213">data, err := yaml.Marshal(fb.storage)
         if err != nil </span>{
                 <span class="cov0" title="0">return fmt.Errorf("failed to marshal storage data: %w", err)
 </span>        }
 
         // #nosec G306 -- The file does not contain sensitive data, so it can be world readable. Additionally final permissions are determined by the umask.
-        <span class="cov6" title="203">err = os.WriteFile(fb.path, data, 0644)
+        <span class="cov6" title="213">err = os.WriteFile(fb.path, data, 0644)
         if err != nil </span>{
                 <span class="cov2" title="3">return fmt.Errorf("failed to write storage file: %w", err)
 </span>        }
 
-        <span class="cov6" title="200">slog.Debug("Storage file saved", slog.String("path", fb.path))
+        <span class="cov6" title="210">slog.Debug("Storage file saved", slog.String("path", fb.path))
         return nil</span>
 }
 </pre>
@@ -1962,11 +1971,11 @@ func addHosts(t *testing.T, backend types.StorageBackend) {
 }
 
 func IsRoot() bool {
-        <span class="cov3" title="4">currentUser, err := user.Current()
+        <span class="cov4" title="5">currentUser, err := user.Current()
         if err != nil </span>{
                 <span class="cov0" title="0">return false
 </span>        }
-        <span class="cov3" title="4">return currentUser.Uid == "0"</span>
+        <span class="cov4" title="5">return currentUser.Uid == "0"</span>
 }
 </pre>
 		
@@ -2388,53 +2397,53 @@ type MagicPacket struct {
 
 // Create a new magic packet from the given mac address
 func CreatePacket(macAddrStr string) (*MagicPacket, error) {
-        <span class="cov5" title="8">hwAddr, err := net.ParseMAC(macAddrStr)
+        <span class="cov5" title="10">hwAddr, err := net.ParseMAC(macAddrStr)
         if err != nil </span>{
-                <span class="cov4" title="4">return nil, fmt.Errorf("failed to parse MAC address '%s': %w", macAddrStr, err)
+                <span class="cov4" title="5">return nil, fmt.Errorf("failed to parse MAC address '%s': %w", macAddrStr, err)
 </span>        }
 
-        <span class="cov4" title="4">packet := &amp;MagicPacket{}
+        <span class="cov4" title="5">packet := &amp;MagicPacket{}
 </span>
-        <span class="cov4" title="4">for i := range packet.header </span>{
-                <span class="cov7" title="24">packet.header[i] = 0xFF
+        <span class="cov4" title="5">for i := range packet.header </span>{
+                <span class="cov7" title="30">packet.header[i] = 0xFF
 </span>        }
 
-        <span class="cov4" title="4">var macAddr MACAddress
+        <span class="cov4" title="5">var macAddr MACAddress
 </span>
-        <span class="cov4" title="4">for i := range macAddr </span>{
-                <span class="cov7" title="24">macAddr[i] = hwAddr[i]
+        <span class="cov4" title="5">for i := range macAddr </span>{
+                <span class="cov7" title="30">macAddr[i] = hwAddr[i]
 </span>        }
 
-        <span class="cov4" title="4">for i := range packet.payload </span>{
-                <span class="cov10" title="64">packet.payload[i] = macAddr
+        <span class="cov4" title="5">for i := range packet.payload </span>{
+                <span class="cov10" title="80">packet.payload[i] = macAddr
 </span>        }
 
-        <span class="cov4" title="4">return packet, nil</span>
+        <span class="cov4" title="5">return packet, nil</span>
 }
 
 // Send the magic packet to the given broadcast address
 func (p *MagicPacket) Send(bcAddr string) error {
-        <span class="cov4" title="4">if bcAddr == "" </span>{
-                <span class="cov1" title="1">bcAddr = DEFAULT_BROADCAST_ADDRESS
+        <span class="cov4" title="5">if bcAddr == "" </span>{
+                <span class="cov2" title="2">bcAddr = DEFAULT_BROADCAST_ADDRESS
 </span>        }
 
-        <span class="cov4" title="4">buf, err := binary.Append(nil, binary.BigEndian, p)
+        <span class="cov4" title="5">buf, err := binary.Append(nil, binary.BigEndian, p)
         if err != nil </span>{
                 <span class="cov0" title="0">return fmt.Errorf("failed to serialize magic packet: %w", err)
 </span>        }
 
-        <span class="cov4" title="4">conn, err := net.Dial("udp", bcAddr+":9")
+        <span class="cov4" title="5">conn, err := net.Dial("udp", bcAddr+":9")
         if err != nil </span>{
                 <span class="cov1" title="1">return fmt.Errorf("failed to dial UDP address '%s:9': %w", bcAddr, err)
 </span>        }
-        <span class="cov3" title="3">defer conn.Close()
+        <span class="cov3" title="4">defer conn.Close()
 </span>
-        <span class="cov3" title="3">bytesWritten, err := conn.Write(buf)
+        <span class="cov3" title="4">bytesWritten, err := conn.Write(buf)
         if err != nil </span>{
                 <span class="cov0" title="0">return fmt.Errorf("failed to send magic packet to '%s:9': %w", bcAddr, err)
 </span>        }
 
-        <span class="cov3" title="3">slog.Debug("Send packet", slog.String("broadcast", bcAddr), slog.Int("bytesWritten", bytesWritten))
+        <span class="cov3" title="4">slog.Debug("Send packet", slog.String("broadcast", bcAddr), slog.Int("bytesWritten", bytesWritten))
         return nil</span>
 }
 </pre>
