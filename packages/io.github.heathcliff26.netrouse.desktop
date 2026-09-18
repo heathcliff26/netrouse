@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+
+Name=NetRouse
+Comment=Wake on Lan utility
+Categories=Network;
+Keywords=wake-on-lan;wol;
+
+Icon=io.github.heathcliff26.netrouse
+Exec=netrouse-gui
+Terminal=false

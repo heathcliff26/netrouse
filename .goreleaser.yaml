@@ -20,12 +20,35 @@ builds:
       - -s
     env:
       - CGO_ENABLED=0
+  - id: gui
+    binary: "{{ .ProjectName }}-gui"
+    main: ./cmd/gui
+    goos:
+      - linux
+    goarch:
+      - arm64
+      - amd64
+    tool: fyne-wrapper.sh
+    flags:
+      - --release
+    env:
+      - CGO_ENABLED=1
+      - >-
+        {{- if eq .Arch "amd64"}}CC=zig cc -target x86_64-linux-gnu.2.38 -isystem /usr/include -L/usr/lib/x86_64-linux-gnu{{- end }}
+        {{- if eq .Arch "arm64"}}CC=zig cc -target aarch64-linux-gnu.2.38 -isystem /usr/include -L/usr/lib/aarch64-linux-gnu{{- end }}
+      - >-
+        {{- if eq .Arch "amd64"}}CXX=zig c++ -target x86_64-linux-gnu.2.38 -isystem /usr/include -L/usr/lib/x86_64-linux-gnu{{- end }}
+        {{- if eq .Arch "arm64"}}CXX=zig c++ -target aarch64-linux-gnu.2.38 -isystem /usr/include -L/usr/lib/aarch64-linux-gnu{{- end }}
 
 archives:
-  - id: binary
+  - id: tar
     ids:
-      - cli
-    formats: ["binary"]
+      - gui
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}-gui_{{ tolower .Os }}-{{ .Arch }}"
+    files:
+      - strip_parent: true
+        src: "packages/*"
 
 changelog:
   disable: true

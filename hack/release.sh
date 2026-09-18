@@ -4,27 +4,13 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 dist_dir="${base_dir}/dist"
-bin_dir="${base_dir}/bin"
 name="$(yq -r '.project_name' "${base_dir}/.goreleaser.yaml")"
 
-echo "Checking if goreleaser is installed:"
-if command -v goreleaser &>/dev/null; then
-    echo "goreleaser is installed"
-    goreleaser="$(command -v goreleaser)"
-else
-    echo "goreleaser is not installed, downloading latest version..."
-    LATEST="$(curl -sf https://goreleaser.com/static/latest)"
-    [ -e "${bin_dir}" ] || mkdir "${bin_dir}"
-    arch="$(uname -m)"
-    [ "${arch}" != "aarch64" ] || arch="arm64"
-    curl -SL -o "${bin_dir}/goreleaser.tar.gz" "https://github.com/goreleaser/goreleaser/releases/download/${LATEST}/goreleaser_$(uname -s)_${arch}.tar.gz"
-    tar -xzf "${bin_dir}/goreleaser.tar.gz" -C "${bin_dir}" goreleaser
-    rm "${bin_dir}/goreleaser.tar.gz"
-    goreleaser="${bin_dir}/goreleaser"
-fi
+echo "Preparing metadata for fyne"
+"${base_dir}/hack/fyne-metadata.sh"
 
 echo "Building releaser artifacts with goreleaser"
-${goreleaser} release --skip=announce,archive,publish,validate --clean
+goreleaser release --skip=announce,publish,validate --clean -p 1
 
 echo "Moving release artifacts to top level of dist directory"
 artifacts="$(cat "${dist_dir}/artifacts.json" | jq -r -c '.[]')"
@@ -45,4 +31,4 @@ done
 
 
 echo "Cleaning up dist directory"
-rm -r "${dist_dir}/artifacts.json" "${dist_dir}/config.yaml" "${dist_dir}/metadata.json"
+rm -r "${dist_dir}/artifacts.json" "${dist_dir}/config.yaml" "${dist_dir}/metadata.json" "${dist_dir}"/netrouse_*_checksums.txt "${dist_dir}"/gui_linux_*

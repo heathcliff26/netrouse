@@ -5,7 +5,7 @@ set -e
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
 folders=("bin" "dist" "coverprofiles")
-files=("coverprofile.out")
+files=("coverprofile.out" "cmd/gui/FyneApp.toml" "cmd/gui/fyne_metadata_init.go")
 
 for folder in "${folders[@]}"; do
     if ! [ -e "${base_dir}/${folder}" ]; then
