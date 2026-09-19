@@ -14,3 +14,4 @@ jobs:
       contents: write
     with:
       script: hack/containerized make coverprofile
+      coveralls: true
