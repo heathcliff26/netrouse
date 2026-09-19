@@ -46,6 +46,8 @@ func New() *App {
 	a.main.Resize(fyne.NewSize(450, 600))
 	a.main.Show()
 
+	a.selectTab(a.tabLocal.tab)
+
 	return a
 }
 
@@ -63,7 +65,25 @@ func (a *App) newTabs() *container.AppTabs {
 
 	tabs := container.NewAppTabs(items...)
 	tabs.SetTabLocation(container.TabLocationLeading)
+
+	tabs.OnSelected = a.selectTab
 	return tabs
+}
+
+func (a *App) selectTab(item *container.TabItem) {
+	slog.Debug("Selected new tab", slog.String("tab", item.Text))
+	if a.tabLocal.tab == item {
+		a.tabLocal.selected()
+	} else {
+		a.tabLocal.unselected()
+	}
+	for _, t := range a.tabs {
+		if t.tab == item {
+			t.selected()
+		} else {
+			t.unselected()
+		}
+	}
 }
 
 func (a *App) newSettingsTab() *container.TabItem {
