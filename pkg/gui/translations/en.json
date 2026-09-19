@@ -8,5 +8,9 @@
   "MAC": "MAC",
   "Address": "Address",
   "Add New Host": "Add New Host",
-  "Wake": "Wake"
+  "Wake": "Wake",
+  "Server": "Server",
+  "Add Server": "Add Server",
+  "URL": "URL",
+  "Edit Server": "Edit Server"
 }

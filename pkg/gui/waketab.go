@@ -17,6 +17,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/heathcliff26/netrouse/pkg/client"
 	"github.com/heathcliff26/netrouse/pkg/gui/customthemes"
+	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/heathcliff26/netrouse/pkg/utils"
 )
@@ -25,7 +26,7 @@ var hostStatusIcon = theme.RadioButtonFillIcon()
 
 type wakeTab struct {
 	tab    *container.TabItem
-	remote *RemoteServer
+	remote *persistence.RemoteServer
 	hosts  []*hostWidget
 	window fyne.Window
 	client client.Client
@@ -36,16 +37,16 @@ type wakeTab struct {
 	cancel context.CancelFunc
 }
 
-// func newTabFromRemote(window fyne.Window, remote *RemoteServer) *wakeTab {
-// 	tab := &wakeTab{
-// 		remote: remote,
-// 		window: window,
-// 		client: client.NewAPIClient(remote.URL),
-// 	}
-// 	tab.tab = container.NewTabItemWithIcon(remote.Name, theme.ComputerIcon(), nil)
-// 	tab.update()
-// 	return tab
-// }
+func newTabFromRemote(window fyne.Window, remote *persistence.RemoteServer) *wakeTab {
+	tab := &wakeTab{
+		remote: remote,
+		window: window,
+		client: client.NewAPIClient(remote.URL),
+	}
+	tab.tab = container.NewTabItemWithIcon(remote.Name, theme.ComputerIcon(), nil)
+	tab.update()
+	return tab
+}
 
 func newLocalTab(window fyne.Window) *wakeTab {
 	tab := &wakeTab{
@@ -59,6 +60,7 @@ func newLocalTab(window fyne.Window) *wakeTab {
 	}
 	tab.client = client
 	err = tab.fetchHosts()
+	// TODO: Better error handling. Likely fetchHosts should never fail
 	if err != nil {
 		slog.Error("failed to fetch hosts", "error", err)
 		dialog.ShowError(err, window)
@@ -245,6 +247,15 @@ func (t *wakeTab) unselected() {
 	t.cancel()
 }
 
+func (t *wakeTab) SetRemote(remote persistence.RemoteServer) {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
+	t.remote = &remote
+	t.client = client.NewAPIClient(remote.URL)
+	t.update()
+}
+
 type hostWidget struct {
 	host   types.Host
 	object fyne.CanvasObject
@@ -292,9 +303,4 @@ func (w *hostWidget) updateStatus(status types.HostStatus) {
 	default:
 		w.status.SetResource(theme.NewErrorThemedResource(hostStatusIcon))
 	}
-}
-
-type RemoteServer struct {
-	Name string
-	URL  string
 }

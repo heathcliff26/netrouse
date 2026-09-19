@@ -8,7 +8,8 @@ import (
 var configFolder string
 
 const (
-	hostsFileName = "hosts.yaml"
+	hostsFileName    = "hosts.yaml"
+	settingsFileName = "settings.yaml"
 )
 
 func init() {
@@ -22,6 +23,11 @@ func init() {
 // Path to hosts file for local hosts
 func HostsFile() string {
 	return filepath.Join(configFolder, hostsFileName)
+}
+
+// Path to the settings file
+func SettingsFile() string {
+	return filepath.Join(configFolder, settingsFileName)
 }
 
 // Path to config folder
