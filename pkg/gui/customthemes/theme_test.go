@@ -9,6 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewStatusIconTheme(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(statusIcon{}, NewStatusIconTheme())
+}
+
 func TestStatusIcon(t *testing.T) {
 	assert := assert.New(t)
 

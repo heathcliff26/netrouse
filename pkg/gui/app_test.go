@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"os"
 	"testing"
 
 	fApp "fyne.io/fyne/v2/app"
@@ -8,9 +9,69 @@ import (
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.yaml.in/yaml/v3"
 )
 
 func TestNew(t *testing.T) {
+	oldFolder := persistence.ConfigFolder()
+	newApp = test.NewApp
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+		newApp = fApp.New
+	})
+
+	t.Run("DefaultApp", func(t *testing.T) {
+		require := require.New(t)
+		assert := assert.New(t)
+
+		persistence.SetConfigFolder(t.TempDir())
+
+		app := New()
+
+		require.NotNil(app)
+		assert.NotNil(app.app)
+		assert.NotNil(app.main)
+		assert.NotNil(app.tabLocal)
+		assert.NotNil(app.tabSettings)
+		assert.NotNil(app.tabs)
+		assert.NotNil(app.appTabs)
+		assert.Len(app.appTabs.Items, 2)
+		assert.Equal(app.tabLocal.tab, app.appTabs.Items[0])
+		assert.Equal(app.tabSettings, app.appTabs.Items[1])
+		assert.Equal(0, app.appTabs.SelectedIndex())
+	})
+
+	t.Run("LoadsConfiguredRemotes", func(t *testing.T) {
+		require := require.New(t)
+		assert := assert.New(t)
+
+		persistence.SetConfigFolder(t.TempDir())
+
+		settings := persistence.Settings{
+			Remotes: []persistence.RemoteServer{
+				{Name: "Alpha", URL: "http://alpha.example"},
+				{Name: "Beta", URL: "http://beta.example"},
+			},
+		}
+		buf, err := yaml.Marshal(settings)
+		require.NoError(err)
+		require.NoError(os.WriteFile(persistence.SettingsFile(), buf, 0600))
+
+		app := New()
+
+		require.NotNil(app)
+		assert.Len(app.tabs, 2)
+		assert.Len(app.appTabs.Items, 4)
+		assert.Equal(app.tabLocal.tab, app.appTabs.Items[0])
+		assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
+		assert.Equal(app.tabs[1].tab, app.appTabs.Items[2])
+		assert.Equal(app.tabSettings, app.appTabs.Items[3])
+		assert.Equal(0, app.appTabs.SelectedIndex())
+	})
+}
+
+func TestAddRemoteAndSelectTab(t *testing.T) {
+	require := require.New(t)
 	assert := assert.New(t)
 
 	oldFolder := persistence.ConfigFolder()
@@ -20,12 +81,29 @@ func TestNew(t *testing.T) {
 		newApp = fApp.New
 	})
 
+	persistence.SetConfigFolder(t.TempDir())
 	app := New()
 
-	require.NotNil(t, app)
-	assert.NotNil(app.app)
-	assert.NotNil(app.main)
-	assert.NotNil(app.tabLocal)
-	assert.NotNil(app.tabSettings)
-	assert.Nil(app.tabs)
+	app.selectTab(app.tabSettings)
+
+	remote := &persistence.RemoteServer{Name: "Remote One", URL: "http://remote.example"}
+	app.addRemote(remote)
+
+	t.Cleanup(app.tabLocal.unselected)
+	t.Cleanup(app.tabs[0].unselected)
+
+	require.Len(app.tabs, 1)
+	require.Len(app.appTabs.Items, 3)
+	assert.Equal(app.tabLocal.tab, app.appTabs.Items[0])
+	assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
+	assert.Equal(app.tabSettings, app.appTabs.Items[2])
+
+	require.NotNil(app.tabLocal.ctx)
+	assert.Nil(app.tabs[0].ctx)
+
+	app.selectTab(app.tabs[0].tab)
+	assert.NotNil(app.tabs[0].ctx)
+
+	app.selectTab(app.tabLocal.tab)
+	assert.NotNil(app.tabLocal.ctx)
 }

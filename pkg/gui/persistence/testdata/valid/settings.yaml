@@ -1,0 +1,3 @@
+remotes:
+    - name: TestServer
+      url: https://example.com
