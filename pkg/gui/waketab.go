@@ -1,8 +1,11 @@
 package gui
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
+	"sync"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -13,15 +16,12 @@ import (
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/heathcliff26/netrouse/pkg/client"
+	"github.com/heathcliff26/netrouse/pkg/gui/customthemes"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/heathcliff26/netrouse/pkg/utils"
 )
 
-const (
-	hostStatusUnknownStr = "⚪"
-	hostStatusOnlineStr  = "🟢"
-	hostStatusOfflineStr = "🔴"
-)
+var hostStatusIcon = theme.RadioButtonFillIcon()
 
 type wakeTab struct {
 	tab    *container.TabItem
@@ -29,6 +29,11 @@ type wakeTab struct {
 	hosts  []*hostWidget
 	window fyne.Window
 	client client.Client
+
+	lock sync.Mutex
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 // func newTabFromRemote(window fyne.Window, remote *RemoteServer) *wakeTab {
@@ -144,6 +149,7 @@ func (t *wakeTab) addHost() {
 			dialog.ShowError(err, t.window)
 			return
 		}
+		go t.updateStatus()
 	}, t.window)
 	d.Show()
 }
@@ -159,6 +165,7 @@ func (t *wakeTab) removeHost(mac string) {
 		dialog.ShowError(err, t.window)
 		return
 	}
+	go t.updateStatus()
 }
 
 func (t *wakeTab) fetchHosts() error {
@@ -166,6 +173,9 @@ func (t *wakeTab) fetchHosts() error {
 	if err != nil {
 		return err
 	}
+
+	t.lock.Lock()
+	defer t.lock.Unlock()
 
 	t.hosts = make([]*hostWidget, 0, len(hosts))
 	for _, host := range hosts {
@@ -175,17 +185,78 @@ func (t *wakeTab) fetchHosts() error {
 	return nil
 }
 
+func (t *wakeTab) updateStatus() {
+	slog.Info("Update status", slog.String("tab", t.tab.Text))
+	status, err := t.client.Status()
+	if err != nil {
+		slog.Error("Failed to update status", slog.String("tab", t.tab.Text), "error", err)
+		return
+	}
+
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
+	for _, s := range status {
+		for _, host := range t.hosts {
+			if host.host.MAC == s.MAC {
+				host.updateStatus(s)
+			}
+		}
+	}
+}
+
+func (t *wakeTab) selected() {
+	if t.ctx == nil {
+		t.ctx, t.cancel = context.WithCancel(context.Background())
+	} else {
+		select {
+		case <-t.ctx.Done():
+			t.ctx, t.cancel = context.WithCancel(context.Background())
+		default:
+			return
+		}
+	}
+	err := t.fetchHosts()
+	if err != nil {
+		dialog.ShowError(err, t.window)
+		return
+	}
+
+	go func() {
+		slog.Debug("Start periodic status updates", slog.String("tab", t.tab.Text))
+		tick := time.NewTicker(30 * time.Second)
+		for {
+			t.updateStatus()
+			select {
+			case <-t.ctx.Done():
+				slog.Debug("Stop periodic status updates", slog.String("tab", t.tab.Text))
+				tick.Stop()
+				return
+			case <-tick.C:
+			}
+		}
+	}()
+}
+
+func (t *wakeTab) unselected() {
+	if t.cancel == nil {
+		return
+	}
+	t.cancel()
+}
+
 type hostWidget struct {
 	host   types.Host
 	object fyne.CanvasObject
-	status *widget.Label
+	status *widget.Icon
 }
 
 func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
-	status := widget.NewLabel(hostStatusUnknownStr)
+	status := widget.NewIcon(theme.NewDisabledResource(hostStatusIcon))
 	items := make([]fyne.CanvasObject, 0, 2)
 	if host.Address != "" {
-		items = append(items, container.NewHBox(status, widget.NewLabel(host.Address)))
+		statusContainer := container.NewThemeOverride(status, customthemes.NewStatusIconTheme())
+		items = append(items, container.NewHBox(statusContainer, widget.NewLabel(host.Address)))
 	}
 	delete := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
 		parent.removeHost(host.MAC)
@@ -208,6 +279,18 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 		host:   host,
 		object: card,
 		status: status,
+	}
+}
+
+func (w *hostWidget) updateStatus(status types.HostStatus) {
+	switch {
+	case status.Online:
+		w.status.SetResource(theme.NewPrimaryThemedResource(hostStatusIcon))
+	case status.Error != "":
+		slog.Info("Failed to fetch status", slog.String("host", status.Address), slog.String("mac", status.MAC), slog.String("error", status.Error))
+		w.status.SetResource(theme.NewDisabledResource(hostStatusIcon))
+	default:
+		w.status.SetResource(theme.NewErrorThemedResource(hostStatusIcon))
 	}
 }
 
