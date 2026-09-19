@@ -63,7 +63,7 @@
 				
 				<option value="file3">github.com/heathcliff26/netrouse/cmd/gui/main.go (0.0%)</option>
 				
-				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (0.0%)</option>
+				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
 				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (91.5%)</option>
 				
@@ -244,7 +244,22 @@ func main() {
 		
 		<pre class="file" id="file4" style="display: none">package client
 
-import "github.com/heathcliff26/netrouse/pkg/server/storage/types"
+import (
+        "bytes"
+        "encoding/json/v2"
+        "fmt"
+        "io"
+        "net/http"
+        "strings"
+        "time"
+
+        v1 "github.com/heathcliff26/netrouse/pkg/server/api/v1"
+        "github.com/heathcliff26/netrouse/pkg/server/storage/types"
+)
+
+const (
+        apiPath = "/api/v1"
+)
 
 var _ Client = &amp;apiClient{}
 
@@ -261,36 +276,81 @@ type Client interface {
         Wake(mac string) error
 }
 
-type apiClient struct{}
+type apiClient struct {
+        http.Client
+        endpoint string
+}
 
 // Create a new client for api
 func NewAPIClient(url string) Client {
-        <span class="cov0" title="0">return &amp;apiClient{}
-</span>}
+        <span class="cov5" title="3">url = strings.TrimSuffix(url, "/")
+        if !strings.HasSuffix(url, apiPath) </span>{
+                <span class="cov1" title="1">url += apiPath
+</span>        }
+        <span class="cov5" title="3">return &amp;apiClient{
+                endpoint: url,
+                Timeout:  time.Second,
+</span>        }
+}
 
 // Add a new host, overwrite existing host name if it already exists.
 func (a *apiClient) AddHost(host types.Host) error {
-        <span class="cov0" title="0">panic("TODO")</span>
+        <span class="cov1" title="1">body, err := json.Marshal(host)
+        if err != nil </span>{
+                <span class="cov0" title="0">return fmt.Errorf("failed to parse host: %w", err)
+</span>        }
+        <span class="cov1" title="1">return a.sendRequest(http.MethodPut, "/hosts", bytes.NewReader(body), nil)</span>
 }
 
 // Return all hosts
 func (a *apiClient) GetHosts() ([]types.Host, error) {
-        <span class="cov0" title="0">panic("TODO")</span>
-}
+        <span class="cov1" title="1">var hosts []types.Host
+        err := a.sendRequest(http.MethodGet, "/hosts", nil, &amp;hosts)
+        return hosts, err
+</span>}
 
 // Remove a host, ignore if the host does not exist
 func (a *apiClient) RemoveHost(mac string) error {
-        <span class="cov0" title="0">panic("TODO")</span>
-}
+        <span class="cov1" title="1">return a.sendRequest(http.MethodDelete, fmt.Sprintf("/hosts/%s", mac), nil, nil)
+</span>}
 
 // Return the current status of all hosts
 func (a *apiClient) Status() ([]types.HostStatus, error) {
-        <span class="cov0" title="0">panic("TODO")</span>
-}
+        <span class="cov1" title="1">var status []types.HostStatus
+        err := a.sendRequest(http.MethodGet, "/hosts/status", nil, &amp;status)
+        return status, err
+</span>}
 
 // Send a magic packet to wake a host
 func (a *apiClient) Wake(mac string) error {
-        <span class="cov0" title="0">panic("TODO")</span>
+        <span class="cov1" title="1">return a.sendRequest(http.MethodGet, fmt.Sprintf("/wake/%s", mac), nil, nil)
+</span>}
+
+func (a *apiClient) sendRequest(method, target string, body io.Reader, v interface{}) error {
+        <span class="cov10" title="10">req, err := http.NewRequest(method, a.endpoint+target, body)
+        if err != nil </span>{
+                <span class="cov1" title="1">return fmt.Errorf("failed to create request: %w", err)
+</span>        }
+
+        <span class="cov9" title="9">res, err := a.Do(req)
+        if err != nil </span>{
+                <span class="cov1" title="1">return err
+</span>        }
+        <span class="cov9" title="8">defer res.Body.Close()
+</span>
+        <span class="cov9" title="8">if res.StatusCode == http.StatusOK </span>{
+                <span class="cov8" title="6">if v == nil </span>{
+                        <span class="cov5" title="3">return nil
+</span>                }
+                <span class="cov5" title="3">return json.UnmarshalRead(res.Body, v)</span>
+        }
+
+        <span class="cov3" title="2">var msg v1.Response
+        err = json.UnmarshalRead(res.Body, &amp;msg)
+        if err != nil </span>{
+                <span class="cov1" title="1">return fmt.Errorf("request returned with '%s', failed to parse body: %w", res.Status, err)
+</span>        }
+        <span class="cov1" title="1">return fmt.Errorf("server responded with '%s': %s", res.Status, msg.Reason)</span>
 }
 </pre>
 		
