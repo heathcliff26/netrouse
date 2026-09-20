@@ -65,15 +65,15 @@
 				
 				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (69.9%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (72.2%)</option>
 				
 				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/customthemes/theme.go (100.0%)</option>
 				
 				<option value="file7">github.com/heathcliff26/netrouse/pkg/gui/localclient.go (92.6%)</option>
 				
-				<option value="file8">github.com/heathcliff26/netrouse/pkg/gui/persistence/location.go (75.0%)</option>
+				<option value="file8">github.com/heathcliff26/netrouse/pkg/gui/persistence/location.go (83.3%)</option>
 				
-				<option value="file9">github.com/heathcliff26/netrouse/pkg/gui/persistence/locations_linux.go (88.9%)</option>
+				<option value="file9">github.com/heathcliff26/netrouse/pkg/gui/persistence/locations_linux.go (50.0%)</option>
 				
 				<option value="file10">github.com/heathcliff26/netrouse/pkg/gui/persistence/settings.go (88.9%)</option>
 				
@@ -403,7 +403,8 @@ func New() *App {
         <span class="cov4" title="5">app := newApp()
         main := app.NewWindow(version.Name)
 </span>
-        <span class="cov4" title="5">s, err := persistence.LoadSettings()
+        <span class="cov4" title="5">persistence.Init()
+        s, err := persistence.LoadSettings()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load settings", slog.Any("error", err))
 </span>        }
@@ -426,17 +427,19 @@ func New() *App {
 </span>
         <span class="cov4" title="5">a.selectTab(a.tabLocal.tab)
 </span>
+        <span class="cov4" title="5">a.app.Lifecycle().SetOnStopped(func() </span>{
+                <span class="cov0" title="0">err := a.settings.Save()
+                if err != nil </span>{
+                        <span class="cov0" title="0">slog.Error("Failed to save settings", slog.Any("error", err))
+</span>                }
+        })
+
         <span class="cov4" title="5">return a</span>
 }
 
 func (a *App) Run() {
         <span class="cov0" title="0">a.app.Run()
-</span>
-        <span class="cov0" title="0">err := a.settings.Save()
-        if err != nil </span>{
-                <span class="cov0" title="0">slog.Error("Failed to save settings", slog.Any("error", err))
-</span>        }
-}
+</span>}
 
 func (a *App) newTabs() *container.AppTabs {
         <span class="cov4" title="5">items := make([]*container.TabItem, 0, len(a.tabs)+2)
@@ -663,7 +666,6 @@ func (lc *localClient) Wake(mac string) error {
 		<pre class="file" id="file8" style="display: none">package persistence
 
 import (
-        "log/slog"
         "path/filepath"
 )
 
@@ -674,11 +676,9 @@ const (
         settingsFileName = "settings.yaml"
 )
 
-func init() {
-        <span class="cov2" title="2">err := initConfigFolder()
-        if err != nil </span>{
-                <span class="cov0" title="0">slog.Error("Failed to find config location, defaulting to current directory", "error", err)
-                configFolder = "."
+func Init() {
+        <span class="cov5" title="5">if configFolder == "" </span>{
+                <span class="cov0" title="0">initConfigFolder()
 </span>        }
 }
 
@@ -703,11 +703,12 @@ func SetConfigFolder(path string) {
 </span>}
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">//go:build linux
+		<pre class="file" id="file9" style="display: none">//go:build linux &amp;&amp; !android
 
 package persistence
 
 import (
+        "log/slog"
         "os"
         "path/filepath"
         "strings"
@@ -715,19 +716,14 @@ import (
         "github.com/heathcliff26/netrouse/pkg/version"
 )
 
-func initConfigFolder() error {
-        <span class="cov10" title="4">xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
-        if xdgConfigHome != "" </span>{
-                <span class="cov1" title="1">configFolder = xdgConfigHome
-                return nil
-</span>        }
-
-        <span class="cov8" title="3">home, err := os.UserHomeDir()
+func initConfigFolder() {
+        <span class="cov10" title="2">config, err := os.UserConfigDir()
         if err != nil </span>{
-                <span class="cov0" title="0">return err
+                <span class="cov0" title="0">slog.Error("Failed to find config location, defaulting to current directory", "error", err)
+                configFolder = "./"
+                return
 </span>        }
-        <span class="cov8" title="3">configFolder = filepath.Join(home, ".config", strings.ToLower(version.Name))
-        return nil</span>
+        <span class="cov10" title="2">configFolder = filepath.Join(config, strings.ToLower(version.Name))</span>
 }
 </pre>
 		
@@ -770,11 +766,11 @@ func LoadSettings() (settings *Settings, err error) {
 }
 
 func (s *Settings) Save() error {
-        <span class="cov1" title="1">buf, err := yaml.Marshal(s)
+        <span class="cov3" title="2">buf, err := yaml.Marshal(s)
         if err != nil </span>{
                 <span class="cov0" title="0">return err
 </span>        }
-        <span class="cov1" title="1">return os.WriteFile(SettingsFile(), buf, 0644)</span>
+        <span class="cov3" title="2">return os.WriteFile(SettingsFile(), buf, 0644)</span>
 }
 </pre>
 		
