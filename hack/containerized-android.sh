@@ -10,4 +10,15 @@ source "${base_dir}/hack/common.sh"
 export BUILDER_IMAGE_ANDROID="${BUILDER_IMAGE_ANDROID:-${BUILDER_IMAGE}-android}"
 export BUILDER_IMAGE="${BUILDER_IMAGE_ANDROID}"
 
-"${base_dir}/hack/containerized" hack/build-android.sh
+if [ ! -d "${HOME}/.cache" ]; then
+    mkdir "${HOME}/.cache"
+fi
+
+podman run -t --rm \
+    --env KEYSTORE="${KEYSTORE}" \
+    --env KEYSTORE_PASS="${KEYSTORE_PASS}" \
+    --env KEYSTORE_ALIAS="${KEYSTORE_ALIAS}" \
+    -v "${base_dir}:/app:z" \
+    -v "${HOME}/.cache":/root/.cache:z \
+    "${BUILDER_IMAGE}" \
+    hack/build-android.sh

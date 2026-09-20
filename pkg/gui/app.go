@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/lang"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
@@ -130,6 +129,8 @@ func (a *App) newSettingsTab() *container.TabItem {
 	title := widget.NewLabel(lang.L("Settings"))
 	title.TextStyle = fyne.TextStyle{Bold: true}
 
+	tab := container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), nil)
+
 	remoteList := widget.NewList(
 		func() int {
 			return len(a.settings.Remotes)
@@ -167,18 +168,19 @@ func (a *App) newSettingsTab() *container.TabItem {
 			}
 			a.settings.Remotes = append(a.settings.Remotes, remote)
 			a.addRemote(&remote)
-			remoteList.Refresh()
+			tab.Content.Resize(tab.Content.MinSize())
 
 			_ = remoteName.Set("")
 			_ = remoteURL.Set("")
 		}, a.main)
 	})
-	remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewVBox(remoteList, addRemoteButton))
+	remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
 
 	resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
-	content := container.NewVBox(remoteContainer, layout.NewSpacer(), resetWindowBtn)
-	content = container.NewBorder(container.NewHBox(layout.NewSpacer(), title, layout.NewSpacer()), nil, nil, nil, content)
-	return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), content)
+
+	tab.Content = container.NewBorder(title, resetWindowBtn, nil, nil, remoteContainer)
+
+	return tab
 }
 
 func (a *App) resetWindow() {

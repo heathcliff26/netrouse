@@ -100,24 +100,23 @@ jobs:
       - lint
       - unit-tests
     with:
-      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
       artifact: "dist/netrouse*"
       artifact-name: "netrouse"
       cmd: "make release"
     secrets: inherit
 
   build-android:
-    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    uses: heathcliff26/ci/.github/workflows/golang-android-build.yaml@main
     permissions:
       contents: read
     needs:
       - lint
       - unit-tests
     with:
-      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      artifact: "dist/*.apk"
+      artifact: "dist/*"
       artifact-name: "netrouse-android"
       cmd: "make android"
+      sign: ${{ github.event_name != 'pull_request' && github.event_name != 'merge_group' }}
     secrets: inherit
 
   build-image:
