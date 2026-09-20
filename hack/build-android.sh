@@ -26,7 +26,6 @@ if [ -z "${KEYSTORE}" ]; then
             -keystore "${KEYSTORE}" \
             -storepass "${KEYSTORE_PASS}" \
             -alias "${KEYSTORE_ALIAS}" \
-            -keypass android \
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
