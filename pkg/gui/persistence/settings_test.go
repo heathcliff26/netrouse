@@ -17,12 +17,11 @@ func TestLoadSettings(t *testing.T) {
 		})
 		configFolder = "testdata/valid"
 
-		expectedSettings := &Settings{
-			Remotes: []RemoteServer{
-				{
-					Name: "TestServer",
-					URL:  "https://example.com",
-				},
+		expectedSettings := DefaultSettings()
+		expectedSettings.Remotes = []RemoteServer{
+			{
+				Name: "TestServer",
+				URL:  "https://example.com",
 			},
 		}
 
@@ -41,7 +40,7 @@ func TestLoadSettings(t *testing.T) {
 
 		s, err := LoadSettings()
 		assert.NoError(err, "Should load settings")
-		assert.Equal(&Settings{}, s, "Should return empty settings")
+		assert.Equal(DefaultSettings(), s, "Should return empty settings")
 	})
 	t.Run("InvalidSettings", func(t *testing.T) {
 		assert := assert.New(t)
@@ -54,7 +53,7 @@ func TestLoadSettings(t *testing.T) {
 
 		s, err := LoadSettings()
 		assert.Error(err, "Should load settings")
-		assert.Equal(&Settings{}, s, "Should return empty settings")
+		assert.Equal(DefaultSettings(), s, "Should return empty settings")
 	})
 }
 

@@ -64,6 +64,22 @@ func TestNew(t *testing.T) {
 		assert.Equal(app.tabSettings, app.appTabs.Items[3])
 		assert.Equal(0, app.appTabs.SelectedIndex())
 	})
+	t.Run("SaveSettingsOnClose", func(t *testing.T) {
+		assert := assert.New(t)
+		persistence.SetConfigFolder(t.TempDir())
+		a := New()
+
+		a.settings.Remotes = []persistence.RemoteServer{
+			{Name: "Alpha", URL: "http://alpha.example"},
+			{Name: "Beta", URL: "http://beta.example"},
+		}
+
+		a.onStopped()
+
+		settings, err := persistence.LoadSettings()
+		assert.NoError(err, "Should load settings")
+		assert.Equal(a.settings, settings, "Should match saved settings")
+	})
 }
 
 func TestAddRemoteAndSelectTab(t *testing.T) {
@@ -94,7 +110,7 @@ func TestAddRemoteAndSelectTab(t *testing.T) {
 	assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
 	assert.Equal(app.tabSettings, app.appTabs.Items[2])
 
-	require.NotNil(app.tabLocal.ctx)
+	assert.NotNil(app.tabLocal.ctx)
 	assert.Nil(app.tabs[0].ctx)
 
 	app.selectTab(app.tabs[0].tab)
@@ -102,4 +118,28 @@ func TestAddRemoteAndSelectTab(t *testing.T) {
 
 	app.selectTab(app.tabLocal.tab)
 	assert.NotNil(app.tabLocal.ctx)
+}
+
+func TestResetWindow(t *testing.T) {
+	assert := assert.New(t)
+
+	oldFolder := persistence.ConfigFolder()
+	newApp = test.NewApp
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+		newApp = fApp.New
+	})
+
+	persistence.SetConfigFolder(t.TempDir())
+	app := New()
+
+	app.settings.WindowSize = persistence.Size{Width: 100, Height: 100}
+	app.main.Resize(app.settings.WindowSize.ToFyne())
+	app.main.SetFullScreen(true)
+
+	app.resetWindow()
+
+	assert.Equal(persistence.DefaultSettings().WindowSize, app.settings.WindowSize, "Should reset size in settings")
+	assert.Equal(persistence.DefaultSettings().WindowSize.ToFyne(), app.main.Canvas().Size(), "Should reset window size")
+	assert.False(app.main.FullScreen(), "Should not be fullscreen")
 }
