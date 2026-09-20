@@ -5,11 +5,20 @@ import (
 	"io/fs"
 	"os"
 
+	"fyne.io/fyne/v2"
 	"go.yaml.in/yaml/v3"
 )
 
+const (
+	DefaultWindowWidth  = 450
+	DefaultWindowHeight = 600
+)
+
 type Settings struct {
-	Remotes []RemoteServer `yaml:"remotes"`
+	SelectedTab int            `yaml:"selectedTab"`
+	FullScreen  bool           `yaml:"fullScreen"`
+	WindowSize  Size           `yaml:"windowSize"`
+	Remotes     []RemoteServer `yaml:"remotes"`
 }
 
 type RemoteServer struct {
@@ -17,9 +26,23 @@ type RemoteServer struct {
 	URL  string `yaml:"url"`
 }
 
+type Size struct {
+	Width  float32 `yaml:"width"`
+	Height float32 `yaml:"height"`
+}
+
+func DefaultSettings() *Settings {
+	return &Settings{
+		WindowSize: Size{
+			Width:  DefaultWindowWidth,
+			Height: DefaultWindowHeight,
+		},
+	}
+}
+
 // Load settings from the settings file
 func LoadSettings() (settings *Settings, err error) {
-	settings = &Settings{}
+	settings = DefaultSettings()
 
 	buf, err := os.ReadFile(SettingsFile())
 	if errors.Is(err, fs.ErrNotExist) {
@@ -42,4 +65,15 @@ func (s *Settings) Save() error {
 		return err
 	}
 	return os.WriteFile(SettingsFile(), buf, 0644)
+}
+
+func SizeFromFyne(s fyne.Size) Size {
+	return Size{
+		Width:  s.Width,
+		Height: s.Height,
+	}
+}
+
+func (s Size) ToFyne() fyne.Size {
+	return fyne.NewSize(s.Width, s.Height)
 }

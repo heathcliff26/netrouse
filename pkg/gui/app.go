@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/lang"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
@@ -62,17 +63,18 @@ func New() *App {
 		a.addRemote(&remote)
 	}
 	a.main.SetContent(a.appTabs)
-	a.main.Resize(fyne.NewSize(450, 600))
+	a.main.Resize(a.settings.WindowSize.ToFyne())
+	a.main.SetFullScreen(a.settings.FullScreen)
 	a.main.Show()
 
-	a.selectTab(a.tabLocal.tab)
+	currentTab := a.settings.SelectedTab
+	if currentTab >= len(a.appTabs.Items) {
+		currentTab = 0
+	}
+	a.appTabs.SelectIndex(currentTab)
+	a.selectTab(a.appTabs.Selected())
 
-	a.app.Lifecycle().SetOnStopped(func() {
-		err := a.settings.Save()
-		if err != nil {
-			slog.Error("Failed to save settings", slog.Any("error", err))
-		}
-	})
+	a.app.Lifecycle().SetOnStopped(a.onStopped)
 
 	return a
 }
@@ -125,6 +127,9 @@ func (a *App) selectTab(item *container.TabItem) {
 }
 
 func (a *App) newSettingsTab() *container.TabItem {
+	title := widget.NewLabel(lang.L("Settings"))
+	title.TextStyle = fyne.TextStyle{Bold: true}
+
 	remoteList := widget.NewList(
 		func() int {
 			return len(a.settings.Remotes)
@@ -168,6 +173,26 @@ func (a *App) newSettingsTab() *container.TabItem {
 			_ = remoteURL.Set("")
 		}, a.main)
 	})
-	remoteContainer := container.NewBorder(widget.NewLabel(lang.L("Server")), addRemoteButton, nil, nil, remoteList)
-	return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), remoteContainer)
+	remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewVBox(remoteList, addRemoteButton))
+
+	resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
+	content := container.NewVBox(remoteContainer, layout.NewSpacer(), resetWindowBtn)
+	content = container.NewBorder(container.NewHBox(layout.NewSpacer(), title, layout.NewSpacer()), nil, nil, nil, content)
+	return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), content)
+}
+
+func (a *App) resetWindow() {
+	a.settings.WindowSize = persistence.DefaultSettings().WindowSize
+	a.main.SetFullScreen(false)
+	a.main.Resize(a.settings.WindowSize.ToFyne())
+}
+
+func (a *App) onStopped() {
+	a.settings.SelectedTab = a.appTabs.SelectedIndex()
+	a.settings.WindowSize = persistence.SizeFromFyne(a.main.Canvas().Size())
+	a.settings.FullScreen = a.main.FullScreen()
+	err := a.settings.Save()
+	if err != nil {
+		slog.Error("Failed to save settings", slog.Any("error", err))
+	}
 }

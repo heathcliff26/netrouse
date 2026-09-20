@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/lang"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
@@ -47,7 +48,7 @@ func (c *RemoteCard) CreateRenderer() fyne.WidgetRenderer {
 	c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
 	c.editBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), c.edit)
 
-	c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(c.editBtn, c.deleteBtn))
+	c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
 
 	return widget.NewSimpleRenderer(c.card)
 }
