@@ -43,6 +43,7 @@ func New() *App {
 	app := newApp()
 	main := app.NewWindow(version.Name)
 
+	persistence.Init()
 	s, err := persistence.LoadSettings()
 	if err != nil {
 		slog.Error("Failed to load settings", slog.Any("error", err))
@@ -66,16 +67,18 @@ func New() *App {
 
 	a.selectTab(a.tabLocal.tab)
 
+	a.app.Lifecycle().SetOnStopped(func() {
+		err := a.settings.Save()
+		if err != nil {
+			slog.Error("Failed to save settings", slog.Any("error", err))
+		}
+	})
+
 	return a
 }
 
 func (a *App) Run() {
 	a.app.Run()
-
-	err := a.settings.Save()
-	if err != nil {
-		slog.Error("Failed to save settings", slog.Any("error", err))
-	}
 }
 
 func (a *App) newTabs() *container.AppTabs {

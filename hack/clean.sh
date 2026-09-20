@@ -4,8 +4,8 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
-folders=("bin" "dist" "coverprofiles")
-files=("coverprofile.out" "cmd/gui/FyneApp.toml" "cmd/gui/fyne_metadata_init.go")
+folders=("bin" "dist" "coverprofiles" ".idea")
+files=("coverprofile.out" "cmd/gui/FyneApp.toml" "cmd/gui/fyne_metadata_init.go" "netrouse.iml")
 
 for folder in "${folders[@]}"; do
     if ! [ -e "${base_dir}/${folder}" ]; then

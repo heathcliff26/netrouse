@@ -19,12 +19,10 @@ func TestInitConfigFolder(t *testing.T) {
 		SetConfigFolder(oldFolder)
 	})
 
-	err := initConfigFolder()
-	assert.NoError(err)
+	initConfigFolder()
 	assert.Contains(configFolder, filepath.Join(".config", strings.ToLower(version.Name)), "Variable should have home location ending")
 
-	t.Setenv("XDG_CONFIG_HOME", "test")
-	err = initConfigFolder()
-	assert.NoError(err)
-	assert.Equal("test", configFolder, "Should read folder from XDG_CONFIG_HOME")
+	t.Setenv("XDG_CONFIG_HOME", "/test")
+	initConfigFolder()
+	assert.Equal(filepath.Join("/test", strings.ToLower(version.Name)), configFolder, "Should read folder from XDG_CONFIG_HOME")
 }

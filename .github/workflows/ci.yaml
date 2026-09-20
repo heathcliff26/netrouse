@@ -94,6 +94,20 @@ jobs:
       cmd: "make release"
     secrets: inherit
 
+  build-android:
+    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    permissions:
+      contents: read
+    needs:
+      - lint
+      - unit-tests
+    with:
+      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
+      artifact: "dist/*.apk"
+      artifact-name: "netrouse-android"
+      cmd: "make android"
+    secrets: inherit
+
   build-image:
     uses: heathcliff26/ci/.github/workflows/build-container.yaml@main
     needs:
