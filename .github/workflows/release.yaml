@@ -57,6 +57,6 @@ jobs:
       update: ${{ inputs.update }}
       tag: ${{ inputs.tag }}
       release-artifacts: "release/*"
-      artifacts: "netrouse|netrouse-android"
+      artifacts: "{netrouse,netrouse-android}"
       prerelease: ${{ inputs.prerelease }}
     secrets: inherit
