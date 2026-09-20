@@ -28,6 +28,10 @@ image:
 release:
 	hack/containerized hack/release.sh
 
+# Build and package the gui app for android
+android: tools
+	hack/containerized-android.sh
+
 # Run unit-tests with race detection and coverage
 test:
 	go test -v -race -coverprofile=coverprofile.out -coverpkg "./..." ./...
@@ -90,6 +94,7 @@ help:
 	run \
 	image \
 	release \
+	android \
 	test \
 	update-deps \
 	coverprofile \

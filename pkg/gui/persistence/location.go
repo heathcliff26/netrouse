@@ -1,7 +1,6 @@
 package persistence
 
 import (
-	"log/slog"
 	"path/filepath"
 )
 
@@ -12,11 +11,9 @@ const (
 	settingsFileName = "settings.yaml"
 )
 
-func init() {
-	err := initConfigFolder()
-	if err != nil {
-		slog.Error("Failed to find config location, defaulting to current directory", "error", err)
-		configFolder = "."
+func Init() {
+	if configFolder == "" {
+		initConfigFolder()
 	}
 }
 

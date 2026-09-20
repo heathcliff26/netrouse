@@ -1,8 +1,9 @@
-//go:build linux
+//go:build linux && !android
 
 package persistence
 
 import (
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,17 +11,12 @@ import (
 	"github.com/heathcliff26/netrouse/pkg/version"
 )
 
-func initConfigFolder() error {
-	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
-	if xdgConfigHome != "" {
-		configFolder = xdgConfigHome
-		return nil
-	}
-
-	home, err := os.UserHomeDir()
+func initConfigFolder() {
+	config, err := os.UserConfigDir()
 	if err != nil {
-		return err
+		slog.Error("Failed to find config location, defaulting to current directory", "error", err)
+		configFolder = "./"
+		return
 	}
-	configFolder = filepath.Join(home, ".config", strings.ToLower(version.Name))
-	return nil
+	configFolder = filepath.Join(config, strings.ToLower(version.Name))
 }
