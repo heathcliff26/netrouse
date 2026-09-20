@@ -65,7 +65,7 @@
 				
 				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (78.3%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (79.2%)</option>
 				
 				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/customthemes/theme.go (100.0%)</option>
 				
@@ -370,7 +370,6 @@ import (
         "fyne.io/fyne/v2/data/binding"
         "fyne.io/fyne/v2/dialog"
         "fyne.io/fyne/v2/lang"
-        "fyne.io/fyne/v2/layout"
         "fyne.io/fyne/v2/theme"
         "fyne.io/fyne/v2/widget"
         "github.com/heathcliff26/netrouse/pkg/gui/persistence"
@@ -396,47 +395,47 @@ type App struct {
 }
 
 func New() *App {
-        <span class="cov3" title="7">err := lang.AddTranslationsFS(translationsFS, "translations")
+        <span class="cov4" title="7">err := lang.AddTranslationsFS(translationsFS, "translations")
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load translations", slog.Any("error", err))
 </span>        }
 
-        <span class="cov3" title="7">app := newApp()
+        <span class="cov4" title="7">app := newApp()
         main := app.NewWindow(version.Name)
 </span>
-        <span class="cov3" title="7">persistence.Init()
+        <span class="cov4" title="7">persistence.Init()
         s, err := persistence.LoadSettings()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load settings", slog.Any("error", err))
 </span>        }
 
-        <span class="cov3" title="7">a := &amp;App{
+        <span class="cov4" title="7">a := &amp;App{
                 app:      app,
                 main:     main,
                 tabs:     make([]*wakeTab, 0, len(s.Remotes)),
                 settings: s,
 </span>        }
-        <span class="cov3" title="7">a.tabLocal = newLocalTab(a.main)
+        <span class="cov4" title="7">a.tabLocal = newLocalTab(a.main)
         a.tabSettings = a.newSettingsTab()
         a.appTabs = a.newTabs()
         for _, remote := range a.settings.Remotes </span>{
                 <span class="cov2" title="2">a.addRemote(&amp;remote)
 </span>        }
-        <span class="cov3" title="7">a.main.SetContent(a.appTabs)
+        <span class="cov4" title="7">a.main.SetContent(a.appTabs)
         a.main.Resize(a.settings.WindowSize.ToFyne())
         a.main.SetFullScreen(a.settings.FullScreen)
         a.main.Show()
 </span>
-        <span class="cov3" title="7">currentTab := a.settings.SelectedTab
+        <span class="cov4" title="7">currentTab := a.settings.SelectedTab
         if currentTab &gt;= len(a.appTabs.Items) </span>{
                 <span class="cov0" title="0">currentTab = 0
 </span>        }
-        <span class="cov3" title="7">a.appTabs.SelectIndex(currentTab)
+        <span class="cov4" title="7">a.appTabs.SelectIndex(currentTab)
         a.selectTab(a.appTabs.Selected())
 </span>
-        <span class="cov3" title="7">a.app.Lifecycle().SetOnStopped(a.onStopped)
+        <span class="cov4" title="7">a.app.Lifecycle().SetOnStopped(a.onStopped)
 </span>
-        <span class="cov3" title="7">return a</span>
+        <span class="cov4" title="7">return a</span>
 }
 
 func (a *App) Run() {
@@ -444,14 +443,14 @@ func (a *App) Run() {
 </span>}
 
 func (a *App) newTabs() *container.AppTabs {
-        <span class="cov3" title="7">items := make([]*container.TabItem, 0, len(a.tabs)+2)
+        <span class="cov4" title="7">items := make([]*container.TabItem, 0, len(a.tabs)+2)
         items = append(items, a.tabLocal.tab)
         items = append(items, a.tabSettings)
 </span>
-        <span class="cov3" title="7">tabs := container.NewAppTabs(items...)
+        <span class="cov4" title="7">tabs := container.NewAppTabs(items...)
         tabs.SetTabLocation(container.TabLocationLeading)
 </span>
-        <span class="cov3" title="7">tabs.OnSelected = a.selectTab
+        <span class="cov4" title="7">tabs.OnSelected = a.selectTab
         return tabs
 </span>}
 
@@ -487,21 +486,23 @@ func (a *App) selectTab(item *container.TabItem) {
 }
 
 func (a *App) newSettingsTab() *container.TabItem {
-        <span class="cov3" title="7">title := widget.NewLabel(lang.L("Settings"))
+        <span class="cov4" title="7">title := widget.NewLabel(lang.L("Settings"))
         title.TextStyle = fyne.TextStyle{Bold: true}
 </span>
-        <span class="cov3" title="7">remoteList := widget.NewList(
+        <span class="cov4" title="7">tab := container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), nil)
+</span>
+        <span class="cov4" title="7">remoteList := widget.NewList(
                 func() int </span>{
-                        <span class="cov10" title="358">return len(a.settings.Remotes)
+                        <span class="cov10" title="211">return len(a.settings.Remotes)
 </span>                },
                 func() fyne.CanvasObject {
-                        <span class="cov6" title="36">return NewRemoteCard(a)
+                        <span class="cov6" title="33">return NewRemoteCard(a)
 </span>                },
                 func(i widget.ListItemID, o fyne.CanvasObject) {
-                        <span class="cov5" title="14">o.(*RemoteCard).SetRemote(a.settings.Remotes[i])
+                        <span class="cov0" title="0">o.(*RemoteCard).SetRemote(a.settings.Remotes[i])
 </span>                },
         )
-        <span class="cov3" title="7">remoteName := binding.NewString()
+        <span class="cov4" title="7">remoteName := binding.NewString()
         remoteURL := binding.NewString()
         addRemoteButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() </span>{
                 <span class="cov0" title="0">dialog.ShowForm(lang.L("Add Server"), lang.L("Add"), lang.L("Cancel"), []*widget.FormItem{
@@ -527,18 +528,19 @@ func (a *App) newSettingsTab() *container.TabItem {
 </span>                        }
                         <span class="cov0" title="0">a.settings.Remotes = append(a.settings.Remotes, remote)
                         a.addRemote(&amp;remote)
-                        remoteList.Refresh()
+                        tab.Content.Resize(tab.Content.MinSize())
 </span>
                         <span class="cov0" title="0">_ = remoteName.Set("")
                         _ = remoteURL.Set("")</span>
                 }, a.main)
         })
-        <span class="cov3" title="7">remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewVBox(remoteList, addRemoteButton))
+        <span class="cov4" title="7">remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
 </span>
-        <span class="cov3" title="7">resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
-        content := container.NewVBox(remoteContainer, layout.NewSpacer(), resetWindowBtn)
-        content = container.NewBorder(container.NewHBox(layout.NewSpacer(), title, layout.NewSpacer()), nil, nil, nil, content)
-        return container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), content)</span>
+        <span class="cov4" title="7">resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
+</span>
+        <span class="cov4" title="7">tab.Content = container.NewBorder(title, resetWindowBtn, nil, nil, remoteContainer)
+</span>
+        <span class="cov4" title="7">return tab</span>
 }
 
 func (a *App) resetWindow() {
@@ -864,32 +866,32 @@ type RemoteCard struct {
 // Create a new card for displaying a remote server
 func NewRemoteCard(app *App) *RemoteCard {
         // Use placeholder data to ensure proper rendering
-        <span class="cov9" title="37">c := &amp;RemoteCard{
+        <span class="cov9" title="34">c := &amp;RemoteCard{
                 app: app,
                 remote: persistence.RemoteServer{
                         Name: "Name",
                         URL:  "URL",
                 },
 </span>        }
-        <span class="cov9" title="37">c.ExtendBaseWidget(c)
+        <span class="cov9" title="34">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov9" title="37">return c
+        <span class="cov9" title="34">return c
 </span>}
 
 // Function to create renderer needed to implement widget
 func (c *RemoteCard) CreateRenderer() fyne.WidgetRenderer {
-        <span class="cov10" title="38">c.ExtendBaseWidget(c)
+        <span class="cov10" title="35">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov10" title="38">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
+        <span class="cov10" title="35">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
         c.editBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), c.edit)
 </span>
-        <span class="cov10" title="38">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
+        <span class="cov10" title="35">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
 </span>
-        <span class="cov10" title="38">return widget.NewSimpleRenderer(c.card)
+        <span class="cov10" title="35">return widget.NewSimpleRenderer(c.card)
 </span>}
 
 func (c *RemoteCard) SetRemote(remote persistence.RemoteServer) {
-        <span class="cov7" title="15">c.remote = remote
+        <span class="cov1" title="1">c.remote = remote
         c.card.SetTitle(c.remote.Name)
         c.card.SetSubTitle(c.remote.URL)
         c.Refresh()
