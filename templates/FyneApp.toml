@@ -9,3 +9,6 @@ Build = 0
 
 [Migrations]
 fyneDo = true
+
+[AdaptiveIcon]
+Foreground = "tools/android-icon.png"
