@@ -29,3 +29,8 @@ func TestStatusIcon(t *testing.T) {
 	assert.Equal(theme.DefaultTheme().Size(theme.SizeNameSeparatorThickness), statusIcon{}.Size(theme.SizeNameSeparatorThickness))
 	assert.Equal(theme.DefaultTheme().Color(theme.ColorNameBackground, theme.VariantDark), statusIcon{}.Color(theme.ColorNameBackground, theme.VariantDark))
 }
+
+func TestColorRed(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(colorRed, Red())
+}

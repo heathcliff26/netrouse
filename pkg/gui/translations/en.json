@@ -13,5 +13,11 @@
   "Add Server": "Add Server",
   "URL": "URL",
   "Edit Server": "Edit Server",
-  "Reset Window": "Reset Window"
+  "Reset Window": "Reset Window",
+  "error.createClient": "Failed to create client",
+  "error.fetchHosts": "Failed to fetch hosts",
+  "error.getStatus": "Failed to update status",
+  "error.addHost": "Failed to add host",
+  "error.removeHost": "Failed to delete host",
+  "error.wake": "Failed to send magic packet to host"
 }
