@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+    <id>io.github.heathcliff26.netrouse</id>
+
+    <name>NetRouse Client</name>
+    <summary>Wake on Lan Utility</summary>
+
+    <metadata_license>MIT</metadata_license>
+    <project_license>Apache-2.0</project_license>
+
+    <description>
+        <p>This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.</p>
+        <p>It can be used directly via the cli, or remotely via a web interface.</p>
+    </description>
+
+    <url type="homepage">https://github.com/heathcliff26/netrouse</url>
+    <developer id="io.github.heathcliff26">
+        <name>Heathcliff</name>
+    </developer>
+
+    <content_rating type="oars-1.1" />
+
+    <launchable type="desktop-id">io.github.heathcliff26.netrouse.desktop</launchable>
+
+    <branding>
+        <color type="primary" scheme_preference="light">#023c8a</color>
+        <color type="primary" scheme_preference="dark">#03228a</color>
+    </branding>
+
+    <screenshots>
+        <screenshot type="default">
+            <image type="source">
+                https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-dark.png
+            </image>
+            <caption>Local Tab (Dark Theme)</caption>
+        </screenshot>
+        <screenshot type="default">
+            <image type="source">
+                https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-light.png
+            </image>
+            <caption>Local Tab (Light Theme)</caption>
+        </screenshot>
+    </screenshots>
+
+</component>

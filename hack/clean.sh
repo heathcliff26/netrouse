@@ -4,7 +4,7 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
-folders=("bin" "dist" "coverprofiles" ".idea")
+folders=("bin" "dist" "coverprofiles" ".idea" "tmp" "x86_64" "aarch64")
 files=("coverprofile.out" "cmd/gui/FyneApp.toml" "cmd/gui/fyne_metadata_init.go" "netrouse.iml" "debug.keystore")
 
 for folder in "${folders[@]}"; do

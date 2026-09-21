@@ -2,11 +2,12 @@
 
 set -e
 
-base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
+script_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)"
+base_dir="$(echo "${script_dir}" | xargs dirname)"
 
-git_version="$(git describe --tags --always --dirty)"
+# shellcheck source=version.sh
+source "${script_dir}/version.sh"
 
-export RELEASE_VERSION="${RELEASE_VERSION:-$git_version}"
-export RELEASE_VERSION="${RELEASE_VERSION#v}"
+export gui_version="${RELEASE_VERSION#v}"
 
 envsubst < "${base_dir}/templates/FyneApp.toml" > "${base_dir}/cmd/gui/FyneApp.toml"

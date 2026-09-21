@@ -5,11 +5,18 @@ set -e
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
 bin_dir="${base_dir}/bin"
+script_dir="${base_dir}/hack"
 
 GOOS="${GOOS:-$(go env GOOS)}"
 GOARCH="${GOARCH:-$(go env GOARCH)}"
 
 GO_LD_FLAGS="${GO_LD_FLAGS:-"-s"}"
+
+# shellcheck source=version.sh
+source "${script_dir}/version.sh"
+
+echo "Building netrouse version ${RELEASE_VERSION}"
+GO_LD_FLAGS+=" -X github.com/heathcliff26/netrouse/pkg/version.gitVersion=${RELEASE_VERSION}"
 
 output_name="${bin_dir}/netrouse"
 if [ "${1}" != "" ]; then

@@ -56,6 +56,11 @@ fmt:
 validate:
 	hack/validate.sh
 
+# Validate the appstream metainfo file
+validate-metainfo:
+	appstreamcli validate io.github.heathcliff26.netrouse.metainfo.xml
+	appstreamcli validate io.github.heathcliff26.netroused.metainfo.xml
+
 # Generate all required files
 generate: generate-bootstrap generate-swagger
 
@@ -70,6 +75,15 @@ generate-swagger:
 # Scan code for vulnerabilities using gosec
 gosec:
 	gosec ./...
+
+# Build rpm with code in current workdir using packit
+packit:
+	packit build locally
+
+# Build rpm of upstream code using packit + mock
+packit-mock:
+	packit build in-mock --resultdir tmp
+	rm *.src.rpm
 
 # Clean up generated files
 clean:
@@ -101,10 +115,13 @@ help:
 	lint \
 	fmt \
 	validate \
+	validate-metainfo \
 	generate \
 	generate-bootstrap \
 	generate-swagger \
 	gosec \
+	packit \
+	packit-mock \
 	clean \
 	tools \
 	help \

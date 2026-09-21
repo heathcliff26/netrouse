@@ -1,0 +1,12 @@
+[Unit]
+Description=Wake on Lan Utility
+After=network.target
+Wants=network-online.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/usr/bin/netroused server -c /etc/netrouse/config.yaml
+
+[Install]
+WantedBy=multi-user.target
