@@ -23,3 +23,9 @@ fyne_metadata_init.go
 /netrouse.iml
 /*.keystore
 /*.go
+
+# Packit RPM builds
+/tmp
+/x86_64
+/aarch64
+*.rpm

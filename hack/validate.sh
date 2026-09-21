@@ -37,3 +37,7 @@ if grep "/bootstrap/" "${base_dir}/static/index.html"; then
     echo "FATAL: Using files from the bootstrap folder inside index.html"
     exit 1
 fi
+
+# TODO: Enable after release v0.9.0
+# echo "Check if metainfo file is valid"
+# make validate-metainfo

@@ -1,0 +1,36 @@
+# See the documentation for more information:
+# https://packit.dev/docs/configuration/
+
+packages:
+  netroused:
+    downstream_package_name: netroused
+    upstream_package_name: netroused
+    specfile_path: tmp/netroused.spec
+    actions:
+      post-upstream-clone:
+        - mkdir -p tmp
+        - cp tools/netroused.spec tmp/
+  netrouse:
+    downstream_package_name: netrouse
+    upstream_package_name: netrouse
+    specfile_path: tmp/netrouse.spec
+    actions:
+      post-upstream-clone:
+        - mkdir -p tmp
+        - cp tools/netrouse.spec tmp/
+
+targets:
+  - fedora-all-x86_64
+  - fedora-all-aarch64
+additional_repos:
+  - copr://heathcliff26/golang
+
+jobs:
+  - job: copr_build
+    trigger: pull_request
+    branch: main
+
+  - job: copr_build
+    trigger: release
+    owner: heathcliff26
+    project: netrouse
