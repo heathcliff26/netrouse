@@ -282,8 +282,7 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 			dialog.ShowError(err, parent.window)
 		}
 	}
-	// TODO: See if we can stretch wake to fill the whole row
-	items = append(items, container.NewHBox(layout.NewSpacer(), wake, delete, layout.NewSpacer()))
+	items = append(items, container.NewBorder(nil, nil, nil, delete, wake))
 	content := container.NewVBox(items...)
 	card := widget.NewCard(host.Name, host.MAC, content)
 	return &hostWidget{
