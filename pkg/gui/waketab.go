@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
@@ -35,6 +36,8 @@ type wakeTab struct {
 
 	ctx    context.Context
 	cancel context.CancelFunc
+
+	errFetch, errStatus bool
 }
 
 func newTabFromRemote(window fyne.Window, remote *persistence.RemoteServer) *wakeTab {
@@ -56,15 +59,10 @@ func newLocalTab(window fyne.Window) *wakeTab {
 	client, err := newLocalClient()
 	if err != nil {
 		slog.Error("failed to create local client", "error", err)
-		dialog.ShowError(err, window)
+		dialog.ShowInformation(lang.L("Error"), lang.L("error.createClient"), window)
 	}
 	tab.client = client
-	err = tab.fetchHosts()
-	// TODO: Better error handling. Likely fetchHosts should never fail
-	if err != nil {
-		slog.Error("failed to fetch hosts", "error", err)
-		dialog.ShowError(err, window)
-	}
+	tab.fetchHosts()
 	return tab
 }
 
@@ -82,6 +80,12 @@ func (t *wakeTab) update() {
 	hosts := make([]fyne.CanvasObject, 0, len(t.hosts))
 	for _, host := range t.hosts {
 		hosts = append(hosts, host.object)
+	}
+	if t.errFetch {
+		hosts = append(hosts, newErrorText(lang.L("error.fetchHosts")))
+	}
+	if t.errStatus {
+		hosts = append(hosts, newErrorText(lang.L("error.getStatus")))
 	}
 
 	t.tab.Content = container.NewBorder(
@@ -143,14 +147,11 @@ func (t *wakeTab) addHost() {
 
 		err = t.client.AddHost(host)
 		if err != nil {
-			dialog.ShowError(err, t.window)
+			slog.Error("Failed to add host", slog.String("client", t.tab.Text), "error", err)
+			dialog.ShowInformation(lang.L("Error"), lang.L("error.addHost"), t.window)
 			return
 		}
-		err = t.fetchHosts()
-		if err != nil {
-			dialog.ShowError(err, t.window)
-			return
-		}
+		t.fetchHosts()
 		go t.updateStatus()
 	}, t.window)
 	d.Show()
@@ -159,44 +160,48 @@ func (t *wakeTab) addHost() {
 func (t *wakeTab) removeHost(mac string) {
 	err := t.client.RemoveHost(mac)
 	if err != nil {
-		dialog.ShowError(err, t.window)
+		slog.Error("Failed to remove host", slog.String("client", t.tab.Text), "error", err)
+		dialog.ShowInformation(lang.L("Error"), lang.L("error.removeHost"), t.window)
 		return
 	}
-	err = t.fetchHosts()
-	if err != nil {
-		dialog.ShowError(err, t.window)
-		return
-	}
+	t.fetchHosts()
 	go t.updateStatus()
 }
 
-func (t *wakeTab) fetchHosts() error {
+func (t *wakeTab) fetchHosts() {
 	hosts, err := t.client.GetHosts()
-	if err != nil {
-		return err
-	}
 
 	t.lock.Lock()
 	defer t.lock.Unlock()
+	defer t.update()
+
+	if err != nil {
+		slog.Error("Failed to fetch hosts", slog.String("client", t.tab.Text), "error", err)
+		t.errFetch = true
+		return
+	}
+	t.errFetch = false
 
 	t.hosts = make([]*hostWidget, 0, len(hosts))
 	for _, host := range hosts {
 		t.hosts = append(t.hosts, newHostWidget(t, host))
 	}
-	t.update()
-	return nil
 }
 
 func (t *wakeTab) updateStatus() {
 	slog.Info("Update status", slog.String("tab", t.tab.Text))
 	status, err := t.client.Status()
-	if err != nil {
-		slog.Error("Failed to update status", slog.String("tab", t.tab.Text), "error", err)
-		return
-	}
 
 	t.lock.Lock()
 	defer t.lock.Unlock()
+	defer t.update()
+
+	if err != nil {
+		slog.Error("Failed to update status", slog.String("tab", t.tab.Text), "error", err)
+		t.errStatus = true
+		return
+	}
+	t.errStatus = false
 
 	for _, s := range status {
 		for _, host := range t.hosts {
@@ -218,11 +223,7 @@ func (t *wakeTab) selected() {
 			return
 		}
 	}
-	err := t.fetchHosts()
-	if err != nil {
-		dialog.ShowError(err, t.window)
-		return
-	}
+	t.fetchHosts()
 
 	go func() {
 		slog.Debug("Start periodic status updates", slog.String("tab", t.tab.Text))
@@ -279,7 +280,8 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 
 		err := parent.client.Wake(host.MAC)
 		if err != nil {
-			dialog.ShowError(err, parent.window)
+			slog.Error("Failed to wake host", slog.String("mac", host.MAC), slog.String("error", err.Error()))
+			dialog.ShowInformation(lang.L("Error"), lang.L("error.wake"), parent.window)
 		}
 	}
 	items = append(items, container.NewBorder(nil, nil, nil, delete, wake))
@@ -302,4 +304,11 @@ func (w *hostWidget) updateStatus(status types.HostStatus) {
 	default:
 		w.status.SetResource(theme.NewErrorThemedResource(hostStatusIcon))
 	}
+}
+
+func newErrorText(msg string) fyne.CanvasObject {
+	text := canvas.NewText(lang.L("Error")+": "+msg, customthemes.Red())
+	text.TextStyle.Bold = true
+	text.Alignment = fyne.TextAlignCenter
+	return text
 }

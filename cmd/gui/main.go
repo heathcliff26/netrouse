@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	// TODO: Silence fyne Error messages
 	flag.Parse()
 	initializeLogger()
 

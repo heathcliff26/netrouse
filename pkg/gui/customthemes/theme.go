@@ -46,3 +46,7 @@ func (statusIcon) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) col
 		return theme.DefaultTheme().Color(name, variant)
 	}
 }
+
+func Red() color.Color {
+	return colorRed
+}

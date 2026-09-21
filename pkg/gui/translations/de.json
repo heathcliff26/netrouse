@@ -13,5 +13,11 @@
   "Add Server": "Neuer Server",
   "URL": "URL",
   "Edit Server": "Server bearbeiten",
-  "Reset Window": "Fenster zurücksetzen"
+  "Reset Window": "Fenster zurücksetzen",
+  "error.createClient": "Client konnte nicht erstellt werden",
+  "error.fetchHosts": "Hosts konnten nicht geladen werden",
+  "error.getStatus": "Status konnte nicht aktualisiert werden",
+  "error.addHost": "Host konnte nicht hinzugefügt werden",
+  "error.removeHost": "Host konnte nicht gelöscht werden",
+  "error.wake": "Magisches Paket konnte nicht gesendet werden"
 }
