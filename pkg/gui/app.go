@@ -171,6 +171,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 	remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
 
 	resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
+	resetWindowBtn.Hidden = fyne.CurrentDevice().IsMobile()
 
 	tab.Content = container.NewBorder(title, resetWindowBtn, nil, nil, remoteContainer)
 
