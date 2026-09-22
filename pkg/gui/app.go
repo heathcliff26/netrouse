@@ -66,13 +66,7 @@ func New() *App {
 	a.main.SetFullScreen(a.settings.FullScreen)
 	a.main.Show()
 
-	currentTab := a.settings.SelectedTab
-	if currentTab >= len(a.appTabs.Items) {
-		currentTab = 0
-	}
-	a.appTabs.SelectIndex(currentTab)
-	a.selectTab(a.appTabs.Selected())
-
+	a.app.Lifecycle().SetOnStarted(a.onStarted)
 	a.app.Lifecycle().SetOnStopped(a.onStopped)
 
 	return a
@@ -187,6 +181,15 @@ func (a *App) resetWindow() {
 	a.settings.WindowSize = persistence.DefaultSettings().WindowSize
 	a.main.SetFullScreen(false)
 	a.main.Resize(a.settings.WindowSize.ToFyne())
+}
+
+func (a *App) onStarted() {
+	currentTab := a.settings.SelectedTab
+	if currentTab >= len(a.appTabs.Items) {
+		currentTab = 0
+	}
+	a.appTabs.SelectIndex(currentTab)
+	a.selectTab(a.appTabs.Selected())
 }
 
 func (a *App) onStopped() {

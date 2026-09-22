@@ -110,7 +110,7 @@ func TestAddRemoteAndSelectTab(t *testing.T) {
 	assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
 	assert.Equal(app.tabSettings, app.appTabs.Items[2])
 
-	assert.NotNil(app.tabLocal.ctx)
+	assert.Nil(app.tabLocal.ctx)
 	assert.Nil(app.tabs[0].ctx)
 
 	app.selectTab(app.tabs[0].tab)
