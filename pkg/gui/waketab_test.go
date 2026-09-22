@@ -2,6 +2,7 @@ package gui
 
 import (
 	"testing"
+	"time"
 
 	"fyne.io/fyne/v2/test"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
@@ -67,7 +68,51 @@ func TestWakeTabUpdate(t *testing.T) {
 	require.Equal(tab.hosts[0].object, tab.hostsContainer.Objects[0], "Host objects should match")
 }
 
-// TODO: Test fetch and status
+func TestFetchHost(t *testing.T) {
+	require := require.New(t)
+
+	oldFolder := persistence.ConfigFolder()
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+	})
+
+	persistence.SetConfigFolder(t.TempDir())
+	app := test.NewApp()
+	w := app.NewWindow("Test")
+
+	tab := newLocalTab(w)
+	require.NotNil(tab)
+	require.NotNil(tab.client)
+	require.NotNil(tab.tab.Content)
+
+	host := types.Host{
+		Name:    "Test Host",
+		MAC:     "00:11:22:33:44:55",
+		Address: "127.0.0.1",
+	}
+	require.NoError(tab.client.AddHost(host), "Should add host")
+
+	tab.errFetch.Show()
+	tab.errStatus.Show()
+	tab.fetchHosts()
+	require.Len(tab.hosts, 1, "Should have fetched hosts")
+	require.True(tab.errFetch.Hidden, "Should hide fetch error")
+
+	acquired := false
+	deadline := time.Now().Add(1 * time.Second)
+
+	time.Sleep(5 * time.Millisecond)
+	for time.Now().Before(deadline) {
+		if tab.lock.TryLock() {
+			acquired = true
+			t.Cleanup(tab.lock.Unlock)
+			break
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	require.True(acquired, "Should have acquired lock")
+	require.True(tab.errStatus.Hidden, "Should hide status error")
+}
 
 func TestWakeTabSelected(t *testing.T) {
 	require := require.New(t)
