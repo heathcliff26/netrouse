@@ -69,7 +69,34 @@ func TestWakeTabUpdate(t *testing.T) {
 
 // TODO: Test fetch and status
 
-// TODO: Selected/Unselected tests
+func TestWakeTabSelected(t *testing.T) {
+	require := require.New(t)
+
+	oldFolder := persistence.ConfigFolder()
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+	})
+
+	persistence.SetConfigFolder(t.TempDir())
+	app := test.NewApp()
+	w := app.NewWindow("Test")
+
+	tab := newLocalTab(w)
+	require.NotNil(tab)
+	require.NotNil(tab.client)
+	require.NotNil(tab.tab.Content)
+
+	require.Error(tab.ctx.Err(), "Context should start with error")
+	tab.selected()
+	require.NoError(tab.ctx.Err(), "Context should not have error")
+
+	ctx := tab.ctx
+	tab.selected()
+	require.Equal(ctx, tab.ctx, "Consecutive calls to selected should be noop")
+
+	tab.unselected()
+	require.Error(tab.ctx.Err(), "Context should have error")
+}
 
 func TestHostWidget(t *testing.T) {
 	require := require.New(t)

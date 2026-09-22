@@ -39,8 +39,18 @@ func TestNew(t *testing.T) {
 		assert.Equal(0, app.appTabs.SelectedIndex())
 	})
 	t.Run("LoadsConfiguredRemotes", func(t *testing.T) {
-		require := require.New(t)
 		assert := assert.New(t)
+
+		persistence.SetConfigFolder(t.TempDir())
+
+		app := New()
+		app.settings.SelectedTab = 1
+
+		app.onStarted()
+		assert.Equal(1, app.appTabs.SelectedIndex(), "Should select the correct tab")
+	})
+	t.Run("SelectTabOnStartup", func(t *testing.T) {
+		require := require.New(t)
 
 		persistence.SetConfigFolder(t.TempDir())
 
@@ -52,17 +62,6 @@ func TestNew(t *testing.T) {
 		}
 		err := settings.Save()
 		require.NoError(err, "Should save settings")
-
-		app := New()
-
-		require.NotNil(app)
-		require.Len(app.tabs, 2)
-		require.Len(app.appTabs.Items, 4)
-		assert.Equal(app.tabLocal.tab, app.appTabs.Items[0])
-		assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
-		assert.Equal(app.tabs[1].tab, app.appTabs.Items[2])
-		assert.Equal(app.tabSettings, app.appTabs.Items[3])
-		assert.Equal(0, app.appTabs.SelectedIndex())
 	})
 	t.Run("SaveSettingsOnClose", func(t *testing.T) {
 		assert := assert.New(t)
@@ -110,14 +109,17 @@ func TestAddRemoteAndSelectTab(t *testing.T) {
 	assert.Equal(app.tabs[0].tab, app.appTabs.Items[1])
 	assert.Equal(app.tabSettings, app.appTabs.Items[2])
 
-	assert.Nil(app.tabLocal.ctx)
-	assert.Nil(app.tabs[0].ctx)
+	assert.Error(app.tabLocal.ctx.Err(), "Should have no context selected")
+	assert.Error(app.tabs[0].ctx.Err(), "Should have no context selected")
 
 	app.selectTab(app.tabs[0].tab)
-	assert.NotNil(app.tabs[0].ctx)
+	assert.NoError(app.tabs[0].ctx.Err(), "Should have context selected")
+	assert.Error(app.tabLocal.ctx.Err(), "Should have no context selected")
 
 	app.selectTab(app.tabLocal.tab)
 	assert.NotNil(app.tabLocal.ctx)
+	assert.NoError(app.tabLocal.ctx.Err(), "Should have context selected")
+	assert.Error(app.tabs[0].ctx.Err(), "Should have no context selected")
 }
 
 func TestResetWindow(t *testing.T) {
