@@ -33,4 +33,4 @@ jobs:
   - job: copr_build
     trigger: release
     owner: heathcliff26
-    project: netrouse
+    project: NetRouse
