@@ -65,7 +65,7 @@
 				
 				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (79.2%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (74.8%)</option>
 				
 				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/customthemes/theme.go (100.0%)</option>
 				
@@ -362,6 +362,7 @@ func (a *apiClient) sendRequest(method, target string, body io.Reader, v interfa
 import (
         "embed"
         "log/slog"
+        "runtime"
 
         "fyne.io/fyne/v2"
         fApp "fyne.io/fyne/v2/app"
@@ -532,7 +533,9 @@ func (a *App) newSettingsTab() *container.TabItem {
         <span class="cov4" title="6">resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
         resetWindowBtn.Hidden = fyne.CurrentDevice().IsMobile()
 </span>
-        <span class="cov4" title="6">tab.Content = container.NewBorder(title, resetWindowBtn, nil, nil, remoteContainer)
+        <span class="cov4" title="6">aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
+</span>
+        <span class="cov4" title="6">tab.Content = container.NewBorder(title, container.NewVBox(resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
 </span>
         <span class="cov4" title="6">return tab</span>
 }
@@ -560,6 +563,25 @@ func (a *App) onStopped() {
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to save settings", slog.Any("error", err))
 </span>        }
+}
+
+func (a *App) showAbout() {
+        <span class="cov0" title="0">data := [][]string{
+                {"Version:", a.app.Metadata().Version},
+                {"Commit:", version.Commit()},
+                {"Go:", runtime.Version()},
+</span>        }
+
+        <span class="cov0" title="0">description := container.NewVBox()
+        values := container.NewVBox()
+        for _, row := range data </span>{
+                <span class="cov0" title="0">description.Add(widget.NewLabel(row[0]))
+                values.Add(widget.NewLabel(row[1]))
+</span>        }
+
+        <span class="cov0" title="0">versionTable := container.NewHBox(description, values)
+</span>
+        <span class="cov0" title="0">dialog.ShowCustom(lang.L("About"), lang.L("OK"), versionTable, a.main)</span>
 }
 </pre>
 		
@@ -2905,7 +2927,7 @@ func init() {
 </span>}
 
 func initGitCommit() {
-        <span class="cov5" title="16">if strings.HasPrefix(gitCommit, "$Format") </span>{
+        <span class="cov5" title="17">if strings.HasPrefix(gitCommit, "$Format") </span>{
                 <span class="cov5" title="14">var commit string
                 buildinfo, _ := debug.ReadBuildInfo()
                 for _, item := range buildinfo.Settings </span>{
@@ -2919,8 +2941,11 @@ func initGitCommit() {
 </span>                }
                 <span class="cov5" title="14">gitCommit = commit</span>
         }
-        <span class="cov5" title="16">if gitCommit == "" </span>{
+        <span class="cov5" title="17">if gitCommit == "" </span>{
                 <span class="cov1" title="1">gitCommit = "Unknown"
+</span>        }
+        <span class="cov5" title="17">if len(gitCommit) &gt; 7 </span>{
+                <span class="cov2" title="2">gitCommit = gitCommit[:7]
 </span>        }
 }
 
@@ -2951,20 +2976,20 @@ func Version() string {
         <span class="cov6" title="18">return gitVersion
 </span>}
 
+// Return the git commit hash
+func Commit() string {
+        <span class="cov1" title="1">return gitCommit
+</span>}
+
 // Return a formated string containing the version, git commit and go version the app was compiled with.
 func VersionInfoString() string {
-        <span class="cov1" title="1">commit := gitCommit
-        if len(commit) &gt; 7 </span>{
-                <span class="cov1" title="1">commit = commit[:7]
-</span>        }
-
         <span class="cov1" title="1">result := Name + ":\n"
         result += "    Version: " + gitVersion + "\n"
-        result += "    Commit:  " + commit + "\n"
+        result += "    Commit:  " + gitCommit + "\n"
         result += "    Go:      " + runtime.Version() + "\n"
 </span>
-        <span class="cov1" title="1">return result</span>
-}
+        <span class="cov1" title="1">return result
+</span>}
 </pre>
 		
 		<pre class="file" id="file30" style="display: none">package wol
