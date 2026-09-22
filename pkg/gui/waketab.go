@@ -91,6 +91,10 @@ func (t *wakeTab) init() {
 		nil,
 		container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
 	)
+
+	// Ensure context is never nil, but start with cancelled ctx
+	t.ctx, t.cancel = context.WithCancel(context.Background())
+	t.cancel()
 }
 
 func (t *wakeTab) update() {
@@ -218,25 +222,20 @@ func (t *wakeTab) updateStatus() {
 }
 
 func (t *wakeTab) selected() {
-	if t.ctx == nil {
-		t.ctx, t.cancel = context.WithCancel(context.Background())
-	} else {
-		select {
-		case <-t.ctx.Done():
-			t.ctx, t.cancel = context.WithCancel(context.Background())
-		default:
-			return
-		}
+	if t.ctx.Err() == nil {
+		return
 	}
+	t.ctx, t.cancel = context.WithCancel(context.Background())
 	t.fetchHosts()
 
 	go func() {
+		ctx := t.ctx
 		slog.Debug("Start periodic status updates", slog.String("tab", t.tab.Text))
 		tick := time.NewTicker(30 * time.Second)
 		for {
 			t.updateStatus()
 			select {
-			case <-t.ctx.Done():
+			case <-ctx.Done():
 				slog.Debug("Stop periodic status updates", slog.String("tab", t.tab.Text))
 				tick.Stop()
 				return
@@ -247,9 +246,6 @@ func (t *wakeTab) selected() {
 }
 
 func (t *wakeTab) unselected() {
-	if t.cancel == nil {
-		return
-	}
 	t.cancel()
 }
 
