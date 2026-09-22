@@ -160,7 +160,6 @@ func (t *wakeTab) addHost() {
 			return
 		}
 		t.fetchHosts()
-		go t.updateStatus()
 	}, t.window)
 	d.Show()
 }
@@ -173,7 +172,6 @@ func (t *wakeTab) removeHost(mac string) {
 		return
 	}
 	t.fetchHosts()
-	go t.updateStatus()
 }
 
 func (t *wakeTab) fetchHosts() {
@@ -194,6 +192,7 @@ func (t *wakeTab) fetchHosts() {
 	for _, host := range hosts {
 		t.hosts = append(t.hosts, newHostWidget(t, host))
 	}
+	go t.updateStatus()
 }
 
 func (t *wakeTab) updateStatus() {
@@ -233,7 +232,6 @@ func (t *wakeTab) selected() {
 		slog.Debug("Start periodic status updates", slog.String("tab", t.tab.Text))
 		tick := time.NewTicker(30 * time.Second)
 		for {
-			t.updateStatus()
 			select {
 			case <-ctx.Done():
 				slog.Debug("Stop periodic status updates", slog.String("tab", t.tab.Text))
@@ -241,6 +239,7 @@ func (t *wakeTab) selected() {
 				return
 			case <-tick.C:
 			}
+			t.updateStatus()
 		}
 	}()
 }

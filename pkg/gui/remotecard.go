@@ -2,6 +2,7 @@ package gui
 
 import (
 	"log/slog"
+	"slices"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -129,6 +130,6 @@ func (c *RemoteCard) edit() {
 }
 
 // Helper function to delete an item from a slice
-func deleteItem[T any](slice []T, index int) []T {
-	return append(slice[:index], slice[index+1:]...)
+func deleteItem[S any](s []S, i int) []S {
+	return slices.Delete(s, i, i+1)
 }
