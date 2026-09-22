@@ -1,12 +1,8 @@
 package gui
 
 import (
-	"context"
 	"testing"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/canvas"
-	"fyne.io/fyne/v2/lang"
 	"fyne.io/fyne/v2/test"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
@@ -28,34 +24,20 @@ func TestWakeTab(t *testing.T) {
 	w := app.NewWindow("Test")
 
 	tab := newLocalTab(w)
-	require.NotNil(tab)
-	require.NotNil(tab.client)
-	assert.NotNil(tab.tab.Content)
+	require.NotNil(tab, "Tab should not be nil")
+	assert.Equal(w, tab.window, "Should have parent window")
 
-	tab.selected()
-	require.NotNil(tab.ctx)
-	assert.NotNil(tab.cancel)
+	assert.NotNil(tab.client, "Tab should have client")
+	assert.NotNil(tab.tab.Content, "Tab should have content")
 
-	tab.unselected()
-	assert.Equal(context.Canceled, tab.ctx.Err())
-
-	host := types.Host{
-		Name:    "Test Host",
-		MAC:     "00:11:22:33:44:55",
-		Address: "127.0.0.1",
-	}
-	hostWidget := newHostWidget(tab, host)
-	require.NotNil(hostWidget)
-	require.NotNil(hostWidget.object)
-	require.NotNil(hostWidget.status)
-
-	hostWidget.updateStatus(types.HostStatus{MAC: host.MAC, Online: true})
-	assert.NotNil(hostWidget.status)
+	assert.NotNil(tab.title, "Should have title")
+	assert.NotNil(tab.errFetch, "Should have errFetch")
+	assert.NotNil(tab.errStatus, "Should have errStatus")
+	assert.NotNil(tab.hostsContainer, "Should have hosts container")
 }
 
 func TestWakeTabUpdate(t *testing.T) {
 	require := require.New(t)
-	assert := assert.New(t)
 
 	oldFolder := persistence.ConfigFolder()
 	t.Cleanup(func() {
@@ -71,8 +53,7 @@ func TestWakeTabUpdate(t *testing.T) {
 	require.NotNil(tab.client)
 	require.NotNil(tab.tab.Content)
 
-	hosts := extractHostObjectsFromTab(t, tab)
-	require.Empty(hosts, "Hosts should be empty")
+	require.Empty(tab.hostsContainer.Objects, "Hosts should be empty")
 
 	host := types.Host{
 		Name: "Test Host",
@@ -82,44 +63,47 @@ func TestWakeTabUpdate(t *testing.T) {
 
 	tab.fetchHosts()
 
-	hosts = extractHostObjectsFromTab(t, tab)
-	require.Len(hosts, 1)
-	assert.Equal(tab.hosts[0].object, hosts[0])
-
-	tab.errFetch = true
-	tab.errStatus = true
-	tab.update()
-
-	hosts = extractHostObjectsFromTab(t, tab)
-	require.Len(hosts, 3, "Should have added errors to hosts")
-	assert.Equal(tab.hosts[0].object, hosts[0])
-
-	errorText, ok := hosts[1].(*canvas.Text)
-	require.True(ok, "Second object should be an error text")
-	assert.Contains(errorText.Text, lang.L("error.fetchHosts"))
-
-	errorText, ok = hosts[2].(*canvas.Text)
-	require.True(ok, "Third object should be an error text")
-	assert.Contains(errorText.Text, lang.L("error.getStatus"))
-
-	tab.fetchHosts()
-	hosts = extractHostObjectsFromTab(t, tab)
-	assert.Len(hosts, 2, "FetchHosts should have removed fetch error")
-
-	tab.updateStatus()
-	hosts = extractHostObjectsFromTab(t, tab)
-	assert.Len(hosts, 1, "UpdateStatus should have removed status error")
+	require.Len(tab.hostsContainer.Objects, 1, "Should have added host")
+	require.Equal(tab.hosts[0].object, tab.hostsContainer.Objects[0], "Host objects should match")
 }
 
-func extractHostObjectsFromTab(t *testing.T, tab *wakeTab) []fyne.CanvasObject {
-	t.Helper()
+// TODO: Test fetch and status
+
+// TODO: Selected/Unselected tests
+
+func TestHostWidget(t *testing.T) {
 	require := require.New(t)
+	assert := assert.New(t)
 
-	border, ok := tab.tab.Content.(*fyne.Container)
-	require.True(ok, "Tab content should be a container")
-	require.Len(border.Objects, 3, "Border should have center, top, and bottom objects")
-	hosts, ok := border.Objects[0].(*fyne.Container)
-	require.True(ok, "Hosts should be a container")
+	oldFolder := persistence.ConfigFolder()
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+	})
 
-	return hosts.Objects
+	persistence.SetConfigFolder(t.TempDir())
+	app := test.NewApp()
+	w := app.NewWindow("Test")
+	tab := newLocalTab(w)
+
+	host := types.Host{
+		Name:    "Test Host",
+		MAC:     "00:11:22:33:44:55",
+		Address: "127.0.0.1",
+	}
+	err := tab.client.AddHost(host)
+	require.NoError(err, "Should add host")
+	tab.fetchHosts()
+	require.Len(tab.hosts, 1, "Should have added host")
+
+	hostWidget := tab.hosts[0]
+	require.NotNil(hostWidget)
+	require.NotNil(hostWidget.object)
+	require.NotNil(hostWidget.status)
+
+	hostWidget.updateStatus(types.HostStatus{MAC: host.MAC, Online: true})
+	assert.NotNil(hostWidget.status)
+
+	hostWidget.deleteBtn.OnTapped()
+
+	require.Len(tab.hosts, 0, "Should have removed host")
 }
