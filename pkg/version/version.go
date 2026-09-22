@@ -41,6 +41,9 @@ func initGitCommit() {
 	if gitCommit == "" {
 		gitCommit = "Unknown"
 	}
+	if len(gitCommit) > 7 {
+		gitCommit = gitCommit[:7]
+	}
 }
 
 func initGitVersion() {
@@ -70,16 +73,16 @@ func Version() string {
 	return gitVersion
 }
 
+// Return the git commit hash
+func Commit() string {
+	return gitCommit
+}
+
 // Return a formated string containing the version, git commit and go version the app was compiled with.
 func VersionInfoString() string {
-	commit := gitCommit
-	if len(commit) > 7 {
-		commit = commit[:7]
-	}
-
 	result := Name + ":\n"
 	result += "    Version: " + gitVersion + "\n"
-	result += "    Commit:  " + commit + "\n"
+	result += "    Commit:  " + gitCommit + "\n"
 	result += "    Go:      " + runtime.Version() + "\n"
 
 	return result

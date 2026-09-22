@@ -19,5 +19,6 @@
   "error.getStatus": "Status konnte nicht aktualisiert werden",
   "error.addHost": "Host konnte nicht hinzugefügt werden",
   "error.removeHost": "Host konnte nicht gelöscht werden",
-  "error.wake": "Magisches Paket konnte nicht gesendet werden"
+  "error.wake": "Magisches Paket konnte nicht gesendet werden",
+  "About": "Über"
 }

@@ -25,11 +25,18 @@ func TestVersion(t *testing.T) {
 	assert.Equal(gitVersion, Version(), "Version should return the version from gitVersion")
 }
 
+func TestCommit(t *testing.T) {
+	assert := assert.New(t)
+
+	assert.Equal(gitCommit, Commit(), "Commit should return the hash from gitCommit")
+}
+
 func TestVersionInfoString(t *testing.T) {
 	oldGitCommit := gitCommit
 	defer func() { gitCommit = oldGitCommit }()
 
 	gitCommit = "1234567890abcdef"
+	initGitCommit()
 
 	result := VersionInfoString()
 
@@ -58,7 +65,7 @@ func TestInitGitCommit(t *testing.T) {
 
 	gitCommit = "1234567890abcdef"
 	initGitCommit()
-	assert.Equal("1234567890abcdef", gitCommit, "gitCommit should not be changed")
+	assert.Equal("1234567", gitCommit, "gitCommit should be trimmed")
 
 	gitCommit = "$Format:%H$"
 	initGitCommit()
