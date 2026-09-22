@@ -3,6 +3,7 @@ package gui
 import (
 	"embed"
 	"log/slog"
+	"runtime"
 
 	"fyne.io/fyne/v2"
 	fApp "fyne.io/fyne/v2/app"
@@ -173,7 +174,9 @@ func (a *App) newSettingsTab() *container.TabItem {
 	resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
 	resetWindowBtn.Hidden = fyne.CurrentDevice().IsMobile()
 
-	tab.Content = container.NewBorder(title, resetWindowBtn, nil, nil, remoteContainer)
+	aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
+
+	tab.Content = container.NewBorder(title, container.NewVBox(resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
 
 	return tab
 }
@@ -201,4 +204,23 @@ func (a *App) onStopped() {
 	if err != nil {
 		slog.Error("Failed to save settings", slog.Any("error", err))
 	}
+}
+
+func (a *App) showAbout() {
+	data := [][]string{
+		{"Version:", a.app.Metadata().Version},
+		{"Commit:", version.Commit()},
+		{"Go:", runtime.Version()},
+	}
+
+	description := container.NewVBox()
+	values := container.NewVBox()
+	for _, row := range data {
+		description.Add(widget.NewLabel(row[0]))
+		values.Add(widget.NewLabel(row[1]))
+	}
+
+	versionTable := container.NewHBox(description, values)
+
+	dialog.ShowCustom(lang.L("About"), lang.L("OK"), versionTable, a.main)
 }

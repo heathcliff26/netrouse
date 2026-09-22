@@ -19,5 +19,6 @@
   "error.getStatus": "Failed to update status",
   "error.addHost": "Failed to add host",
   "error.removeHost": "Failed to delete host",
-  "error.wake": "Failed to send magic packet to host"
+  "error.wake": "Failed to send magic packet to host",
+  "About": "About"
 }
