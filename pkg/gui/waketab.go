@@ -37,7 +37,9 @@ type wakeTab struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	errFetch, errStatus bool
+	title               *widget.Label
+	errFetch, errStatus *canvas.Text
+	hostsContainer      *fyne.Container
 }
 
 func newTabFromRemote(window fyne.Window, remote *persistence.RemoteServer) *wakeTab {
@@ -47,7 +49,7 @@ func newTabFromRemote(window fyne.Window, remote *persistence.RemoteServer) *wak
 		client: client.NewAPIClient(remote.URL),
 	}
 	tab.tab = container.NewTabItemWithIcon(remote.Name, theme.ComputerIcon(), nil)
-	tab.update()
+	tab.init()
 	return tab
 }
 
@@ -62,39 +64,41 @@ func newLocalTab(window fyne.Window) *wakeTab {
 		dialog.ShowInformation(lang.L("Error"), lang.L("error.createClient"), window)
 	}
 	tab.client = client
-	tab.fetchHosts()
+	tab.init()
 	return tab
 }
 
-func (t *wakeTab) update() {
+func (t *wakeTab) init() {
 	var titleStr string
 	if t.remote == nil {
 		titleStr = lang.L("Local Devices")
 	} else {
-		titleStr = lang.L("Devices") + ": " + t.remote.Name
+		titleStr = remoteTitle(t.remote.Name)
 	}
-	title := widget.NewLabel(titleStr)
-	title.TextStyle = fyne.TextStyle{Bold: true}
+	t.title = widget.NewLabel(titleStr)
+	t.title.TextStyle = fyne.TextStyle{Bold: true}
+
 	addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
 
+	t.errFetch = newErrorText(lang.L("error.fetchHosts"))
+	t.errStatus = newErrorText(lang.L("error.getStatus"))
+	t.hostsContainer = container.NewVBox()
+
+	t.tab.Content = container.NewBorder(
+		container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
+		container.NewHBox(layout.NewSpacer(), addButton, layout.NewSpacer()),
+		nil,
+		nil,
+		container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
+	)
+}
+
+func (t *wakeTab) update() {
 	hosts := make([]fyne.CanvasObject, 0, len(t.hosts))
 	for _, host := range t.hosts {
 		hosts = append(hosts, host.object)
 	}
-	if t.errFetch {
-		hosts = append(hosts, newErrorText(lang.L("error.fetchHosts")))
-	}
-	if t.errStatus {
-		hosts = append(hosts, newErrorText(lang.L("error.getStatus")))
-	}
-
-	t.tab.Content = container.NewBorder(
-		container.NewHBox(layout.NewSpacer(), title, layout.NewSpacer()),
-		container.NewHBox(layout.NewSpacer(), addButton, layout.NewSpacer()),
-		nil,
-		nil,
-		container.NewVBox(hosts...),
-	)
+	t.hostsContainer.Objects = hosts
 }
 
 func (t *wakeTab) addHost() {
@@ -177,10 +181,10 @@ func (t *wakeTab) fetchHosts() {
 
 	if err != nil {
 		slog.Error("Failed to fetch hosts", slog.String("client", t.tab.Text), "error", err)
-		t.errFetch = true
+		t.errFetch.Show()
 		return
 	}
-	t.errFetch = false
+	t.errFetch.Hide()
 
 	t.hosts = make([]*hostWidget, 0, len(hosts))
 	for _, host := range hosts {
@@ -192,24 +196,25 @@ func (t *wakeTab) updateStatus() {
 	slog.Info("Update status", slog.String("tab", t.tab.Text))
 	status, err := t.client.Status()
 
-	t.lock.Lock()
-	defer t.lock.Unlock()
-	defer t.update()
+	fyne.DoAndWait(func() {
+		t.lock.Lock()
+		defer t.lock.Unlock()
 
-	if err != nil {
-		slog.Error("Failed to update status", slog.String("tab", t.tab.Text), "error", err)
-		t.errStatus = true
-		return
-	}
-	t.errStatus = false
+		if err != nil {
+			slog.Error("Failed to update status", slog.String("tab", t.tab.Text), "error", err)
+			t.errStatus.Show()
+			return
+		}
+		t.errStatus.Hide()
 
-	for _, s := range status {
-		for _, host := range t.hosts {
-			if host.host.MAC == s.MAC {
-				host.updateStatus(s)
+		for _, s := range status {
+			for _, host := range t.hosts {
+				if host.host.MAC == s.MAC {
+					host.updateStatus(s)
+				}
 			}
 		}
-	}
+	})
 }
 
 func (t *wakeTab) selected() {
@@ -254,13 +259,16 @@ func (t *wakeTab) SetRemote(remote persistence.RemoteServer) {
 
 	t.remote = &remote
 	t.client = client.NewAPIClient(remote.URL)
-	t.update()
+	t.title.SetText(remoteTitle(remote.Name))
 }
 
 type hostWidget struct {
 	host   types.Host
 	object fyne.CanvasObject
 	status *widget.Icon
+
+	deleteBtn *widget.Button
+	wakeBtn   *widget.Button
 }
 
 func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
@@ -291,6 +299,9 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 		host:   host,
 		object: card,
 		status: status,
+
+		deleteBtn: delete,
+		wakeBtn:   wake,
 	}
 }
 
@@ -306,9 +317,14 @@ func (w *hostWidget) updateStatus(status types.HostStatus) {
 	}
 }
 
-func newErrorText(msg string) fyne.CanvasObject {
+func newErrorText(msg string) *canvas.Text {
 	text := canvas.NewText(lang.L("Error")+": "+msg, customthemes.Red())
 	text.TextStyle.Bold = true
 	text.Alignment = fyne.TextAlignCenter
+	text.Hidden = true
 	return text
+}
+
+func remoteTitle(name string) string {
+	return lang.L("Devices") + ": " + name
 }
