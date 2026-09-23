@@ -19,6 +19,10 @@ It can be used directly via the cli, or remotely via a web interface.
     - [Image location](#image-location)
     - [Tags](#tags)
   - [Configuration](#configuration)
+  - [Installing the GUI](#installing-the-gui)
+    - [Download binary](#download-binary)
+      - [Uninstalling](#uninstalling)
+    - [Fedora Copr](#fedora-copr)
   - [Development](#development)
   - [Credit](#credit)
 
@@ -85,6 +89,43 @@ An example configuration with comments and default values for the server can be 
 The default paths for the configuration file are:
     - standalone:   `/etc/netrouse/config.yaml`
     - in container: `/config/config.yaml`
+
+## Installing the GUI
+
+### Download binary
+
+1. Download the [latest release](https://github.com/heathcliff26/netrouse/releases/latest)
+2. Unpack the archive
+3. Install the app for your user by running:
+   - You can install it globally by running the script with `sudo`
+```bash
+./install.sh -i
+```
+
+#### Uninstalling
+
+1. Switch to the folder where you have the installation script
+2. Uninstall by running:
+   - Run as `sudo` if you installed it globally
+```bash
+./install.sh -u
+```
+3. Delete the folder.
+
+
+### Fedora Copr
+
+The app is available as an rpm by using the fedora copr repository [heathcliff26/NetRouse](https://copr.fedorainfracloud.org/coprs/heathcliff26/NetRouse/).
+1. Enable the copr repository
+```bash
+sudo dnf copr enable heathcliff26/NetRouse
+```
+2. Install the app
+```bash
+sudo dnf install netrouse
+```
+
+**Note:** The server/cli binary is also available on copr as `netroused`.
 
 ## Development
 
