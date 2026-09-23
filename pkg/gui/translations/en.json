@@ -20,5 +20,10 @@
   "error.addHost": "Failed to add host",
   "error.removeHost": "Failed to delete host",
   "error.wake": "Failed to send magic packet to host",
-  "About": "About"
+  "error.importIncomplete": "Failed to add some hosts",
+  "About": "About",
+  "Import Hosts": "Import Hosts",
+  "Choose Server": "Choose Server",
+  "Select Server": "Select Server",
+  "Import": "Import"
 }

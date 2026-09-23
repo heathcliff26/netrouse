@@ -1,11 +1,15 @@
 package gui
 
 import (
+	"encoding/json/v2"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	fApp "fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/test"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
+	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -144,4 +148,52 @@ func TestResetWindow(t *testing.T) {
 	assert.Equal(persistence.DefaultSettings().WindowSize, app.settings.WindowSize, "Should reset size in settings")
 	assert.Equal(persistence.DefaultSettings().WindowSize.ToFyne(), app.main.Canvas().Size(), "Should reset window size")
 	assert.False(app.main.FullScreen(), "Should not be fullscreen")
+}
+
+func TestImportHosts(t *testing.T) {
+	oldFolder := persistence.ConfigFolder()
+	oldNewApp := newApp
+	newApp = test.NewApp
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+		newApp = oldNewApp
+	})
+
+	t.Run("FetchError", func(t *testing.T) {
+		assert := assert.New(t)
+
+		persistence.SetConfigFolder(t.TempDir())
+		app := New()
+
+		server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+			rw.WriteHeader(http.StatusInternalServerError)
+			assert.NoError(json.MarshalWrite(rw, map[string]string{"reason": "fetch failed"}))
+		}))
+		t.Cleanup(server.Close)
+
+		app.importHosts(persistence.RemoteServer{Name: "Test Server", URL: server.URL})
+
+		hosts, err := app.tabLocal.client.GetHosts(t.Context())
+		assert.NoError(err)
+		assert.Empty(hosts)
+	})
+	t.Run("Success", func(t *testing.T) {
+		assert := assert.New(t)
+		persistence.SetConfigFolder(t.TempDir())
+		app := New()
+		expected := []types.Host{
+			{MAC: "00:11:22:33:44:55", Name: "Test Host", Address: "host.example.org"},
+		}
+
+		server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, _ *http.Request) {
+			assert.NoError(json.MarshalWrite(rw, expected))
+		}))
+		t.Cleanup(server.Close)
+
+		app.importHosts(persistence.RemoteServer{Name: "Test Server", URL: server.URL})
+
+		actual, err := app.tabLocal.client.GetHosts(t.Context())
+		assert.NoError(err)
+		assert.Equal(expected, actual)
+	})
 }
