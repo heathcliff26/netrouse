@@ -65,7 +65,7 @@
 				
 				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (68.3%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (68.7%)</option>
 				
 				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/customthemes/theme.go (100.0%)</option>
 				
@@ -492,13 +492,13 @@ func (a *App) newSettingsTab() *container.TabItem {
 </span>
         <span class="cov4" title="8">remoteList := widget.NewList(
                 func() int </span>{
-                        <span class="cov10" title="237">return len(a.settings.Remotes)
+                        <span class="cov10" title="291">return len(a.settings.Remotes)
 </span>                },
                 func() fyne.CanvasObject {
-                        <span class="cov6" title="36">return NewRemoteCard(a)
+                        <span class="cov6" title="38">return NewRemoteCard(a)
 </span>                },
                 func(i widget.ListItemID, o fyne.CanvasObject) {
-                        <span class="cov0" title="0">o.(*RemoteCard).SetRemote(a.settings.Remotes[i])
+                        <span class="cov2" title="2">o.(*RemoteCard).SetRemote(a.settings.Remotes[i])
 </span>                },
         )
         <span class="cov4" title="8">remoteName := binding.NewString()
@@ -528,7 +528,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 </span>                        }
                         <span class="cov0" title="0">a.settings.Remotes = append(a.settings.Remotes, remote)
                         a.addRemote(&amp;remote)
-                        tab.Content.Resize(tab.Content.MinSize())
+                        tab.Content.Refresh()
 </span>
                         <span class="cov0" title="0">_ = remoteName.Set("")
                         _ = remoteURL.Set("")</span>
@@ -561,7 +561,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 </span>
         <span class="cov4" title="8">aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
 </span>
-        <span class="cov4" title="8">tab.Content = container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
+        <span class="cov4" title="8">tab.Content = container.NewVScroll(container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer))
 </span>
         <span class="cov4" title="8">return tab</span>
 }
@@ -675,9 +675,9 @@ func (statusIcon) Size(name fyne.ThemeSizeName) float32 {
 </span>}
 
 func (statusIcon) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
-        <span class="cov6" title="10">switch name </span>{
+        <span class="cov6" title="9">switch name </span>{
         case theme.ColorNamePrimary:
-                <span class="cov4" title="4">return colorGreen</span>
+                <span class="cov3" title="3">return colorGreen</span>
         case theme.ColorNameError:
                 <span class="cov2" title="2">return colorRed</span>
         case theme.ColorNameDisabled:
@@ -756,7 +756,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov6" title="6">if host.Address != "" </span>{
+                <span class="cov5" title="5">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
@@ -950,32 +950,32 @@ type RemoteCard struct {
 // Create a new card for displaying a remote server
 func NewRemoteCard(app *App) *RemoteCard {
         // Use placeholder data to ensure proper rendering
-        <span class="cov9" title="37">c := &amp;RemoteCard{
+        <span class="cov9" title="39">c := &amp;RemoteCard{
                 app: app,
                 remote: persistence.RemoteServer{
                         Name: "Name",
                         URL:  "URL",
                 },
 </span>        }
-        <span class="cov9" title="37">c.ExtendBaseWidget(c)
+        <span class="cov9" title="39">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov9" title="37">return c
+        <span class="cov9" title="39">return c
 </span>}
 
 // Function to create renderer needed to implement widget
 func (c *RemoteCard) CreateRenderer() fyne.WidgetRenderer {
-        <span class="cov10" title="38">c.ExtendBaseWidget(c)
+        <span class="cov10" title="40">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov10" title="38">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
+        <span class="cov10" title="40">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
         c.editBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), c.edit)
 </span>
-        <span class="cov10" title="38">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
+        <span class="cov10" title="40">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
 </span>
-        <span class="cov10" title="38">return widget.NewSimpleRenderer(c.card)
+        <span class="cov10" title="40">return widget.NewSimpleRenderer(c.card)
 </span>}
 
 func (c *RemoteCard) SetRemote(remote persistence.RemoteServer) {
-        <span class="cov1" title="1">c.remote = remote
+        <span class="cov3" title="3">c.remote = remote
         c.card.SetTitle(c.remote.Name)
         c.card.SetSubTitle(c.remote.URL)
         c.Refresh()
@@ -1163,13 +1163,13 @@ func (t *wakeTab) init() {
         t.errStatus = newErrorText(lang.L("error.getStatus"))
         t.hostsContainer = container.NewVBox()
 </span>
-        <span class="cov8" title="16">t.tab.Content = container.NewBorder(
+        <span class="cov8" title="16">t.tab.Content = container.NewVScroll(container.NewBorder(
                 container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
                 container.NewBorder(nil, nil, nil, refreshButton, addButton),
                 nil,
                 nil,
                 container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
-        )
+        ))
 </span>
         // Ensure context is never nil, but start with cancelled ctx
         <span class="cov8" title="16">t.ctx, t.cancel = context.WithCancel(context.Background())
