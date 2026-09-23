@@ -94,13 +94,13 @@ func (t *wakeTab) init() {
 	t.errStatus = newErrorText(lang.L("error.getStatus"))
 	t.hostsContainer = container.NewVBox()
 
-	t.tab.Content = container.NewBorder(
+	t.tab.Content = container.NewVScroll(container.NewBorder(
 		container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
 		container.NewBorder(nil, nil, nil, refreshButton, addButton),
 		nil,
 		nil,
 		container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
-	)
+	))
 
 	// Ensure context is never nil, but start with cancelled ctx
 	t.ctx, t.cancel = context.WithCancel(context.Background())
