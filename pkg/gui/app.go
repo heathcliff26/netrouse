@@ -166,7 +166,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 			}
 			a.settings.Remotes = append(a.settings.Remotes, remote)
 			a.addRemote(&remote)
-			tab.Content.Resize(tab.Content.MinSize())
+			tab.Content.Refresh()
 
 			_ = remoteName.Set("")
 			_ = remoteURL.Set("")
@@ -199,7 +199,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 
 	aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
 
-	tab.Content = container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
+	tab.Content = container.NewVScroll(container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer))
 
 	return tab
 }
