@@ -65,7 +65,7 @@
 				
 				<option value="file4">github.com/heathcliff26/netrouse/pkg/client/client.go (97.1%)</option>
 				
-				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (73.7%)</option>
+				<option value="file5">github.com/heathcliff26/netrouse/pkg/gui/app.go (68.3%)</option>
 				
 				<option value="file6">github.com/heathcliff26/netrouse/pkg/gui/customthemes/theme.go (100.0%)</option>
 				
@@ -289,11 +289,11 @@ type apiClient struct {
 
 // Create a new client for api
 func NewAPIClient(url string) Client {
-        <span class="cov8" title="7">url = strings.TrimSuffix(url, "/")
+        <span class="cov8" title="9">url = strings.TrimSuffix(url, "/")
         if !strings.HasSuffix(url, apiPath) </span>{
-                <span class="cov7" title="5">url += apiPath
+                <span class="cov7" title="7">url += apiPath
 </span>        }
-        <span class="cov8" title="7">return &amp;apiClient{
+        <span class="cov8" title="9">return &amp;apiClient{
                 endpoint: url,
                 Timeout:  time.Second,
 </span>        }
@@ -310,7 +310,7 @@ func (a *apiClient) AddHost(ctx context.Context, host types.Host) error {
 
 // Return all hosts
 func (a *apiClient) GetHosts(ctx context.Context) ([]types.Host, error) {
-        <span class="cov3" title="2">var hosts []types.Host
+        <span class="cov5" title="4">var hosts []types.Host
         err := a.sendRequest(ctx, http.MethodGet, "/hosts", nil, &amp;hosts)
         return hosts, err
 </span>}
@@ -333,36 +333,37 @@ func (a *apiClient) Wake(ctx context.Context, mac string) error {
 </span>}
 
 func (a *apiClient) sendRequest(ctx context.Context, method, target string, body io.Reader, v interface{}) error {
-        <span class="cov10" title="11">req, err := http.NewRequestWithContext(ctx, method, a.endpoint+target, body)
+        <span class="cov10" title="13">req, err := http.NewRequestWithContext(ctx, method, a.endpoint+target, body)
         if err != nil </span>{
                 <span class="cov1" title="1">return fmt.Errorf("failed to create request: %w", err)
 </span>        }
 
-        <span class="cov9" title="10">res, err := a.Do(req)
+        <span class="cov9" title="12">res, err := a.Do(req)
         if err != nil </span>{
                 <span class="cov3" title="2">return err
 </span>        }
-        <span class="cov8" title="8">defer res.Body.Close()
+        <span class="cov9" title="10">defer res.Body.Close()
 </span>
-        <span class="cov8" title="8">if res.StatusCode == http.StatusOK </span>{
-                <span class="cov7" title="6">if v == nil </span>{
-                        <span class="cov5" title="3">return nil
+        <span class="cov9" title="10">if res.StatusCode == http.StatusOK </span>{
+                <span class="cov7" title="7">if v == nil </span>{
+                        <span class="cov4" title="3">return nil
 </span>                }
-                <span class="cov5" title="3">return json.UnmarshalRead(res.Body, v)</span>
+                <span class="cov5" title="4">return json.UnmarshalRead(res.Body, v)</span>
         }
 
-        <span class="cov3" title="2">var msg v1.Response
+        <span class="cov4" title="3">var msg v1.Response
         err = json.UnmarshalRead(res.Body, &amp;msg)
         if err != nil </span>{
                 <span class="cov1" title="1">return fmt.Errorf("request returned with '%s', failed to parse body: %w", res.Status, err)
 </span>        }
-        <span class="cov1" title="1">return fmt.Errorf("server responded with '%s': %s", res.Status, msg.Reason)</span>
+        <span class="cov3" title="2">return fmt.Errorf("server responded with '%s': %s", res.Status, msg.Reason)</span>
 }
 </pre>
 		
 		<pre class="file" id="file5" style="display: none">package gui
 
 import (
+        "context"
         "embed"
         "log/slog"
         "runtime"
@@ -375,6 +376,7 @@ import (
         "fyne.io/fyne/v2/lang"
         "fyne.io/fyne/v2/theme"
         "fyne.io/fyne/v2/widget"
+        "github.com/heathcliff26/netrouse/pkg/client"
         "github.com/heathcliff26/netrouse/pkg/gui/persistence"
         "github.com/heathcliff26/netrouse/pkg/version"
 )
@@ -398,41 +400,41 @@ type App struct {
 }
 
 func New() *App {
-        <span class="cov4" title="6">err := lang.AddTranslationsFS(translationsFS, "translations")
+        <span class="cov4" title="8">err := lang.AddTranslationsFS(translationsFS, "translations")
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load translations", slog.Any("error", err))
 </span>        }
 
-        <span class="cov4" title="6">app := newApp()
+        <span class="cov4" title="8">app := newApp()
         main := app.NewWindow(version.Name)
 </span>
-        <span class="cov4" title="6">persistence.Init()
+        <span class="cov4" title="8">persistence.Init()
         s, err := persistence.LoadSettings()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to load settings", slog.Any("error", err))
 </span>        }
 
-        <span class="cov4" title="6">a := &amp;App{
+        <span class="cov4" title="8">a := &amp;App{
                 app:      app,
                 main:     main,
                 tabs:     make([]*wakeTab, 0, len(s.Remotes)),
                 settings: s,
 </span>        }
-        <span class="cov4" title="6">a.tabLocal = newLocalTab(a.main)
+        <span class="cov4" title="8">a.tabLocal = newLocalTab(a.main)
         a.tabSettings = a.newSettingsTab()
         a.appTabs = a.newTabs()
         for _, remote := range a.settings.Remotes </span>{
                 <span class="cov0" title="0">a.addRemote(&amp;remote)
 </span>        }
-        <span class="cov4" title="6">a.main.SetContent(a.appTabs)
+        <span class="cov4" title="8">a.main.SetContent(a.appTabs)
         a.main.Resize(a.settings.WindowSize.ToFyne())
         a.main.SetFullScreen(a.settings.FullScreen)
         a.main.Show()
 </span>
-        <span class="cov4" title="6">a.app.Lifecycle().SetOnStarted(a.onStarted)
+        <span class="cov4" title="8">a.app.Lifecycle().SetOnStarted(a.onStarted)
         a.app.Lifecycle().SetOnStopped(a.onStopped)
 </span>
-        <span class="cov4" title="6">return a</span>
+        <span class="cov4" title="8">return a</span>
 }
 
 func (a *App) Run() {
@@ -440,14 +442,14 @@ func (a *App) Run() {
 </span>}
 
 func (a *App) newTabs() *container.AppTabs {
-        <span class="cov4" title="6">items := make([]*container.TabItem, 0, len(a.tabs)+2)
+        <span class="cov4" title="8">items := make([]*container.TabItem, 0, len(a.tabs)+2)
         items = append(items, a.tabLocal.tab)
         items = append(items, a.tabSettings)
 </span>
-        <span class="cov4" title="6">tabs := container.NewAppTabs(items...)
+        <span class="cov4" title="8">tabs := container.NewAppTabs(items...)
         tabs.SetTabLocation(container.TabLocationLeading)
 </span>
-        <span class="cov4" title="6">tabs.OnSelected = a.selectTab
+        <span class="cov4" title="8">tabs.OnSelected = a.selectTab
         return tabs
 </span>}
 
@@ -483,23 +485,23 @@ func (a *App) selectTab(item *container.TabItem) {
 }
 
 func (a *App) newSettingsTab() *container.TabItem {
-        <span class="cov4" title="6">title := widget.NewLabel(lang.L("Settings"))
+        <span class="cov4" title="8">title := widget.NewLabel(lang.L("Settings"))
         title.TextStyle = fyne.TextStyle{Bold: true}
 </span>
-        <span class="cov4" title="6">tab := container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), nil)
+        <span class="cov4" title="8">tab := container.NewTabItemWithIcon(lang.L("Settings"), theme.SettingsIcon(), nil)
 </span>
-        <span class="cov4" title="6">remoteList := widget.NewList(
+        <span class="cov4" title="8">remoteList := widget.NewList(
                 func() int </span>{
-                        <span class="cov10" title="185">return len(a.settings.Remotes)
+                        <span class="cov10" title="237">return len(a.settings.Remotes)
 </span>                },
                 func() fyne.CanvasObject {
-                        <span class="cov6" title="28">return NewRemoteCard(a)
+                        <span class="cov6" title="36">return NewRemoteCard(a)
 </span>                },
                 func(i widget.ListItemID, o fyne.CanvasObject) {
                         <span class="cov0" title="0">o.(*RemoteCard).SetRemote(a.settings.Remotes[i])
 </span>                },
         )
-        <span class="cov4" title="6">remoteName := binding.NewString()
+        <span class="cov4" title="8">remoteName := binding.NewString()
         remoteURL := binding.NewString()
         addRemoteButton := widget.NewButtonWithIcon("", theme.ContentAddIcon(), func() </span>{
                 <span class="cov0" title="0">dialog.ShowForm(lang.L("Add Server"), lang.L("Add"), lang.L("Cancel"), []*widget.FormItem{
@@ -532,16 +534,36 @@ func (a *App) newSettingsTab() *container.TabItem {
                         _ = remoteURL.Set("")</span>
                 }, a.main)
         })
-        <span class="cov4" title="6">remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
+        <span class="cov4" title="8">remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
 </span>
-        <span class="cov4" title="6">resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
+        <span class="cov4" title="8">importHostsBtn := widget.NewButton(lang.L("Import Hosts"), func() </span>{
+                <span class="cov0" title="0">remoteNames := make([]string, 0, len(a.settings.Remotes))
+                for _, remote := range a.settings.Remotes </span>{
+                        <span class="cov0" title="0">remoteNames = append(remoteNames, remote.Name)
+</span>                }
+                <span class="cov0" title="0">importSelect := widget.NewSelect(remoteNames, nil)
+                importSelect.PlaceHolder = lang.L("Select Server")
+                widget.NewFormItem(lang.L("Server"), importSelect)
+</span>
+                <span class="cov0" title="0">dialog.ShowForm(lang.L("Choose Server"), lang.L("Import"), lang.L("Cancel"),
+                        []*widget.FormItem{widget.NewFormItem(lang.L("Server"), importSelect)},
+                        func(b bool) </span>{
+                                <span class="cov0" title="0">if !b </span>{
+                                        <span class="cov0" title="0">return
+</span>                                }
+                                <span class="cov0" title="0">i := importSelect.SelectedIndex()
+                                a.importHosts(a.settings.Remotes[i])</span>
+                        }, a.main)
+        })
+
+        <span class="cov4" title="8">resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
         resetWindowBtn.Hidden = fyne.CurrentDevice().IsMobile()
 </span>
-        <span class="cov4" title="6">aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
+        <span class="cov4" title="8">aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
 </span>
-        <span class="cov4" title="6">tab.Content = container.NewBorder(title, container.NewVBox(resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
+        <span class="cov4" title="8">tab.Content = container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
 </span>
-        <span class="cov4" title="6">return tab</span>
+        <span class="cov4" title="8">return tab</span>
 }
 
 func (a *App) resetWindow() {
@@ -587,6 +609,33 @@ func (a *App) showAbout() {
 </span>
         <span class="cov0" title="0">dialog.ShowCustom(lang.L("About"), lang.L("OK"), versionTable, a.main)</span>
 }
+
+func (a *App) importHosts(remote persistence.RemoteServer) {
+        <span class="cov2" title="2">hosts, err := client.NewAPIClient(remote.URL).GetHosts(context.Background())
+        if err != nil </span>{
+                <span class="cov1" title="1">slog.Error("Failed to import hosts", slog.String("remote", remote.Name), slog.String("url", remote.URL), "error", err)
+                dialog.ShowInformation(lang.L("Error"), lang.L("error.fetchHosts"), a.main)
+                return
+</span>        }
+
+        <span class="cov1" title="1">showError := false
+        for _, host := range hosts </span>{
+                <span class="cov1" title="1">err := a.tabLocal.client.AddHost(context.Background(), host)
+                if err != nil </span>{
+                        <span class="cov0" title="0">slog.Error("Failed to import host",
+                                slog.String("remote", remote.Name),
+                                slog.String("url", remote.URL),
+                                slog.String("host", host.Name),
+                                slog.String("mac", host.MAC),
+                                "error", err,
+                        )
+                        showError = true
+</span>                }
+        }
+        <span class="cov1" title="1">if showError </span>{
+                <span class="cov0" title="0">dialog.ShowInformation(lang.L("Error"), lang.L("error.importIncomplete"), a.main)
+</span>        }
+}
 </pre>
 		
 		<pre class="file" id="file6" style="display: none">package customthemes
@@ -622,13 +671,13 @@ func (statusIcon) Icon(name fyne.ThemeIconName) fyne.Resource {
 </span>}
 
 func (statusIcon) Size(name fyne.ThemeSizeName) float32 {
-        <span class="cov8" title="15">return theme.DefaultTheme().Size(name)
+        <span class="cov7" title="15">return theme.DefaultTheme().Size(name)
 </span>}
 
 func (statusIcon) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
-        <span class="cov6" title="9">switch name </span>{
+        <span class="cov6" title="10">switch name </span>{
         case theme.ColorNamePrimary:
-                <span class="cov3" title="3">return colorGreen</span>
+                <span class="cov4" title="4">return colorGreen</span>
         case theme.ColorNameError:
                 <span class="cov2" title="2">return colorRed</span>
         case theme.ColorNameDisabled:
@@ -639,7 +688,7 @@ func (statusIcon) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) col
 }
 
 func Red() color.Color {
-        <span class="cov10" title="29">return colorRed
+        <span class="cov10" title="33">return colorRed
 </span>}
 </pre>
 		
@@ -665,33 +714,33 @@ type localClient struct {
 }
 
 func newLocalClient() (client.Client, error) {
-        <span class="cov10" title="17">path := persistence.HostsFile()
+        <span class="cov10" title="19">path := persistence.HostsFile()
         err := os.MkdirAll(filepath.Dir(path), 0755)
         if err != nil </span>{
                 <span class="cov1" title="1">return &amp;localClient{
                         store: file.NewEmptyBackend(),
                 }, err
 </span>        }
-        <span class="cov9" title="16">cfg := file.FileBackendConfig{
+        <span class="cov9" title="18">cfg := file.FileBackendConfig{
                 Path: persistence.HostsFile(),
 </span>        }
-        <span class="cov9" title="16">store, err := file.NewFileBackend(cfg)
+        <span class="cov9" title="18">store, err := file.NewFileBackend(cfg)
         if err != nil </span>{
                 <span class="cov0" title="0">store = file.NewEmptyBackend()
 </span>        }
-        <span class="cov9" title="16">return &amp;localClient{
+        <span class="cov9" title="18">return &amp;localClient{
                 store: store,
         }, err</span>
 }
 
 // Add a new host, overwrite existing host name if it already exists.
 func (lc *localClient) AddHost(_ context.Context, host types.Host) error {
-        <span class="cov7" title="7">return lc.store.AddHost(host)
+        <span class="cov7" title="8">return lc.store.AddHost(host)
 </span>}
 
 // Return all hosts
 func (lc *localClient) GetHosts(_ context.Context) ([]types.Host, error) {
-        <span class="cov7" title="9">return lc.store.GetHosts()
+        <span class="cov8" title="11">return lc.store.GetHosts()
 </span>}
 
 // Remove a host, ignore if the host does not exist
@@ -707,7 +756,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov6" title="5">if host.Address != "" </span>{
+                <span class="cov6" title="6">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
@@ -738,29 +787,29 @@ const (
 )
 
 func Init() {
-        <span class="cov5" title="6">if configFolder == "" </span>{
+        <span class="cov5" title="8">if configFolder == "" </span>{
                 <span class="cov0" title="0">initConfigFolder()
 </span>        }
 }
 
 // Path to hosts file for local hosts
 func HostsFile() string {
-        <span class="cov9" title="34">return filepath.Join(configFolder, hostsFileName)
+        <span class="cov9" title="38">return filepath.Join(configFolder, hostsFileName)
 </span>}
 
 // Path to the settings file
 func SettingsFile() string {
-        <span class="cov7" title="15">return filepath.Join(configFolder, settingsFileName)
+        <span class="cov7" title="17">return filepath.Join(configFolder, settingsFileName)
 </span>}
 
 // Path to config folder
 func ConfigFolder() string {
-        <span class="cov8" title="21">return configFolder
+        <span class="cov8" title="22">return configFolder
 </span>}
 
 // Set the config folder path, used for testing
 func SetConfigFolder(path string) {
-        <span class="cov10" title="40">configFolder = path
+        <span class="cov10" title="43">configFolder = path
 </span>}
 </pre>
 		
@@ -822,7 +871,7 @@ type Size struct {
 }
 
 func DefaultSettings() *Settings {
-        <span class="cov10" title="17">return &amp;Settings{
+        <span class="cov10" title="19">return &amp;Settings{
                 WindowSize: Size{
                         Width:  DefaultWindowWidth,
                         Height: DefaultWindowHeight,
@@ -832,11 +881,11 @@ func DefaultSettings() *Settings {
 
 // Load settings from the settings file
 func LoadSettings() (settings *Settings, err error) {
-        <span class="cov8" title="11">settings = DefaultSettings()
+        <span class="cov8" title="13">settings = DefaultSettings()
 </span>
-        <span class="cov8" title="11">buf, err := os.ReadFile(SettingsFile())
+        <span class="cov8" title="13">buf, err := os.ReadFile(SettingsFile())
         if errors.Is(err, fs.ErrNotExist) </span>{
-                <span class="cov7" title="7">err = nil
+                <span class="cov7" title="9">err = nil
                 return
 </span>        } else <span class="cov5" title="4">if err != nil </span>{
                 <span class="cov0" title="0">return
@@ -865,7 +914,7 @@ func SizeFromFyne(s fyne.Size) Size {
 }
 
 func (s Size) ToFyne() fyne.Size {
-        <span class="cov7" title="9">return fyne.NewSize(s.Width, s.Height)
+        <span class="cov8" title="11">return fyne.NewSize(s.Width, s.Height)
 </span>}
 </pre>
 		
@@ -901,28 +950,28 @@ type RemoteCard struct {
 // Create a new card for displaying a remote server
 func NewRemoteCard(app *App) *RemoteCard {
         // Use placeholder data to ensure proper rendering
-        <span class="cov9" title="29">c := &amp;RemoteCard{
+        <span class="cov9" title="37">c := &amp;RemoteCard{
                 app: app,
                 remote: persistence.RemoteServer{
                         Name: "Name",
                         URL:  "URL",
                 },
 </span>        }
-        <span class="cov9" title="29">c.ExtendBaseWidget(c)
+        <span class="cov9" title="37">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov9" title="29">return c
+        <span class="cov9" title="37">return c
 </span>}
 
 // Function to create renderer needed to implement widget
 func (c *RemoteCard) CreateRenderer() fyne.WidgetRenderer {
-        <span class="cov10" title="30">c.ExtendBaseWidget(c)
+        <span class="cov10" title="38">c.ExtendBaseWidget(c)
 </span>
-        <span class="cov10" title="30">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
+        <span class="cov10" title="38">c.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), c.delete)
         c.editBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), c.edit)
 </span>
-        <span class="cov10" title="30">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
+        <span class="cov10" title="38">c.card = widget.NewCard(c.remote.Name, c.remote.URL, container.NewHBox(layout.NewSpacer(), c.editBtn, c.deleteBtn))
 </span>
-        <span class="cov10" title="30">return widget.NewSimpleRenderer(c.card)
+        <span class="cov10" title="38">return widget.NewSimpleRenderer(c.card)
 </span>}
 
 func (c *RemoteCard) SetRemote(remote persistence.RemoteServer) {
@@ -1082,39 +1131,39 @@ func newTabFromRemote(window fyne.Window, remote *persistence.RemoteServer) *wak
 </span>}
 
 func newLocalTab(window fyne.Window) *wakeTab {
-        <span class="cov7" title="11">tab := &amp;wakeTab{
+        <span class="cov7" title="13">tab := &amp;wakeTab{
                 tab:    container.NewTabItemWithIcon(lang.L("Local"), theme.HomeIcon(), nil),
                 window: window,
 </span>        }
-        <span class="cov7" title="11">client, err := newLocalClient()
+        <span class="cov7" title="13">client, err := newLocalClient()
         if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("failed to create local client", "error", err)
                 dialog.ShowInformation(lang.L("Error"), lang.L("error.createClient"), window)
 </span>        }
-        <span class="cov7" title="11">tab.client = client
+        <span class="cov7" title="13">tab.client = client
         tab.init()
         return tab</span>
 }
 
 func (t *wakeTab) init() {
-        <span class="cov8" title="14">var titleStr string
+        <span class="cov8" title="16">var titleStr string
         if t.remote == nil </span>{
-                <span class="cov7" title="11">titleStr = lang.L("Local Devices")
+                <span class="cov7" title="13">titleStr = lang.L("Local Devices")
 </span>        } else {
                 <span class="cov3" title="3">titleStr = remoteTitle(t.remote.Name)
 </span>        }
-        <span class="cov8" title="14">t.title = widget.NewLabel(titleStr)
+        <span class="cov8" title="16">t.title = widget.NewLabel(titleStr)
         t.title.TextStyle = fyne.TextStyle{Bold: true}
 </span>
-        <span class="cov8" title="14">addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
+        <span class="cov8" title="16">addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
         refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), t.fetchHosts)
         refreshButton.Hidden = t.remote == nil
 </span>
-        <span class="cov8" title="14">t.errFetch = newErrorText(lang.L("error.fetchHosts"))
+        <span class="cov8" title="16">t.errFetch = newErrorText(lang.L("error.fetchHosts"))
         t.errStatus = newErrorText(lang.L("error.getStatus"))
         t.hostsContainer = container.NewVBox()
 </span>
-        <span class="cov8" title="14">t.tab.Content = container.NewBorder(
+        <span class="cov8" title="16">t.tab.Content = container.NewBorder(
                 container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
                 container.NewBorder(nil, nil, nil, refreshButton, addButton),
                 nil,
@@ -1123,7 +1172,7 @@ func (t *wakeTab) init() {
         )
 </span>
         // Ensure context is never nil, but start with cancelled ctx
-        <span class="cov8" title="14">t.ctx, t.cancel = context.WithCancel(context.Background())
+        <span class="cov8" title="16">t.ctx, t.cancel = context.WithCancel(context.Background())
         t.cancel()</span>
 }
 
@@ -1394,7 +1443,7 @@ func (w *hostWidget) updateStatus(status types.HostStatus) {
 }
 
 func newErrorText(msg string) *canvas.Text {
-        <span class="cov10" title="28">text := canvas.NewText(lang.L("Error")+": "+msg, customthemes.Red())
+        <span class="cov10" title="32">text := canvas.NewText(lang.L("Error")+": "+msg, customthemes.Red())
         text.TextStyle.Bold = true
         text.Alignment = fyne.TextAlignCenter
         text.Hidden = true
@@ -2108,21 +2157,21 @@ type FileBackend struct {
 }
 
 func NewFileBackend(cfg FileBackendConfig) (*FileBackend, error) {
-        <span class="cov5" title="59">fb := &amp;FileBackend{
+        <span class="cov5" title="61">fb := &amp;FileBackend{
                 path: cfg.Path,
                 storage: &amp;types.HostsFile{
                         Hosts: []types.Host{},
                 },
 </span>        }
 
-        <span class="cov5" title="59">f, err := os.ReadFile(cfg.Path)
+        <span class="cov5" title="61">f, err := os.ReadFile(cfg.Path)
         if os.IsNotExist(err) </span>{
-                <span class="cov5" title="50">slog.Info("File not found, creating new file", slog.String("path", cfg.Path))
+                <span class="cov5" title="52">slog.Info("File not found, creating new file", slog.String("path", cfg.Path))
                 err := fb.save()
                 if err != nil </span>{
                         <span class="cov0" title="0">return nil, fmt.Errorf("failed to create new storage file: %w", err)
 </span>                }
-                <span class="cov5" title="50">return fb, nil</span>
+                <span class="cov5" title="52">return fb, nil</span>
         } else <span class="cov3" title="9">if err != nil </span>{
                 <span class="cov0" title="0">return nil, fmt.Errorf("failed to read storage file: %w", err)
 </span>        }
@@ -2172,10 +2221,10 @@ func NewEmptyBackend() *FileBackend {
 // Add a new host, overwrite existing host name if it already exists.
 // Ensures that the MAC address is unique and uppercase.
 func (fb *FileBackend) AddHost(host types.Host) error {
-        <span class="cov6" title="168">fb.lock.Lock()
+        <span class="cov6" title="169">fb.lock.Lock()
         defer fb.lock.Unlock()
 </span>
-        <span class="cov6" title="168">host.MAC = strings.ToUpper(host.MAC)
+        <span class="cov6" title="169">host.MAC = strings.ToUpper(host.MAC)
         for i, h := range fb.storage.Hosts </span>{
                 <span class="cov10" title="5049">if h.MAC == host.MAC </span>{
                         <span class="cov2" title="3">fb.storage.Hosts[i] = host
@@ -2183,7 +2232,7 @@ func (fb *FileBackend) AddHost(host types.Host) error {
 </span>                }
         }
 
-        <span class="cov6" title="165">fb.storage.Hosts = append(fb.storage.Hosts, host)
+        <span class="cov6" title="166">fb.storage.Hosts = append(fb.storage.Hosts, host)
         return fb.save()</span>
 }
 
@@ -2218,10 +2267,10 @@ func (fb *FileBackend) GetHost(mac string) (types.Host, error) {
 
 // Return all hosts
 func (fb *FileBackend) GetHosts() ([]types.Host, error) {
-        <span class="cov6" title="133">fb.lock.RLock()
+        <span class="cov6" title="135">fb.lock.RLock()
         defer fb.lock.RUnlock()
 </span>
-        <span class="cov6" title="133">return append([]types.Host{}, fb.storage.Hosts...), nil
+        <span class="cov6" title="135">return append([]types.Host{}, fb.storage.Hosts...), nil
 </span>}
 
 // Check if the storage backend is readonly
@@ -2236,18 +2285,18 @@ func (fb *FileBackend) Readonly() (bool, error) {
 }
 
 func (fb *FileBackend) save() error {
-        <span class="cov6" title="228">data, err := yaml.Marshal(fb.storage)
+        <span class="cov6" title="231">data, err := yaml.Marshal(fb.storage)
         if err != nil </span>{
                 <span class="cov0" title="0">return fmt.Errorf("failed to marshal storage data: %w", err)
 </span>        }
 
         // #nosec G306 -- The file does not contain sensitive data, so it can be world readable. Additionally final permissions are determined by the umask.
-        <span class="cov6" title="228">err = os.WriteFile(fb.path, data, 0644)
+        <span class="cov6" title="231">err = os.WriteFile(fb.path, data, 0644)
         if err != nil </span>{
                 <span class="cov2" title="3">return fmt.Errorf("failed to write storage file: %w", err)
 </span>        }
 
-        <span class="cov6" title="225">slog.Debug("Storage file saved", slog.String("path", fb.path))
+        <span class="cov6" title="228">slog.Debug("Storage file saved", slog.String("path", fb.path))
         return nil</span>
 }
 </pre>
