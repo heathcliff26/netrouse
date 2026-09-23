@@ -79,7 +79,7 @@
 				
 				<option value="file11">github.com/heathcliff26/netrouse/pkg/gui/remotecard.go (60.3%)</option>
 				
-				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (73.6%)</option>
+				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (72.2%)</option>
 				
 				<option value="file13">github.com/heathcliff26/netrouse/pkg/ping/ping.go (91.4%)</option>
 				
@@ -249,6 +249,7 @@ func main() {
 
 import (
         "bytes"
+        "context"
         "encoding/json/v2"
         "fmt"
         "io"
@@ -268,15 +269,15 @@ var _ Client = &amp;apiClient{}
 
 type Client interface {
         // Return all hosts
-        GetHosts() ([]types.Host, error)
+        GetHosts(ctx context.Context) ([]types.Host, error)
         // Add a new host, overwrite existing host name if it already exists.
-        AddHost(host types.Host) error
+        AddHost(ctx context.Context, host types.Host) error
         // Remove a host, ignore if the host does not exist
-        RemoveHost(mac string) error
+        RemoveHost(ctx context.Context, mac string) error
         // Return the current status of all hosts
-        Status() ([]types.HostStatus, error)
+        Status(ctx context.Context) ([]types.HostStatus, error)
         // Send a magic packet to wake a host
-        Wake(mac string) error
+        Wake(ctx context.Context, mac string) error
 }
 
 type apiClient struct {
@@ -297,40 +298,40 @@ func NewAPIClient(url string) Client {
 }
 
 // Add a new host, overwrite existing host name if it already exists.
-func (a *apiClient) AddHost(host types.Host) error {
+func (a *apiClient) AddHost(ctx context.Context, host types.Host) error {
         <span class="cov1" title="1">body, err := json.Marshal(host)
         if err != nil </span>{
                 <span class="cov0" title="0">return fmt.Errorf("failed to parse host: %w", err)
 </span>        }
-        <span class="cov1" title="1">return a.sendRequest(http.MethodPut, "/hosts", bytes.NewReader(body), nil)</span>
+        <span class="cov1" title="1">return a.sendRequest(ctx, http.MethodPut, "/hosts", bytes.NewReader(body), nil)</span>
 }
 
 // Return all hosts
-func (a *apiClient) GetHosts() ([]types.Host, error) {
+func (a *apiClient) GetHosts(ctx context.Context) ([]types.Host, error) {
         <span class="cov3" title="2">var hosts []types.Host
-        err := a.sendRequest(http.MethodGet, "/hosts", nil, &amp;hosts)
+        err := a.sendRequest(ctx, http.MethodGet, "/hosts", nil, &amp;hosts)
         return hosts, err
 </span>}
 
 // Remove a host, ignore if the host does not exist
-func (a *apiClient) RemoveHost(mac string) error {
-        <span class="cov1" title="1">return a.sendRequest(http.MethodDelete, fmt.Sprintf("/hosts/%s", mac), nil, nil)
+func (a *apiClient) RemoveHost(ctx context.Context, mac string) error {
+        <span class="cov1" title="1">return a.sendRequest(ctx, http.MethodDelete, fmt.Sprintf("/hosts/%s", mac), nil, nil)
 </span>}
 
 // Return the current status of all hosts
-func (a *apiClient) Status() ([]types.HostStatus, error) {
+func (a *apiClient) Status(ctx context.Context) ([]types.HostStatus, error) {
         <span class="cov1" title="1">var status []types.HostStatus
-        err := a.sendRequest(http.MethodGet, "/hosts/status", nil, &amp;status)
+        err := a.sendRequest(ctx, http.MethodGet, "/hosts/status", nil, &amp;status)
         return status, err
 </span>}
 
 // Send a magic packet to wake a host
-func (a *apiClient) Wake(mac string) error {
-        <span class="cov1" title="1">return a.sendRequest(http.MethodGet, fmt.Sprintf("/wake/%s", mac), nil, nil)
+func (a *apiClient) Wake(ctx context.Context, mac string) error {
+        <span class="cov1" title="1">return a.sendRequest(ctx, http.MethodGet, fmt.Sprintf("/wake/%s", mac), nil, nil)
 </span>}
 
-func (a *apiClient) sendRequest(method, target string, body io.Reader, v interface{}) error {
-        <span class="cov10" title="11">req, err := http.NewRequest(method, a.endpoint+target, body)
+func (a *apiClient) sendRequest(ctx context.Context, method, target string, body io.Reader, v interface{}) error {
+        <span class="cov10" title="11">req, err := http.NewRequestWithContext(ctx, method, a.endpoint+target, body)
         if err != nil </span>{
                 <span class="cov1" title="1">return fmt.Errorf("failed to create request: %w", err)
 </span>        }
@@ -642,6 +643,7 @@ func Red() color.Color {
 		<pre class="file" id="file7" style="display: none">package gui
 
 import (
+        "context"
         "os"
         "path/filepath"
 
@@ -680,22 +682,22 @@ func newLocalClient() (client.Client, error) {
 }
 
 // Add a new host, overwrite existing host name if it already exists.
-func (lc *localClient) AddHost(host types.Host) error {
+func (lc *localClient) AddHost(_ context.Context, host types.Host) error {
         <span class="cov7" title="7">return lc.store.AddHost(host)
 </span>}
 
 // Return all hosts
-func (lc *localClient) GetHosts() ([]types.Host, error) {
+func (lc *localClient) GetHosts(_ context.Context) ([]types.Host, error) {
         <span class="cov7" title="9">return lc.store.GetHosts()
 </span>}
 
 // Remove a host, ignore if the host does not exist
-func (lc *localClient) RemoveHost(mac string) error {
+func (lc *localClient) RemoveHost(_ context.Context, mac string) error {
         <span class="cov3" title="2">return lc.store.RemoveHost(mac)
 </span>}
 
 // Return the current status of all hosts
-func (lc *localClient) Status() ([]types.HostStatus, error) {
+func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
         <span class="cov7" title="8">hosts, err := lc.store.GetHosts()
         if err != nil </span>{
                 <span class="cov0" title="0">return nil, err
@@ -710,7 +712,7 @@ func (lc *localClient) Status() ([]types.HostStatus, error) {
 }
 
 // Send a magic packet to wake a host
-func (lc *localClient) Wake(mac string) error {
+func (lc *localClient) Wake(_ context.Context, mac string) error {
         <span class="cov3" title="2">packet, err := wol.CreatePacket(mac)
         if err != nil </span>{
                 <span class="cov1" title="1">return err
@@ -1005,6 +1007,7 @@ func deleteItem[S any](s []S, i int) []S {
 
 import (
         "context"
+        "errors"
         "fmt"
         "log/slog"
         "slices"
@@ -1165,8 +1168,11 @@ func (t *wakeTab) addHost() {
                         return
 </span>                }
 
-                <span class="cov0" title="0">err = t.client.AddHost(host)
-                if err != nil </span>{
+                <span class="cov0" title="0">err = t.client.AddHost(t.ctx, host)
+                if errors.Is(err, context.Canceled) </span>{
+                        <span class="cov0" title="0">return
+</span>                }
+                <span class="cov0" title="0">if err != nil </span>{
                         <span class="cov0" title="0">slog.Error("Failed to add host", slog.String("client", t.tab.Text), "error", err)
                         dialog.ShowInformation(lang.L("Error"), lang.L("error.addHost"), t.window)
                         return
@@ -1177,8 +1183,11 @@ func (t *wakeTab) addHost() {
 }
 
 func (t *wakeTab) removeHost(mac string) {
-        <span class="cov1" title="1">err := t.client.RemoveHost(mac)
-        if err != nil </span>{
+        <span class="cov1" title="1">err := t.client.RemoveHost(t.ctx, mac)
+        if errors.Is(err, context.Canceled) </span>{
+                <span class="cov0" title="0">return
+</span>        }
+        <span class="cov1" title="1">if err != nil </span>{
                 <span class="cov0" title="0">slog.Error("Failed to remove host", slog.String("client", t.tab.Text), "error", err)
                 dialog.ShowInformation(lang.L("Error"), lang.L("error.removeHost"), t.window)
                 return
@@ -1187,12 +1196,15 @@ func (t *wakeTab) removeHost(mac string) {
 }
 
 func (t *wakeTab) fetchHosts() {
-        <span class="cov6" title="8">hosts, err := t.client.GetHosts()
+        <span class="cov6" title="8">hosts, err := t.client.GetHosts(t.ctx)
 </span>
         <span class="cov6" title="8">t.lock.Lock()
         defer t.lock.Unlock()
         defer t.update()
 </span>
+        <span class="cov6" title="8">if errors.Is(err, context.Canceled) </span>{
+                <span class="cov0" title="0">return
+</span>        }
         <span class="cov6" title="8">if err != nil </span>{
                 <span class="cov1" title="1">slog.Error("Failed to fetch hosts", slog.String("client", t.tab.Text), "error", err)
                 t.errFetch.Show()
@@ -1219,8 +1231,12 @@ func (t *wakeTab) fetchHosts() {
 
 func (t *wakeTab) updateStatus() {
         <span class="cov6" title="7">slog.Info("Update status", slog.String("tab", t.tab.Text))
-        status, err := t.client.Status()
+        status, err := t.client.Status(t.ctx)
 </span>
+        <span class="cov6" title="7">if errors.Is(err, context.Canceled) </span>{
+                <span class="cov0" title="0">return
+</span>        }
+
         <span class="cov6" title="7">fyne.DoAndWait(func() </span>{
                 <span class="cov6" title="7">t.lock.Lock()
                 defer t.lock.Unlock()
@@ -1309,8 +1325,11 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
                 <span class="cov0" title="0">wake.Disable()
                 defer wake.Enable()
 </span>
-                <span class="cov0" title="0">err := parent.client.Wake(host.MAC)
-                if err != nil </span>{
+                <span class="cov0" title="0">err := parent.client.Wake(parent.ctx, host.MAC)
+                if errors.Is(err, context.Canceled) </span>{
+                        <span class="cov0" title="0">return
+</span>                }
+                <span class="cov0" title="0">if err != nil </span>{
                         <span class="cov0" title="0">slog.Error("Failed to wake host", slog.String("mac", host.MAC), slog.String("error", err.Error()))
                         dialog.ShowInformation(lang.L("Error"), lang.L("error.wake"), parent.window)
 </span>                }
