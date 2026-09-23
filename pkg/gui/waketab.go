@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"slices"
 	"sync"
 	"time"
 
@@ -23,7 +24,13 @@ import (
 	"github.com/heathcliff26/netrouse/pkg/utils"
 )
 
-var hostStatusIcon = theme.RadioButtonFillIcon()
+var (
+	hostStatusIcon = theme.RadioButtonFillIcon()
+
+	hostStatusOnline  = theme.NewPrimaryThemedResource(hostStatusIcon)
+	hostStatusOffline = theme.NewErrorThemedResource(hostStatusIcon)
+	hostStatusUnknown = theme.NewDisabledResource(hostStatusIcon)
+)
 
 type wakeTab struct {
 	tab    *container.TabItem
@@ -100,7 +107,7 @@ func (t *wakeTab) init() {
 func (t *wakeTab) update() {
 	hosts := make([]fyne.CanvasObject, 0, len(t.hosts))
 	for _, host := range t.hosts {
-		hosts = append(hosts, host.object)
+		hosts = append(hosts, host.card)
 	}
 	t.hostsContainer.Objects = hosts
 }
@@ -188,10 +195,20 @@ func (t *wakeTab) fetchHosts() {
 	}
 	t.errFetch.Hide()
 
-	t.hosts = make([]*hostWidget, 0, len(hosts))
+	newHosts := make([]*hostWidget, 0, len(hosts))
 	for _, host := range hosts {
-		t.hosts = append(t.hosts, newHostWidget(t, host))
+		i := slices.IndexFunc(t.hosts, func(w *hostWidget) bool {
+			return w.host.MAC == host.MAC
+		})
+		if i == -1 {
+			newHosts = append(newHosts, newHostWidget(t, host))
+		} else {
+			newHosts = append(newHosts, t.hosts[i])
+			t.hosts[i].updateHost(host)
+		}
 	}
+	t.hosts = newHosts
+
 	go t.updateStatus()
 }
 
@@ -258,21 +275,27 @@ func (t *wakeTab) SetRemote(remote persistence.RemoteServer) {
 }
 
 type hostWidget struct {
-	host   types.Host
-	object fyne.CanvasObject
-	status *widget.Icon
+	host types.Host
+
+	card    *widget.Card
+	status  *widget.Icon
+	address *widget.Label
 
 	deleteBtn *widget.Button
 	wakeBtn   *widget.Button
+
+	statusContainer *container.ThemeOverride
 }
 
 func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
-	status := widget.NewIcon(theme.NewDisabledResource(hostStatusIcon))
 	items := make([]fyne.CanvasObject, 0, 2)
-	if host.Address != "" {
-		statusContainer := container.NewThemeOverride(status, customthemes.NewStatusIconTheme())
-		items = append(items, container.NewHBox(statusContainer, widget.NewLabel(host.Address)))
-	}
+
+	status := widget.NewIcon(hostStatusUnknown)
+	address := widget.NewLabel(host.Address)
+	statusContainer := container.NewThemeOverride(status, customthemes.NewStatusIconTheme())
+	statusContainer.Hidden = host.Address == ""
+	items = append(items, container.NewHBox(statusContainer, address))
+
 	delete := widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
 		parent.removeHost(host.MAC)
 	})
@@ -288,27 +311,46 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 		}
 	}
 	items = append(items, container.NewBorder(nil, nil, nil, delete, wake))
+
 	content := container.NewVBox(items...)
 	card := widget.NewCard(host.Name, host.MAC, content)
+
 	return &hostWidget{
-		host:   host,
-		object: card,
-		status: status,
+		host:    host,
+		card:    card,
+		status:  status,
+		address: address,
 
 		deleteBtn: delete,
 		wakeBtn:   wake,
+
+		statusContainer: statusContainer,
+	}
+}
+
+func (w *hostWidget) updateHost(new types.Host) {
+	if w.host.Name != new.Name {
+		w.card.SetTitle(new.Name)
+		w.host.Name = new.Name
+	}
+
+	if w.host.Address != new.Address {
+		w.address.SetText(new.Address)
+		w.statusContainer.Hidden = new.Address == ""
+		w.status.SetResource(hostStatusUnknown)
+		w.host.Address = new.Address
 	}
 }
 
 func (w *hostWidget) updateStatus(status types.HostStatus) {
 	switch {
 	case status.Online:
-		w.status.SetResource(theme.NewPrimaryThemedResource(hostStatusIcon))
+		w.status.SetResource(hostStatusOnline)
 	case status.Error != "":
 		slog.Info("Failed to fetch status", slog.String("host", status.Address), slog.String("mac", status.MAC), slog.String("error", status.Error))
-		w.status.SetResource(theme.NewDisabledResource(hostStatusIcon))
+		w.status.SetResource(hostStatusUnknown)
 	default:
-		w.status.SetResource(theme.NewErrorThemedResource(hostStatusIcon))
+		w.status.SetResource(hostStatusOffline)
 	}
 }
 

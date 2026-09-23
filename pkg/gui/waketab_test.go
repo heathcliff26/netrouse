@@ -65,7 +65,7 @@ func TestWakeTabUpdate(t *testing.T) {
 	tab.fetchHosts()
 
 	require.Len(tab.hostsContainer.Objects, 1, "Should have added host")
-	require.Equal(tab.hosts[0].object, tab.hostsContainer.Objects[0], "Host objects should match")
+	require.Equal(tab.hosts[0].card, tab.hostsContainer.Objects[0], "Host objects should match")
 }
 
 func TestFetchHost(t *testing.T) {
@@ -143,6 +143,37 @@ func TestWakeTabSelected(t *testing.T) {
 	require.Error(tab.ctx.Err(), "Context should have error")
 }
 
+func TestWakeTabSetRemote(t *testing.T) {
+	require := require.New(t)
+
+	oldFolder := persistence.ConfigFolder()
+	t.Cleanup(func() {
+		persistence.SetConfigFolder(oldFolder)
+	})
+
+	persistence.SetConfigFolder(t.TempDir())
+	app := test.NewApp()
+	w := app.NewWindow("Test")
+
+	tab := newTabFromRemote(w, &persistence.RemoteServer{
+		Name: "Test",
+		URL:  "localhost",
+	})
+	require.NotNil(tab, "Should have created tab")
+	require.NotNil(tab.client, "Should have client")
+	require.NotNil(tab.remote, "Should have remote")
+
+	tab.client = nil
+	remote := persistence.RemoteServer{
+		Name: "Changed",
+		URL:  "not-a-host.local",
+	}
+	tab.SetRemote(remote)
+	require.Equal(remote, *tab.remote, "Should have updated remote")
+	require.Contains(tab.title.Text, remote.Name, "Should have updated title")
+	require.NotNil(tab.client, "Should have updated client")
+}
+
 func TestHostWidget(t *testing.T) {
 	require := require.New(t)
 	assert := assert.New(t)
@@ -167,15 +198,65 @@ func TestHostWidget(t *testing.T) {
 	tab.fetchHosts()
 	require.Len(tab.hosts, 1, "Should have added host")
 
-	hostWidget := tab.hosts[0]
-	require.NotNil(hostWidget)
-	require.NotNil(hostWidget.object)
-	require.NotNil(hostWidget.status)
+	// Lock tab to prevent race with tab.updateStatus()
+	tab.lock.Lock()
 
-	hostWidget.updateStatus(types.HostStatus{MAC: host.MAC, Online: true})
-	assert.NotNil(hostWidget.status)
+	hostWidget := tab.hosts[0]
+	require.NotNil(hostWidget, "Should have created host widget")
+	require.Equal(hostWidget.host, host, "Should have set host")
+	require.NotNil(hostWidget.card, "Should have created card")
+	require.NotNil(hostWidget.status, "Should have created status")
+	require.NotNil(hostWidget.address, "Should have created address")
+	require.NotNil(hostWidget.deleteBtn, "Should have created delete button")
+	require.NotNil(hostWidget.wakeBtn, "Should have created wake button")
+	require.NotNil(hostWidget.statusContainer, "Should have created status container")
+	require.False(hostWidget.statusContainer.Hidden, "Should have visible status")
+
+	assert.Equal(hostStatusUnknown, hostWidget.status.Resource, "Should have unkown status at start")
+
+	hostWidget.updateStatus(types.HostStatus{
+		MAC:    host.MAC,
+		Online: false,
+	})
+	assert.Equal(hostStatusOffline, hostWidget.status.Resource, "Should have offline status")
+
+	hostWidget.updateStatus(types.HostStatus{
+		MAC:    host.MAC,
+		Online: false,
+		Error:  "Test",
+	})
+	assert.Equal(hostStatusUnknown, hostWidget.status.Resource, "Should have unkown status")
+
+	hostWidget.updateStatus(types.HostStatus{
+		MAC:    host.MAC,
+		Online: true,
+	})
+	assert.Equal(hostStatusOnline, hostWidget.status.Resource, "Should have online status")
+
+	// Unlock tab to allow editing host
+	tab.lock.Unlock()
+
+	host.Name = "Changed"
+	host.Address = ""
+	err = tab.client.AddHost(host)
+	require.NoError(err, "Should edit host")
+	tab.fetchHosts()
+	require.Len(tab.hosts, 1, "Should have added host")
+	require.Same(hostWidget, tab.hosts[0], "Should have updated widget in place")
+
+	// Lock tab to prevent race with tab.updateStatus()
+	tab.lock.Lock()
+
+	assert.Equal(host, hostWidget.host, "Should have updated host")
+	assert.Equal(host.Name, hostWidget.card.Title, "Should have updated title")
+	assert.True(hostWidget.statusContainer.Hidden, "Should have hidden status")
+	assert.Equal(host.Address, hostWidget.address.Text, "Should have updated address")
+	assert.Equal(hostStatusUnknown, hostWidget.status.Resource, "Should have changed status to unknown")
+
+	// Unlock tab to allow removing host
+	tab.lock.Unlock()
 
 	hostWidget.deleteBtn.OnTapped()
 
-	require.Len(tab.hosts, 0, "Should have removed host")
+	assert.Len(tab.hosts, 0, "Should have removed host")
 }
