@@ -52,7 +52,7 @@ func TestAddHost(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	client := &apiClient{endpoint: server.URL}
-	require.NoError(client.AddHost(host), "Should add host")
+	require.NoError(client.AddHost(t.Context(), host), "Should add host")
 }
 
 func TestGetHosts(t *testing.T) {
@@ -75,7 +75,7 @@ func TestGetHosts(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	client := &apiClient{endpoint: server.URL}
-	result, err := client.GetHosts()
+	result, err := client.GetHosts(t.Context())
 	require.NoError(err, "Should get hosts")
 	require.Equal(hosts, result)
 }
@@ -90,7 +90,7 @@ func TestRemoveHost(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	client := &apiClient{endpoint: server.URL}
-	require.NoError(client.RemoveHost("AA:BB:CC:DD:EE:FF"), "Should remove host")
+	require.NoError(client.RemoveHost(t.Context(), "AA:BB:CC:DD:EE:FF"), "Should remove host")
 }
 
 func TestStatus(t *testing.T) {
@@ -112,7 +112,7 @@ func TestStatus(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	client := &apiClient{endpoint: server.URL}
-	result, err := client.Status()
+	result, err := client.Status(t.Context())
 	require.NoError(err, "Should get host status")
 	require.Equal(status, result)
 }
@@ -127,7 +127,7 @@ func TestWake(t *testing.T) {
 	t.Cleanup(server.Close)
 
 	client := &apiClient{endpoint: server.URL}
-	require.NoError(client.Wake("AA:BB:CC:DD:EE:FF"), "Should wake host")
+	require.NoError(client.Wake(t.Context(), "AA:BB:CC:DD:EE:FF"), "Should wake host")
 }
 
 func TestSendRequest(t *testing.T) {
@@ -146,7 +146,7 @@ func TestSendRequest(t *testing.T) {
 			Message string `json:"message"`
 		}
 
-		err := client.sendRequest(http.MethodGet, "/hosts", nil, &response)
+		err := client.sendRequest(t.Context(), http.MethodGet, "/hosts", nil, &response)
 		require.NoError(err, "Should send request")
 		require.Equal("awake", response.Message, "Should return message")
 	})
@@ -154,14 +154,14 @@ func TestSendRequest(t *testing.T) {
 		assert := assert.New(t)
 		client := &apiClient{endpoint: "foo"}
 
-		err := client.sendRequest(http.MethodGet, "\n", nil, nil)
+		err := client.sendRequest(t.Context(), http.MethodGet, "\n", nil, nil)
 		assert.ErrorContains(err, "failed to create request")
 	})
 	t.Run("ErrorTransport", func(t *testing.T) {
 		assert := assert.New(t)
 		client := &apiClient{endpoint: "https://localhost:6666"}
 
-		err := client.sendRequest(http.MethodGet, "/hosts", nil, nil)
+		err := client.sendRequest(t.Context(), http.MethodGet, "/hosts", nil, nil)
 		assert.ErrorContains(err, "connection refused")
 	})
 	t.Run("ErrorParseBody", func(t *testing.T) {
@@ -176,7 +176,7 @@ func TestSendRequest(t *testing.T) {
 
 		client := &apiClient{endpoint: server.URL}
 
-		err := client.sendRequest(http.MethodGet, "/hosts", nil, nil)
+		err := client.sendRequest(t.Context(), http.MethodGet, "/hosts", nil, nil)
 		require.ErrorContains(err, "request returned with '400 Bad Request', failed to parse body")
 	})
 	t.Run("ErrorResponse", func(t *testing.T) {
@@ -191,7 +191,7 @@ func TestSendRequest(t *testing.T) {
 
 		client := &apiClient{endpoint: server.URL}
 
-		err := client.sendRequest(http.MethodGet, "/hosts", nil, nil)
+		err := client.sendRequest(t.Context(), http.MethodGet, "/hosts", nil, nil)
 		require.ErrorContains(err, "server responded with '400 Bad Request': invalid host")
 	})
 }

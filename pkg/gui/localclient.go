@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 
@@ -39,22 +40,22 @@ func newLocalClient() (client.Client, error) {
 }
 
 // Add a new host, overwrite existing host name if it already exists.
-func (lc *localClient) AddHost(host types.Host) error {
+func (lc *localClient) AddHost(_ context.Context, host types.Host) error {
 	return lc.store.AddHost(host)
 }
 
 // Return all hosts
-func (lc *localClient) GetHosts() ([]types.Host, error) {
+func (lc *localClient) GetHosts(_ context.Context) ([]types.Host, error) {
 	return lc.store.GetHosts()
 }
 
 // Remove a host, ignore if the host does not exist
-func (lc *localClient) RemoveHost(mac string) error {
+func (lc *localClient) RemoveHost(_ context.Context, mac string) error {
 	return lc.store.RemoveHost(mac)
 }
 
 // Return the current status of all hosts
-func (lc *localClient) Status() ([]types.HostStatus, error) {
+func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 	hosts, err := lc.store.GetHosts()
 	if err != nil {
 		return nil, err
@@ -69,7 +70,7 @@ func (lc *localClient) Status() ([]types.HostStatus, error) {
 }
 
 // Send a magic packet to wake a host
-func (lc *localClient) Wake(mac string) error {
+func (lc *localClient) Wake(_ context.Context, mac string) error {
 	packet, err := wol.CreatePacket(mac)
 	if err != nil {
 		return err

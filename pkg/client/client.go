@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"context"
 	"encoding/json/v2"
 	"fmt"
 	"io"
@@ -21,15 +22,15 @@ var _ Client = &apiClient{}
 
 type Client interface {
 	// Return all hosts
-	GetHosts() ([]types.Host, error)
+	GetHosts(ctx context.Context) ([]types.Host, error)
 	// Add a new host, overwrite existing host name if it already exists.
-	AddHost(host types.Host) error
+	AddHost(ctx context.Context, host types.Host) error
 	// Remove a host, ignore if the host does not exist
-	RemoveHost(mac string) error
+	RemoveHost(ctx context.Context, mac string) error
 	// Return the current status of all hosts
-	Status() ([]types.HostStatus, error)
+	Status(ctx context.Context) ([]types.HostStatus, error)
 	// Send a magic packet to wake a host
-	Wake(mac string) error
+	Wake(ctx context.Context, mac string) error
 }
 
 type apiClient struct {
@@ -50,40 +51,40 @@ func NewAPIClient(url string) Client {
 }
 
 // Add a new host, overwrite existing host name if it already exists.
-func (a *apiClient) AddHost(host types.Host) error {
+func (a *apiClient) AddHost(ctx context.Context, host types.Host) error {
 	body, err := json.Marshal(host)
 	if err != nil {
 		return fmt.Errorf("failed to parse host: %w", err)
 	}
-	return a.sendRequest(http.MethodPut, "/hosts", bytes.NewReader(body), nil)
+	return a.sendRequest(ctx, http.MethodPut, "/hosts", bytes.NewReader(body), nil)
 }
 
 // Return all hosts
-func (a *apiClient) GetHosts() ([]types.Host, error) {
+func (a *apiClient) GetHosts(ctx context.Context) ([]types.Host, error) {
 	var hosts []types.Host
-	err := a.sendRequest(http.MethodGet, "/hosts", nil, &hosts)
+	err := a.sendRequest(ctx, http.MethodGet, "/hosts", nil, &hosts)
 	return hosts, err
 }
 
 // Remove a host, ignore if the host does not exist
-func (a *apiClient) RemoveHost(mac string) error {
-	return a.sendRequest(http.MethodDelete, fmt.Sprintf("/hosts/%s", mac), nil, nil)
+func (a *apiClient) RemoveHost(ctx context.Context, mac string) error {
+	return a.sendRequest(ctx, http.MethodDelete, fmt.Sprintf("/hosts/%s", mac), nil, nil)
 }
 
 // Return the current status of all hosts
-func (a *apiClient) Status() ([]types.HostStatus, error) {
+func (a *apiClient) Status(ctx context.Context) ([]types.HostStatus, error) {
 	var status []types.HostStatus
-	err := a.sendRequest(http.MethodGet, "/hosts/status", nil, &status)
+	err := a.sendRequest(ctx, http.MethodGet, "/hosts/status", nil, &status)
 	return status, err
 }
 
 // Send a magic packet to wake a host
-func (a *apiClient) Wake(mac string) error {
-	return a.sendRequest(http.MethodGet, fmt.Sprintf("/wake/%s", mac), nil, nil)
+func (a *apiClient) Wake(ctx context.Context, mac string) error {
+	return a.sendRequest(ctx, http.MethodGet, fmt.Sprintf("/wake/%s", mac), nil, nil)
 }
 
-func (a *apiClient) sendRequest(method, target string, body io.Reader, v interface{}) error {
-	req, err := http.NewRequest(method, a.endpoint+target, body)
+func (a *apiClient) sendRequest(ctx context.Context, method, target string, body io.Reader, v interface{}) error {
+	req, err := http.NewRequestWithContext(ctx, method, a.endpoint+target, body)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
