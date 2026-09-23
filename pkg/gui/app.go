@@ -157,6 +157,7 @@ func (a *App) newSettingsTab() *container.TabItem {
 				slog.Error("Failed to get remote URL from binding", "error", err)
 				return
 			}
+			url = urlAddSchema(url)
 			remote := persistence.RemoteServer{
 				Name: name,
 				URL:  url,
