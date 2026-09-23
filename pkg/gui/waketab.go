@@ -2,6 +2,7 @@ package gui
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -162,7 +163,10 @@ func (t *wakeTab) addHost() {
 			return
 		}
 
-		err = t.client.AddHost(host)
+		err = t.client.AddHost(t.ctx, host)
+		if errors.Is(err, context.Canceled) {
+			return
+		}
 		if err != nil {
 			slog.Error("Failed to add host", slog.String("client", t.tab.Text), "error", err)
 			dialog.ShowInformation(lang.L("Error"), lang.L("error.addHost"), t.window)
@@ -174,7 +178,10 @@ func (t *wakeTab) addHost() {
 }
 
 func (t *wakeTab) removeHost(mac string) {
-	err := t.client.RemoveHost(mac)
+	err := t.client.RemoveHost(t.ctx, mac)
+	if errors.Is(err, context.Canceled) {
+		return
+	}
 	if err != nil {
 		slog.Error("Failed to remove host", slog.String("client", t.tab.Text), "error", err)
 		dialog.ShowInformation(lang.L("Error"), lang.L("error.removeHost"), t.window)
@@ -184,12 +191,15 @@ func (t *wakeTab) removeHost(mac string) {
 }
 
 func (t *wakeTab) fetchHosts() {
-	hosts, err := t.client.GetHosts()
+	hosts, err := t.client.GetHosts(t.ctx)
 
 	t.lock.Lock()
 	defer t.lock.Unlock()
 	defer t.update()
 
+	if errors.Is(err, context.Canceled) {
+		return
+	}
 	if err != nil {
 		slog.Error("Failed to fetch hosts", slog.String("client", t.tab.Text), "error", err)
 		t.errFetch.Show()
@@ -216,7 +226,11 @@ func (t *wakeTab) fetchHosts() {
 
 func (t *wakeTab) updateStatus() {
 	slog.Info("Update status", slog.String("tab", t.tab.Text))
-	status, err := t.client.Status()
+	status, err := t.client.Status(t.ctx)
+
+	if errors.Is(err, context.Canceled) {
+		return
+	}
 
 	fyne.DoAndWait(func() {
 		t.lock.Lock()
@@ -306,7 +320,10 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 		wake.Disable()
 		defer wake.Enable()
 
-		err := parent.client.Wake(host.MAC)
+		err := parent.client.Wake(parent.ctx, host.MAC)
+		if errors.Is(err, context.Canceled) {
+			return
+		}
 		if err != nil {
 			slog.Error("Failed to wake host", slog.String("mac", host.MAC), slog.String("error", err.Error()))
 			dialog.ShowInformation(lang.L("Error"), lang.L("error.wake"), parent.window)

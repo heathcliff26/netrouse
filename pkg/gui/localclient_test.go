@@ -87,18 +87,18 @@ func TestStorageFunctions(t *testing.T) {
 		MAC:  "AA:BB:CC:DD:EE:FF",
 	}
 
-	err = c.AddHost(host)
+	err = c.AddHost(t.Context(), host)
 	require.NoError(err, "Should add host")
 
-	hosts, err := c.GetHosts()
+	hosts, err := c.GetHosts(t.Context())
 	require.NoError(err, "Should get hosts")
 	require.Equal(1, len(hosts), "Should have one host")
 	require.Equal(host, hosts[0], "Should have correct host")
 
-	err = c.RemoveHost(host.MAC)
+	err = c.RemoveHost(t.Context(), host.MAC)
 	require.NoError(err, "Should remove host")
 
-	hosts, err = c.GetHosts()
+	hosts, err = c.GetHosts(t.Context())
 	require.NoError(err, "Should get hosts")
 	require.Equal(0, len(hosts), "Should have no hosts")
 }
@@ -120,16 +120,16 @@ func TestStatus(t *testing.T) {
 		MAC:     "00:11:22:33:44:55",
 		Address: "127.0.0.1",
 	}
-	err = c.AddHost(h1)
+	err = c.AddHost(t.Context(), h1)
 	require.NoError(err, "Should add host")
 	h2 := types.Host{
 		Name: "TestHost2",
 		MAC:  "AA:BB:CC:DD:EE:FF",
 	}
-	err = c.AddHost(h2)
+	err = c.AddHost(t.Context(), h2)
 	require.NoError(err, "Should add host")
 
-	status, err := c.Status()
+	status, err := c.Status(t.Context())
 	require.NoError(err, "Should get status")
 	require.Len(status, 1, "Should have one statuses")
 }
@@ -165,7 +165,7 @@ func TestWake(t *testing.T) {
 		t.Run(tCase.Name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			err := c.Wake(tCase.MAC)
+			err := c.Wake(t.Context(), tCase.MAC)
 			if tCase.Error != "" {
 				assert.ErrorContains(err, tCase.Error)
 			} else {

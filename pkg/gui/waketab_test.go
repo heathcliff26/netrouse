@@ -60,7 +60,7 @@ func TestWakeTabUpdate(t *testing.T) {
 		Name: "Test Host",
 		MAC:  "00:11:22:33:44:55",
 	}
-	require.NoError(tab.client.AddHost(host), "Should add host")
+	require.NoError(tab.client.AddHost(t.Context(), host), "Should add host")
 
 	tab.fetchHosts()
 
@@ -90,7 +90,7 @@ func TestFetchHost(t *testing.T) {
 		MAC:     "00:11:22:33:44:55",
 		Address: "127.0.0.1",
 	}
-	require.NoError(tab.client.AddHost(host), "Should add host")
+	require.NoError(tab.client.AddHost(t.Context(), host), "Should add host")
 
 	tab.errFetch.Show()
 	tab.errStatus.Show()
@@ -193,7 +193,7 @@ func TestHostWidget(t *testing.T) {
 		MAC:     "00:11:22:33:44:55",
 		Address: "127.0.0.1",
 	}
-	err := tab.client.AddHost(host)
+	err := tab.client.AddHost(t.Context(), host)
 	require.NoError(err, "Should add host")
 	tab.fetchHosts()
 	require.Len(tab.hosts, 1, "Should have added host")
@@ -238,7 +238,7 @@ func TestHostWidget(t *testing.T) {
 
 	host.Name = "Changed"
 	host.Address = ""
-	err = tab.client.AddHost(host)
+	err = tab.client.AddHost(t.Context(), host)
 	require.NoError(err, "Should edit host")
 	tab.fetchHosts()
 	require.Len(tab.hosts, 1, "Should have added host")
