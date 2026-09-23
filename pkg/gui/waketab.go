@@ -86,6 +86,8 @@ func (t *wakeTab) init() {
 	t.title.TextStyle = fyne.TextStyle{Bold: true}
 
 	addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
+	refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), t.fetchHosts)
+	refreshButton.Hidden = t.remote == nil
 
 	t.errFetch = newErrorText(lang.L("error.fetchHosts"))
 	t.errStatus = newErrorText(lang.L("error.getStatus"))
@@ -93,7 +95,7 @@ func (t *wakeTab) init() {
 
 	t.tab.Content = container.NewBorder(
 		container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
-		container.NewHBox(layout.NewSpacer(), addButton, layout.NewSpacer()),
+		container.NewBorder(nil, nil, nil, refreshButton, addButton),
 		nil,
 		nil,
 		container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
