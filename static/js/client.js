@@ -59,11 +59,11 @@ async function addHost() {
     const address = document.getElementById('address').value;
 
     const host = {
-        MAC: macAddr,
-        Name: name
+        mac: macAddr,
+        name: name
     }
     if (address != "") {
-        host.Address = address;
+        host.address = address;
     }
 
     modal.hide();
