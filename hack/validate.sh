@@ -38,6 +38,5 @@ if grep "/bootstrap/" "${base_dir}/static/index.html"; then
     exit 1
 fi
 
-# TODO: Enable after release v0.9.0
-# echo "Check if metainfo file is valid"
-# make validate-metainfo
+echo "Check if metainfo file is valid"
+make validate-metainfo
