@@ -20,5 +20,10 @@
   "error.addHost": "Host konnte nicht hinzugefügt werden",
   "error.removeHost": "Host konnte nicht gelöscht werden",
   "error.wake": "Magisches Paket konnte nicht gesendet werden",
-  "About": "Über"
+  "error.importIncomplete": "Konnte nicht alle Hosts hinzufügen",
+  "About": "Über",
+  "Import Hosts": "Importiere Hosts",
+  "Choose Server": "Server auswählen",
+  "Select Server": "Wähle Server",
+  "Import": "Importieren"
 }

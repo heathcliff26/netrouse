@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"context"
 	"embed"
 	"log/slog"
 	"runtime"
@@ -13,6 +14,7 @@ import (
 	"fyne.io/fyne/v2/lang"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/heathcliff26/netrouse/pkg/client"
 	"github.com/heathcliff26/netrouse/pkg/gui/persistence"
 	"github.com/heathcliff26/netrouse/pkg/version"
 )
@@ -172,12 +174,32 @@ func (a *App) newSettingsTab() *container.TabItem {
 	})
 	remoteContainer := widget.NewCard(lang.L("Server"), "", container.NewBorder(nil, addRemoteButton, nil, nil, remoteList))
 
+	importHostsBtn := widget.NewButton(lang.L("Import Hosts"), func() {
+		remoteNames := make([]string, 0, len(a.settings.Remotes))
+		for _, remote := range a.settings.Remotes {
+			remoteNames = append(remoteNames, remote.Name)
+		}
+		importSelect := widget.NewSelect(remoteNames, nil)
+		importSelect.PlaceHolder = lang.L("Select Server")
+		widget.NewFormItem(lang.L("Server"), importSelect)
+
+		dialog.ShowForm(lang.L("Choose Server"), lang.L("Import"), lang.L("Cancel"),
+			[]*widget.FormItem{widget.NewFormItem(lang.L("Server"), importSelect)},
+			func(b bool) {
+				if !b {
+					return
+				}
+				i := importSelect.SelectedIndex()
+				a.importHosts(a.settings.Remotes[i])
+			}, a.main)
+	})
+
 	resetWindowBtn := widget.NewButton(lang.L("Reset Window"), a.resetWindow)
 	resetWindowBtn.Hidden = fyne.CurrentDevice().IsMobile()
 
 	aboutBtn := widget.NewButton(lang.L("About"), a.showAbout)
 
-	tab.Content = container.NewBorder(title, container.NewVBox(resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
+	tab.Content = container.NewBorder(title, container.NewVBox(importHostsBtn, resetWindowBtn, aboutBtn), nil, nil, remoteContainer)
 
 	return tab
 }
@@ -224,4 +246,31 @@ func (a *App) showAbout() {
 	versionTable := container.NewHBox(description, values)
 
 	dialog.ShowCustom(lang.L("About"), lang.L("OK"), versionTable, a.main)
+}
+
+func (a *App) importHosts(remote persistence.RemoteServer) {
+	hosts, err := client.NewAPIClient(remote.URL).GetHosts(context.Background())
+	if err != nil {
+		slog.Error("Failed to import hosts", slog.String("remote", remote.Name), slog.String("url", remote.URL), "error", err)
+		dialog.ShowInformation(lang.L("Error"), lang.L("error.fetchHosts"), a.main)
+		return
+	}
+
+	showError := false
+	for _, host := range hosts {
+		err := a.tabLocal.client.AddHost(context.Background(), host)
+		if err != nil {
+			slog.Error("Failed to import host",
+				slog.String("remote", remote.Name),
+				slog.String("url", remote.URL),
+				slog.String("host", host.Name),
+				slog.String("mac", host.MAC),
+				"error", err,
+			)
+			showError = true
+		}
+	}
+	if showError {
+		dialog.ShowInformation(lang.L("Error"), lang.L("error.importIncomplete"), a.main)
+	}
 }
