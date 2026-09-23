@@ -79,7 +79,7 @@
 				
 				<option value="file11">github.com/heathcliff26/netrouse/pkg/gui/remotecard.go (60.3%)</option>
 				
-				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (72.7%)</option>
+				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (73.6%)</option>
 				
 				<option value="file13">github.com/heathcliff26/netrouse/pkg/ping/ping.go (91.4%)</option>
 				
@@ -1089,6 +1089,8 @@ func (t *wakeTab) init() {
         t.title.TextStyle = fyne.TextStyle{Bold: true}
 </span>
         <span class="cov8" title="14">addButton := widget.NewButtonWithIcon(lang.L("Add"), theme.ContentAddIcon(), t.addHost)
+        refreshButton := widget.NewButtonWithIcon("", theme.ViewRefreshIcon(), t.fetchHosts)
+        refreshButton.Hidden = t.remote == nil
 </span>
         <span class="cov8" title="14">t.errFetch = newErrorText(lang.L("error.fetchHosts"))
         t.errStatus = newErrorText(lang.L("error.getStatus"))
@@ -1096,7 +1098,7 @@ func (t *wakeTab) init() {
 </span>
         <span class="cov8" title="14">t.tab.Content = container.NewBorder(
                 container.NewHBox(layout.NewSpacer(), t.title, layout.NewSpacer()),
-                container.NewHBox(layout.NewSpacer(), addButton, layout.NewSpacer()),
+                container.NewBorder(nil, nil, nil, refreshButton, addButton),
                 nil,
                 nil,
                 container.NewVBox(t.hostsContainer, t.errFetch, t.errStatus),
