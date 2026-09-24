@@ -23,6 +23,7 @@ It can be used directly via the cli, or remotely via a web interface.
     - [Download binary](#download-binary)
       - [Uninstalling](#uninstalling)
     - [Fedora Copr](#fedora-copr)
+    - [Android](#android)
   - [Development](#development)
   - [Credit](#credit)
 
@@ -126,6 +127,15 @@ sudo dnf install netrouse
 ```
 
 **Note:** The server/cli binary is also available on copr as `netroused`.
+
+### Android
+
+You can download the latest release from [here](https://github.com/heathcliff26/netrouse/releases/latest).
+For smaller file size, choose the apk matching your phones cpu architecture.
+
+Alternatively, you can install and automatically update the app by using [Obtainium](https://obtainium.imranr.dev/):
+
+[![](images/badge_obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%20%22io.github.heathcliff26.netrouse%22%2C%20%22url%22%3A%20%22https%3A%2F%2Fgithub.com%2Fheathcliff26%2Fnetrouse%22%2C%20%22author%22%3A%20%22Heathcliff%22%2C%20%22name%22%3A%20%22NetRouse%22%7D)
 
 ## Development
 
