@@ -263,7 +263,7 @@ github.com/stretchr/testify/require
 # github.com/urfave/cli/v2 v2.27.7
 ## explicit; go 1.18
 github.com/urfave/cli/v2
-# github.com/valkey-io/valkey-go v1.0.77
+# github.com/valkey-io/valkey-go v1.0.78
 ## explicit; go 1.25.0
 github.com/valkey-io/valkey-go
 github.com/valkey-io/valkey-go/internal/cmds
