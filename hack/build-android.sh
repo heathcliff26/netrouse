@@ -38,15 +38,29 @@ bin/fyne release --os android --app-build 1 \
     --keystore-pass "${KEYSTORE_PASS}" \
     --key-name "${KEYSTORE_ALIAS}"
 
-bin/fyne package --os android --release --app-build 1
-apksigner sign --ks "${KEYSTORE}" --ks-pass "pass:${KEYSTORE_PASS}" --ks-key-alias "${KEYSTORE_ALIAS}" \
-    --v1-signing-enabled true \
-    --v2-signing-enabled true \
-    --v3-signing-enabled true \
-    NetRouse.apk
-
 mkdir -p dist
-mv NetRouse.aab NetRouse.apk dist/
+mv NetRouse.aab dist/
+
+targets=("universal" "arm" "arm64" "amd64")
+
+for target in "${targets[@]}"; do
+    os="android"
+    if [ "${target}" != "universal" ]; then
+        os="android/${target}"
+    fi
+    echo "Building for ${target}"
+    bin/fyne package --os "${os}" --release --app-build 1
+    apksigner sign \
+        --ks "${KEYSTORE}" \
+        --ks-pass "pass:${KEYSTORE_PASS}" \
+        --ks-key-alias "${KEYSTORE_ALIAS}" \
+        --v1-signing-enabled true \
+        --v2-signing-enabled true \
+        --v3-signing-enabled true \
+        NetRouse.apk
+    mv NetRouse.apk dist/NetRouse-"${target}".apk
+done
+
 rm NetRouse.apk.idsig
 
 for file in "${files[@]}"; do
