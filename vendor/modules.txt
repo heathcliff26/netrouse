@@ -56,10 +56,11 @@ fyne.io/fyne/v2/widget
 fyne.io/systray
 fyne.io/systray/internal/generated/menu
 fyne.io/systray/internal/generated/notifier
-# fyne.io/tools v1.7.2
-## explicit; go 1.19
+# fyne.io/tools v1.7.3
+## explicit; go 1.22.0
 fyne.io/tools/cmd/fyne
 fyne.io/tools/cmd/fyne/internal/commands
+fyne.io/tools/cmd/fyne/internal/goos
 fyne.io/tools/cmd/fyne/internal/metadata
 fyne.io/tools/cmd/fyne/internal/mobile
 fyne.io/tools/cmd/fyne/internal/mobile/binres
