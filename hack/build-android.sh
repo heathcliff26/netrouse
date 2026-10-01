@@ -6,6 +6,27 @@ base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 
 cd "${base_dir}"
 
+# shellcheck source=version.sh
+source hack/version.sh
+
+if [[ ! "${RELEASE_VERSION}" =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)([-+].*)?$ ]]; then
+    echo "Invalid release version: ${RELEASE_VERSION}" >&2
+    exit 1
+fi
+
+version_major=$((10#${BASH_REMATCH[1]}))
+version_minor=$((10#${BASH_REMATCH[2]}))
+version_patch=$((10#${BASH_REMATCH[3]}))
+if (( version_major >= 2100 || version_minor >= 1000 || version_patch >= 1000 )); then
+    echo "Release version is too large for an Android version code: ${RELEASE_VERSION}" >&2
+    exit 1
+fi
+app_build=$((version_major * 1000000 + version_minor * 1000 + version_patch))
+if (( app_build < 1 )); then
+    echo "Android version code must be positive: ${RELEASE_VERSION}" >&2
+    exit 1
+fi
+
 hack/fyne-metadata.sh
 
 files=("main.go" "log.go" "FyneApp.toml")
@@ -33,7 +54,7 @@ if [ -z "${KEYSTORE}" ]; then
     fi
 fi
 
-bin/fyne release --os android --app-build 1 \
+bin/fyne release --os android --app-build "${app_build}" \
     --keystore "${KEYSTORE}" \
     --keystore-pass "${KEYSTORE_PASS}" \
     --key-name "${KEYSTORE_ALIAS}"
@@ -49,7 +70,7 @@ for target in "${targets[@]}"; do
         os="android/${target}"
     fi
     echo "Building for ${target}"
-    bin/fyne package --os "${os}" --release --app-build 1
+    bin/fyne package --os "${os}" --release --app-build "${app_build}"
     apksigner sign \
         --ks "${KEYSTORE}" \
         --ks-pass "pass:${KEYSTORE_PASS}" \
