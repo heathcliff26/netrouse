@@ -81,7 +81,7 @@
 				
 				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/utils.go (100.0%)</option>
 				
-				<option value="file13">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (72.2%)</option>
+				<option value="file13">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (71.5%)</option>
 				
 				<option value="file14">github.com/heathcliff26/netrouse/pkg/ping/ping.go (91.4%)</option>
 				
@@ -1057,13 +1057,49 @@ func deleteItem[S any](s []S, i int) []S {
 		
 		<pre class="file" id="file12" style="display: none">package gui
 
-import "strings"
+import (
+        "strings"
+
+        "fyne.io/fyne/v2/widget"
+)
 
 func urlAddSchema(url string) string {
-        <span class="cov10" title="3">if !strings.HasPrefix(url, "http://") &amp;&amp; !strings.HasPrefix(url, "https://") </span>{
+        <span class="cov2" title="3">if !strings.HasPrefix(url, "http://") &amp;&amp; !strings.HasPrefix(url, "https://") </span>{
                 <span class="cov1" title="1">return "https://" + url
 </span>        }
-        <span class="cov6" title="2">return url</span>
+        <span class="cov2" title="2">return url</span>
+}
+
+func macEntryChangedFunction(entry *widget.Entry) func(string) {
+        <span class="cov1" title="1">return func(s string) </span>{
+                <span class="cov5" title="13">cursorPos := entry.CursorColumn
+                if len(s) &gt; 17 </span>{
+                        <span class="cov2" title="2">s = s[:17]
+</span>                }
+                <span class="cov5" title="13">if cursorPos &gt; len(s) </span>{
+                        <span class="cov2" title="3">cursorPos = len(s)
+</span>                }
+                <span class="cov5" title="13">i := 0
+                for i &lt; len(s) </span>{
+                        <span class="cov10" title="206">if i == 2 || i == 5 || i == 8 || i == 11 || i == 14 </span>{
+                                <span class="cov7" title="58">if s[i] != ':' </span>{
+                                        <span class="cov5" title="17">s = s[:i] + ":" + s[i:]
+                                        if cursorPos &gt;= i </span>{
+                                                <span class="cov5" title="12">cursorPos++
+</span>                                        }
+                                }
+                        } else <span class="cov9" title="148">if !strings.Contains("0123456789abcdefABCDEF", string(s[i])) </span>{
+                                <span class="cov3" title="5">s = s[:i] + s[i+1:]
+                                if cursorPos &gt; i </span>{
+                                        <span class="cov3" title="4">cursorPos--
+</span>                                }
+                                <span class="cov3" title="5">continue</span>
+                        }
+                        <span class="cov9" title="201">i++</span>
+                }
+                <span class="cov5" title="13">entry.CursorColumn = cursorPos
+                entry.SetText(s)</span>
+        }
 }
 </pre>
 		
@@ -1203,7 +1239,8 @@ func (t *wakeTab) addHost() {
 </span>                }
                 <span class="cov0" title="0">return nil</span>
         }
-        <span class="cov0" title="0">macItem := widget.NewFormItem(lang.L("MAC"), macEntry)
+        <span class="cov0" title="0">macEntry.OnChanged = macEntryChangedFunction(macEntry)
+        macItem := widget.NewFormItem(lang.L("MAC"), macEntry)
 </span>
         <span class="cov0" title="0">addr := binding.NewString()
         addrEntry := widget.NewEntryWithData(addr)
