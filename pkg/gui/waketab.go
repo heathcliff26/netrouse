@@ -134,6 +134,7 @@ func (t *wakeTab) addHost() {
 		}
 		return nil
 	}
+	macEntry.OnChanged = macEntryChangedFunction(macEntry)
 	macItem := widget.NewFormItem(lang.L("MAC"), macEntry)
 
 	addr := binding.NewString()
