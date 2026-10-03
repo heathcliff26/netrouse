@@ -10,4 +10,4 @@ source "${script_dir}/version.sh"
 
 export gui_version="${RELEASE_VERSION#v}"
 
-envsubst < "${base_dir}/templates/FyneApp.toml" > "${base_dir}/cmd/gui/FyneApp.toml"
+envsubst < "${base_dir}/templates/FyneApp.toml" > "${base_dir}/FyneApp.toml"
