@@ -47,9 +47,17 @@ jobs:
       latest: ${{ inputs.latest }}
     secrets: inherit
 
+  push-gemfury:
+    uses: heathcliff26/ci/.github/workflows/gemfury-push.yaml@main
+    needs: build
+    permissions: {}
+    with:
+      artifacts: "netrouse"
+    secrets: inherit
+
   release:
     uses: heathcliff26/ci/.github/workflows/release.yaml@main
-    needs: build
+    needs: push-gemfury
     permissions:
       contents: write
     with:
