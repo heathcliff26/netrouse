@@ -12,24 +12,27 @@ build-cli:
 	hack/build.sh
 
 # Build the GUI
-build-gui: tools
-	hack/fyne-metadata.sh
+build-gui: fyne-metadata tools
 	"$(shell pwd)/bin/fyne" build -o "$(shell pwd)/bin/netrouse-gui" --release
 
 # Run the server on port 8080 to quickly test changes
 run: build-cli
 	bin/netrouse server --log debug
 
+# Prepare the Fyne.toml for fyne
+fyne-metadata:
+	hack/fyne-metadata.sh
+
 # Build the container image
 image:
 	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
 
 # Build all artifacts used for release, except the container images
-release:
+release: fyne-metadata
 	hack/containerized hack/release.sh
 
 # Build and package the gui app for android
-android: tools
+android: fyne-metadata
 	hack/containerized-android.sh
 
 # Run unit-tests with race detection and coverage
@@ -106,6 +109,7 @@ help:
 	build-cli \
 	build-gui \
 	run \
+	fyne-metadata \
 	image \
 	release \
 	android \
