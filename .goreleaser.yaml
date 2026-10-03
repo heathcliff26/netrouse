@@ -49,6 +49,80 @@ archives:
     files:
       - strip_parent: true
         src: "packages/*"
+nfpms:
+  - id: gui
+    package_name: "{{ .ProjectName }}"
+    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    ids:
+      - gui
+    maintainer: Heathcliff <heathcliff@heathcliff.eu>
+    description: |
+      This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
+      It can be used directly via the cli, or remotely via a web interface.
+    license: Apache-2.0
+    homepage: https://github.com/heathcliff26/{{ .ProjectName }}
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - dst: /usr/share/licenses/{{ .PackageName }}
+        type: dir
+      - dst: /usr/share/doc/{{ .PackageName }}
+        type: dir
+      - src: LICENSE
+        dst: /usr/share/licenses/{{ .PackageName }}/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/{{ .PackageName }}/README.md
+      - src: packages/io.github.heathcliff26.{{ .PackageName }}.desktop
+        dst: /usr/share/applications/io.github.heathcliff26.{{ .PackageName }}.desktop
+      - src: packages/io.github.heathcliff26.{{ .PackageName }}.png
+        dst: /usr/share/icons/hicolor/256x256/apps/io.github.heathcliff26.{{ .PackageName }}.png
+      - src: packages/io.github.heathcliff26.{{ .PackageName }}.svg
+        dst: /usr/share/icons/hicolor/scalable/apps/io.github.heathcliff26.{{ .PackageName }}.svg
+      - src: io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
+        dst: /usr/share/metainfo/io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
+    rpm:
+      summary: Wake on Lan Utility
+  - id: cli
+    package_name: "{{ .ProjectName }}d"
+    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    ids:
+      - cli
+    maintainer: Heathcliff <heathcliff@heathcliff.eu>
+    description: |
+      This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
+      It can be used directly via the cli, or remotely via a web interface.
+    license: Apache-2.0
+    homepage: https://github.com/heathcliff26/{{ .ProjectName }}
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - dst: /usr/share/licenses/{{ .PackageName }}
+        type: dir
+      - dst: /usr/share/doc/{{ .PackageName }}
+        type: dir
+      - src: LICENSE
+        dst: /usr/share/licenses/{{ .PackageName }}/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/{{ .PackageName }}/README.md
+      - src: tools/{{ .PackageName }}.service
+        dst: /usr/lib/systemd/system/{{ .PackageName }}.service
+      - dst: /etc/{{ .ProjectName }}
+        type: dir
+      - src: examples/config.yaml
+        dst: /etc/{{ .ProjectName }}/config.yaml
+        type: config|noreplace
+      - src: io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
+        dst: /usr/share/metainfo/io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
+    scripts:
+      postinstall: "tools/postinstall.sh"
+      preremove: "tools/preremove.sh"
+      postremove: "tools/postremove.sh"
+    rpm:
+      summary: Wake on Lan Utility
 
 changelog:
   disable: true

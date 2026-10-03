@@ -1,4 +1,5 @@
 %global debug_package %{nil}
+%global bin_name netrouse
 
 Name:           netroused
 Version:        0
@@ -23,10 +24,10 @@ It can be used directly via the cli, or remotely via a web interface.}
 
 %build
 export RELEASE_VERSION="%{version}-%{release}"
-hack/build.sh %{name}
+hack/build.sh
 
 %install
-install -D -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
+install -D -m 0755 bin/%{bin_name} %{buildroot}%{_bindir}/%{bin_name}
 install -D -m 0644 tools/%{name}.service %{buildroot}%{_prefix}/lib/systemd/system/%{name}.service
 install -D -m 0644 examples/config.yaml %{buildroot}%{_sysconfdir}/netrouse/config.yaml
 install -D -m 0644 %{package_id}.metainfo.xml %{buildroot}/%{_datadir}/metainfo/%{package_id}.metainfo.xml
@@ -52,7 +53,7 @@ fi
 %files
 %license LICENSE
 %doc README.md
-%{_bindir}/%{name}
+%{_bindir}/%{bin_name}
 %{_prefix}/lib/systemd/system/%{name}.service
 %dir %{_sysconfdir}/netrouse
 %{_sysconfdir}/netrouse/config.yaml
