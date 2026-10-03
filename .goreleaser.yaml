@@ -22,7 +22,6 @@ builds:
       - CGO_ENABLED=0
   - id: gui
     binary: "{{ .ProjectName }}-gui"
-    main: ./cmd/gui
     goos:
       - linux
     goarch:

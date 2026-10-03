@@ -15,14 +15,12 @@ coverprofile.out
 
 # Ignore fyne build files
 fyne_metadata_init.go
-/cmd/gui/FyneApp.toml
 /FyneApp.toml
 
 # Ignore android files
 /.idea
 /netrouse.iml
 /*.keystore
-/*.go
 
 # Packit RPM builds
 /tmp

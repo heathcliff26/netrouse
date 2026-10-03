@@ -14,7 +14,7 @@ build-cli:
 # Build the GUI
 build-gui: tools
 	hack/fyne-metadata.sh
-	"$(shell pwd)/bin/fyne" build -o "$(shell pwd)/bin/netrouse-gui" --release ./cmd/gui
+	"$(shell pwd)/bin/fyne" build -o "$(shell pwd)/bin/netrouse-gui" --release
 
 # Run the server on port 8080 to quickly test changes
 run: build-cli

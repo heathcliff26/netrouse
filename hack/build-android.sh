@@ -29,14 +29,6 @@ fi
 
 hack/fyne-metadata.sh
 
-files=("main.go" "log.go" "FyneApp.toml")
-
-for file in "${files[@]}"; do
-    cp "cmd/gui/${file}" "${file}"
-done
-
-sed -i 's#../../##g' FyneApp.toml
-
 if [ -z "${KEYSTORE}" ]; then
     echo "No keystore specified, using debug keystore"
     export KEYSTORE="debug.keystore"
@@ -83,7 +75,3 @@ for target in "${targets[@]}"; do
 done
 
 rm NetRouse.apk.idsig
-
-for file in "${files[@]}"; do
-    rm "${file}"
-done
