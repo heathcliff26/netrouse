@@ -6,9 +6,6 @@ base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 dist_dir="${base_dir}/dist"
 name="$(yq -r '.project_name' "${base_dir}/.goreleaser.yaml")"
 
-echo "Preparing metadata for fyne"
-"${base_dir}/hack/fyne-metadata.sh"
-
 echo "Building releaser artifacts with goreleaser"
 goreleaser release --skip=announce,publish,validate --clean -p 1
 

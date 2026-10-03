@@ -27,8 +27,6 @@ if (( app_build < 1 )); then
     exit 1
 fi
 
-hack/fyne-metadata.sh
-
 if [ -z "${KEYSTORE}" ]; then
     echo "No keystore specified, using debug keystore"
     export KEYSTORE="debug.keystore"
@@ -46,7 +44,7 @@ if [ -z "${KEYSTORE}" ]; then
     fi
 fi
 
-bin/fyne release --os android --app-build "${app_build}" \
+fyne release --os android --app-build "${app_build}" \
     --keystore "${KEYSTORE}" \
     --keystore-pass "${KEYSTORE_PASS}" \
     --key-name "${KEYSTORE_ALIAS}"
@@ -62,7 +60,7 @@ for target in "${targets[@]}"; do
         os="android/${target}"
     fi
     echo "Building for ${target}"
-    bin/fyne package --os "${os}" --release --app-build "${app_build}"
+    fyne package --os "${os}" --release --app-build "${app_build}"
     apksigner sign \
         --ks "${KEYSTORE}" \
         --ks-pass "pass:${KEYSTORE_PASS}" \
