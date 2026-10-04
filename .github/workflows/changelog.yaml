@@ -1,0 +1,36 @@
+---
+name: Release + Changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: "Create draft release"
+        type: boolean
+        default: false
+      update:
+        description: "Update existing release"
+        type: boolean
+        default: false
+      tag:
+        description: "Release tag to use"
+        type: string
+        required: true
+      latest:
+        description: "Tag container as latest"
+        type: boolean
+        default: true
+      prerelease:
+        description: "Mark the release as a prerelease"
+        type: boolean
+        default: false
+
+jobs:
+  changelog:
+    uses: heathcliff26/ci/.github/workflows/changelog.yaml@main
+    permissions:
+      contents: write
+    with:
+      tag: ${{ inputs.tag }}
+      overwrite: ${{ inputs.update }}
+    secrets: inherit
