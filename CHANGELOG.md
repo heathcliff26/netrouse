@@ -1,6 +1,6 @@
 # Changelog
 
-Version v0.9.3-alpha.1
+Version v0.9.3-alpha.2
 --------------------
 Released: 2026-10-04
 
@@ -10,9 +10,12 @@ Released: 2026-10-04
 🐛 Bug Fixes:
 - *(gui)* Fix missing version information
 - *(gui)* Add make target for fyne metadata
+- Inject changelog during packit build
 
 ⚙️ Miscellaneous Tasks:
 - Add new changelog workflow
+- *(release)* Update changelog for v0.9.3-alpha.1
+- *(ci)* Trigger release workflow after changelog update
 
 Version v0.9.2
 --------------------
