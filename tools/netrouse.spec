@@ -13,7 +13,7 @@ Source:         %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires: golang >= 1.27
 BuildRequires: gcc libXcursor-devel libXrandr-devel mesa-libGL-devel libXi-devel libXinerama-devel libXxf86vm-devel libxkbcommon-devel wayland-devel
-BuildRequires: gettext-envsubst
+BuildRequires: gettext-envsubst appstream
 
 %global _description %{expand:
 This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
@@ -27,13 +27,14 @@ It can be used directly via the cli, or remotely via a web interface.}
 %build
 export RELEASE_VERSION="%{version}-%{release}"
 make build-gui
+appstreamcli news-to-metainfo CHANGELOG.md %{package_id}.metainfo.xml
 
 %install
-install -D -m 755 bin/%{name}-gui %{buildroot}/%{_bindir}/%{name}-gui
-install -D -m 644 packages/%{package_id}.desktop %{buildroot}/%{_datadir}/applications/%{package_id}.desktop
-install -D -m 644 packages/%{package_id}.png %{buildroot}/%{_datadir}/icons/hicolor/256x256/apps/%{package_id}.png
-install -D -m 644 packages/%{package_id}.svg %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps/%{package_id}.svg
-install -D -m 644 %{package_id}.metainfo.xml %{buildroot}/%{_datadir}/metainfo/%{package_id}.metainfo.xml
+install -D -m 0755 bin/%{name}-gui %{buildroot}/%{_bindir}/%{name}-gui
+install -D -m 0644 packages/%{package_id}.desktop %{buildroot}/%{_datadir}/applications/%{package_id}.desktop
+install -D -m 0644 packages/%{package_id}.png %{buildroot}/%{_datadir}/icons/hicolor/256x256/apps/%{package_id}.png
+install -D -m 0644 packages/%{package_id}.svg %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps/%{package_id}.svg
+install -D -m 0644 %{package_id}.metainfo.xml %{buildroot}/%{_datadir}/metainfo/%{package_id}.metainfo.xml
 
 %files
 %license LICENSE
