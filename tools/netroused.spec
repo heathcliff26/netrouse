@@ -12,6 +12,7 @@ URL:            https://github.com/heathcliff26/%{name}
 Source:         %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires: golang >= 1.27.0
+BuildRequires: appstream
 
 %global _description %{expand:
 This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
@@ -25,6 +26,7 @@ It can be used directly via the cli, or remotely via a web interface.}
 %build
 export RELEASE_VERSION="%{version}-%{release}"
 hack/build.sh
+appstreamcli news-to-metainfo CHANGELOG.md %{package_id}.metainfo.xml
 
 %install
 install -D -m 0755 bin/%{bin_name} %{buildroot}%{_bindir}/%{bin_name}
