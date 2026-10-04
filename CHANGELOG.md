@@ -1,6 +1,6 @@
 # Changelog
 
-Version v0.9.3-alpha.2
+Version v0.9.3
 --------------------
 Released: 2026-10-04
 
@@ -16,6 +16,8 @@ Released: 2026-10-04
 - Add new changelog workflow
 - *(release)* Update changelog for v0.9.3-alpha.1
 - *(ci)* Trigger release workflow after changelog update
+- *(release)* Update changelog for v0.9.3-alpha.2
+- Enforce conventional commits
 
 Version v0.9.2
 --------------------

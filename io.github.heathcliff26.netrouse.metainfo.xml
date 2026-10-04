@@ -1,45 +1,414 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <component type="desktop-application">
-    <id>io.github.heathcliff26.netrouse</id>
-
-    <name>NetRouse Client</name>
-    <summary>Wake on Lan Utility</summary>
-
-    <metadata_license>MIT</metadata_license>
-    <project_license>Apache-2.0</project_license>
-
-    <description>
-        <p>This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.</p>
-        <p>It can be used directly via the cli, or remotely via a web interface.</p>
-    </description>
-
-    <url type="homepage">https://github.com/heathcliff26/netrouse</url>
-    <developer id="io.github.heathcliff26">
-        <name>Heathcliff</name>
-    </developer>
-
-    <content_rating type="oars-1.1" />
-
-    <launchable type="desktop-id">io.github.heathcliff26.netrouse.desktop</launchable>
-
-    <branding>
-        <color type="primary" scheme_preference="light">#023c8a</color>
-        <color type="primary" scheme_preference="dark">#03228a</color>
-    </branding>
-
-    <screenshots>
-        <screenshot type="default">
-            <image type="source">
-                https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-dark.png
-            </image>
-            <caption>Local Tab (Dark Theme)</caption>
-        </screenshot>
-        <screenshot type="default">
-            <image type="source">
-                https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-light.png
-            </image>
-            <caption>Local Tab (Light Theme)</caption>
-        </screenshot>
-    </screenshots>
-
+  <id>io.github.heathcliff26.netrouse</id>
+  <name>NetRouse Client</name>
+  <summary>Wake on Lan Utility</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>Apache-2.0</project_license>
+  <description>
+    <p>This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.</p>
+    <p>It can be used directly via the cli, or remotely via a web interface.</p>
+  </description>
+  <developer id="io.github.heathcliff26">
+    <name>Heathcliff</name>
+  </developer>
+  <launchable type="desktop-id">io.github.heathcliff26.netrouse.desktop</launchable>
+  <url type="homepage">https://github.com/heathcliff26/netrouse</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Local Tab (Dark Theme)</caption>
+      <image type="source">https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-dark.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <caption>Local Tab (Light Theme)</caption>
+      <image type="source">https://raw.githubusercontent.com/heathcliff26/netrouse/refs/tags/v0.9.0/images/local-tab-light.png</image>
+    </screenshot>
+  </screenshots>
+  <branding>
+    <color type="primary" scheme_preference="light">#023c8a</color>
+    <color type="primary" scheme_preference="dark">#03228a</color>
+  </branding>
+  <releases>
+    <release type="stable" version="v0.9.3" date="2026-10-04T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(packages)* Build rpms with goreleaser as well</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(gui)* Fix missing version information</li>
+          <li>*(gui)* Add make target for fyne metadata</li>
+          <li>Inject changelog during packit build</li>
+          <li>⚙️ Miscellaneous Tasks:</li>
+          <li>Add new changelog workflow</li>
+          <li>*(release)* Update changelog for v0.9.3-alpha.1</li>
+          <li>*(ci)* Trigger release workflow after changelog update</li>
+          <li>*(release)* Update changelog for v0.9.3-alpha.2</li>
+          <li>Enforce conventional commits</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v0.9.2" date="2026-10-02T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* [**breaking**] Update image ghcr.io/heathcliff26/go-fyne-ci to v202609241228</li>
+          <li>*(container)* [**breaking**] Update image ghcr.io/heathcliff26/go-fyne-ci to v202609301715</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update module github.com/valkey-io/valkey-go to v1.0.78</li>
+          <li>💼 Other:</li>
+          <li>Derive build-id from semver version</li>
+          <li>Improve mac entry experience</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v0.9.1" date="2026-09-24T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Enable appstream metadata validation</p>
+        <p>Provide additional apk per arch</p>
+        <p>Add android installation options</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.9.0" date="2026-09-23T00:00:00Z">
+      <description>
+        <p>This release updates documentation:</p>
+        <ul>
+          <li>Add privacy policy</li>
+          <li>💼 Other:</li>
+          <li>Add quay.io repository</li>
+          <li>Rename Coverprofiles workflow</li>
+          <li>Move cli binary into separate folder</li>
+          <li>Add local tab</li>
+          <li>Use containerized workflows</li>
+          <li>Fix coverprofiles workflow</li>
+          <li>Fix wrong fileending for hosts file</li>
+          <li>*(deps)* Bump golang.org/x/image</li>
+          <li>Fix coverprofiles permissions</li>
+          <li>Add basic unit-tests</li>
+          <li>Add periodic status updates</li>
+          <li>Re-enable push to coveralls</li>
+          <li>Implement api client</li>
+          <li>Implement settings tab</li>
+          <li>Build for android</li>
+          <li>Fix wrong release artifact</li>
+          <li>Do not create draft release by default</li>
+          <li>Persist window state across restarts</li>
+          <li>Do not upload gosec on release</li>
+          <li>Build new bundle format</li>
+          <li>Drop unused arg to keytool</li>
+          <li>Stretch wake button over whole space</li>
+          <li>Improve package icon quality</li>
+          <li>Use adaptive Icon</li>
+          <li>Improve error handling</li>
+          <li>Move background tasks into lifecycle</li>
+          <li>Split wakeTab update into separate functions</li>
+          <li>Use static name for builder container</li>
+          <li>Improve context handling for background updates</li>
+          <li>Move status update inside fetch Hosts</li>
+          <li>Hide window reset</li>
+          <li>Add about button</li>
+          <li>Update copr repo</li>
+          <li>Update hosts in-place</li>
+          <li>Add refresh button</li>
+          <li>Fix js client wrong capitalization</li>
+          <li>Add installation instructions for gui</li>
+          <li>Use context for http calls</li>
+          <li>Default to https schema if none specified</li>
+          <li>Add option to import hosts from remote</li>
+          <li>Make tabs scrollable</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.5" date="2026-09-13T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module go.yaml.in/yaml/v3 to v3.0.5</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.6</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.27.1</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.4" date="2026-07-12T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.5</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.3" date="2026-06-13T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.4</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Move renovate and Link Check to tekton</p>
+        <p>Remove obsolete Renovate status badge</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.2" date="2026-06-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update gomod</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.3</p>
+        <p>💼 Other:</p>
+        <p>Use goreleaser to build release artifacts</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.1" date="2026-05-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.2</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.8.0" date="2026-03-21T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.1</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Use user and group nobody</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.7" date="2026-03-01T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/golang to v1.26.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update gomod</li>
+          <li>💼 Other:</li>
+          <li>Fix test no longer valid with golang 1.26</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.6" date="2026-02-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.6</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Remove toolchain directive</p>
+        <p>Use go.yaml.in/yaml/v3 for YAML parsing</p>
+        <p>Remove unneeded prepare step in renovate workflow</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.5" date="2026-01-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update gomod</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.5</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.4" date="2025-12-06T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Decrease ping timeout to 200ms</p>
+        <p>Do not display alert when successfully waking host</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.3" date="2025-12-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.4</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Enable signing artifacts in release workflow</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.2" date="2025-11-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update gomod</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.3</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.1" date="2025-10-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/stretchr/testify to v1.11.1</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.10.0</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.10.1</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.1</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.7.0" date="2025-08-21T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/golang to v1.25.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update gomod</li>
+          <li>💼 Other:</li>
+          <li>Add address to host</li>
+          <li>Change AddHost to accept only json body</li>
+          <li>Add address for hosts</li>
+          <li>Fix missing permission in coverprofile</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v0.6.2" date="2025-08-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module sigs.k8s.io/yaml to v1.6.0</p>
+        <p>💼 Other:</p>
+        <p>Optimize GetHosts</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.6.1" date="2025-07-22T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Add timeout to valkey operations</p>
+        <p>Add get hosts endpoint</p>
+        <p>Always render index.html instead of server side caching</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.6.0" date="2025-07-21T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update gomod</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.5</p>
+        <p>💼 Other:</p>
+        <p>Add option to seed hosts on startup</p>
+        <p>Fix missing newlines in credits section</p>
+        <p>Return 403 forbidden when changing hosts in readonly</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.5.3" date="2025-07-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.4</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.5.2" date="2025-06-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.3</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Tag release to ensure correct version in binary</p>
+        <p>Update release job to target renamed workflow</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.5.1" date="2025-05-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update gomod</p>
+        <p>💼 Other:</p>
+        <p>Add gosec to improve code quality</p>
+        <p>Change the help target to dynamically generate it's output</p>
+        <p>Move target description to above them</p>
+        <p>Update the favicon to support different sizes</p>
+        <p>Fix release workflow permissions</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.5.0" date="2025-04-24T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Add unit-test for cli errors</p>
+        <p>Add unit-tests for storage failures</p>
+        <p>Expand testsuite to cover more scenarios</p>
+        <p>Replace assert with require where it improves readability</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.4.1" date="2025-04-21T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Add run command</p>
+        <p>Update favicon to include background</p>
+        <p>Add help target to list available commands</p>
+        <p>Enhance accessibility by adding aria-labels</p>
+        <p>Fix footer text too far apart</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.4.0" date="2025-04-20T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Change default options for release job</p>
+        <p>Combine app name and version in footer</p>
+        <p>Enhance footer layout with span instead of free text</p>
+        <p>Small layout fix</p>
+        <p>Enable using valkey as storage backend</p>
+        <p>Expand unit-tests to cover storage</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.3.1" date="2025-04-20T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Fix missing data volume</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.3.0" date="2025-04-19T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.2</p>
+        <p>💼 Other:</p>
+        <p>Add favicon for website</p>
+        <p>Combine embedded dirs under asset FS</p>
+        <p>Add inactive elements for adding/removing hosts</p>
+        <p>Move hosts storage into separate package</p>
+        <p>Implement unit-tests for storage and file backend</p>
+        <p>Move api under v1</p>
+        <p>Implement hosts endpoint</p>
+        <p>Move add hosts button to bottom of card</p>
+        <p>Add footer with app name and version</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.2.1" date="2025-04-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.3</p>
+        <p>💼 Other:</p>
+        <p>Fix position of title to close to top</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.2.0" date="2025-03-15T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.2</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.1</p>
+        <p>💼 Other:</p>
+        <p>Improve style of displayed mac addresses</p>
+        <p>Switch to bootstrap CSS</p>
+        <p>Add option to enter custom mac address</p>
+        <p>Improve alerts by adding MAC and name to output</p>
+        <p>Implement theme change based on user preferences</p>
+        <p>Use bootstrap alerts instead of standard javascript alerts.</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.1.2" date="2025-03-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.9.1</p>
+        <p>💼 Other:</p>
+        <p>Add unit-tests</p>
+        <p>Fix broken docker hub link</p>
+        <p>Use the version from build info</p>
+        <p>Replace abandoned yaml module with sig-kubernetes version</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.1.1" date="2025-02-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.5</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.1</p>
+        <p>💼 Other:</p>
+        <p>Build new Version on any change to static files</p>
+        <p>Add caching headers for static files</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.1.0" date="2025-01-04T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.4</p>
+        <p>💼 Other:</p>
+        <p>Fix editorconfig failures</p>
+        <p>Add example configuration file</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1"/>
 </component>
