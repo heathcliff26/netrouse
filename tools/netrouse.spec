@@ -13,7 +13,7 @@ Source:         %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires: golang >= 1.27
 BuildRequires: gcc libXcursor-devel libXrandr-devel mesa-libGL-devel libXi-devel libXinerama-devel libXxf86vm-devel libxkbcommon-devel wayland-devel
-BuildRequires: gettext-envsubst appstream
+BuildRequires: gettext-envsubst
 
 %global _description %{expand:
 This is a simple utility for sending Wake-On-Lan magic packet to clients in the local network.
@@ -27,7 +27,6 @@ It can be used directly via the cli, or remotely via a web interface.}
 %build
 export RELEASE_VERSION="%{version}-%{release}"
 make build-gui
-appstreamcli news-to-metainfo CHANGELOG.md %{package_id}.metainfo.xml
 
 %install
 install -D -m 0755 bin/%{name}-gui %{buildroot}/%{_bindir}/%{name}-gui
