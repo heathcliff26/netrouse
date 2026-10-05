@@ -44,14 +44,14 @@ archives:
     ids:
       - gui
     formats: [tar.gz]
-    name_template: "{{ .ProjectName }}-gui_{{ tolower .Os }}-{{ .Arch }}"
+    name_template: "{{ .ProjectName }}-gui-{{ tolower .Os }}-{{ .Arch }}"
     files:
       - strip_parent: true
         src: "packages/*"
 nfpms:
   - id: gui
     package_name: "{{ .ProjectName }}"
-    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    file_name_template: "{{ .PackageName }}-linux-{{ .Arch }}"
     ids:
       - gui
     maintainer: Heathcliff <heathcliff@heathcliff.eu>
@@ -85,7 +85,7 @@ nfpms:
       summary: Wake on Lan Utility
   - id: cli
     package_name: "{{ .ProjectName }}d"
-    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    file_name_template: "{{ .PackageName }}-linux-{{ .Arch }}"
     ids:
       - cli
     maintainer: Heathcliff <heathcliff@heathcliff.eu>
