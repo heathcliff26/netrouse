@@ -757,7 +757,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
                 <span class="cov5" title="5">if host.Address != "" </span>{
-                        <span class="cov3" title="2">hostsToCheck = append(hostsToCheck, host)
+                        <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
         <span class="cov7" title="8">return ping.PingHosts(hostsToCheck), nil</span>
@@ -1350,9 +1350,9 @@ func (t *wakeTab) updateStatus() {
                 <span class="cov6" title="7">t.errStatus.Hide()
 </span>
                 <span class="cov6" title="7">for _, s := range status </span>{
-                        <span class="cov1" title="1">for _, host := range t.hosts </span>{
-                                <span class="cov1" title="1">if host.host.MAC == s.MAC </span>{
-                                        <span class="cov1" title="1">host.updateStatus(s)
+                        <span class="cov2" title="2">for _, host := range t.hosts </span>{
+                                <span class="cov2" title="2">if host.host.MAC == s.MAC </span>{
+                                        <span class="cov2" title="2">host.updateStatus(s)
 </span>                                }
                         }
                 }
@@ -1468,9 +1468,9 @@ func (w *hostWidget) updateHost(new types.Host) {
 }
 
 func (w *hostWidget) updateStatus(status types.HostStatus) {
-        <span class="cov4" title="4">switch </span>{
+        <span class="cov5" title="5">switch </span>{
         case status.Online:
-                <span class="cov2" title="2">w.status.SetResource(hostStatusOnline)</span>
+                <span class="cov3" title="3">w.status.SetResource(hostStatusOnline)</span>
         case status.Error != "":
                 <span class="cov1" title="1">slog.Info("Failed to fetch status", slog.String("host", status.Address), slog.String("mac", status.MAC), slog.String("error", status.Error))
                 w.status.SetResource(hostStatusUnknown)</span>
@@ -1507,38 +1507,38 @@ func PingHosts(hosts []types.Host) []types.HostStatus {
         <span class="cov10" title="17">res := make(chan types.HostStatus, 1)
 </span>
         <span class="cov10" title="17">for _, host := range hosts </span>{
-                <span class="cov8" title="12">status := types.HostStatus{
+                <span class="cov9" title="13">status := types.HostStatus{
                         MAC:     host.MAC,
                         Address: host.Address,
 </span>                }
 
-                <span class="cov8" title="12">go func() </span>{
-                        <span class="cov8" title="12">pinger, err := probing.NewPinger(host.Address)
+                <span class="cov9" title="13">go func() </span>{
+                        <span class="cov9" title="13">pinger, err := probing.NewPinger(host.Address)
                         if err != nil </span>{
                                 <span class="cov1" title="1">status.Error = err.Error()
                                 res &lt;- status
                                 return
 </span>                        }
 
-                        <span class="cov8" title="11">pinger.Count = 1
+                        <span class="cov8" title="12">pinger.Count = 1
                         pinger.Timeout = 200 * time.Millisecond
 </span>
-                        <span class="cov8" title="11">err = pinger.Run()
+                        <span class="cov8" title="12">err = pinger.Run()
                         if err != nil </span>{
                                 <span class="cov0" title="0">status.Error = err.Error()
                                 res &lt;- status
                                 return
 </span>                        }
-                        <span class="cov8" title="11">stats := pinger.Statistics()
+                        <span class="cov8" title="12">stats := pinger.Statistics()
 </span>
-                        <span class="cov8" title="11">status.Online = stats != nil &amp;&amp; stats.PacketsRecv &gt; 0
+                        <span class="cov8" title="12">status.Online = stats != nil &amp;&amp; stats.PacketsRecv &gt; 0
                         res &lt;- status</span>
                 }()
         }
 
         <span class="cov10" title="17">results := make([]types.HostStatus, len(hosts))
         for i := range results </span>{
-                <span class="cov8" title="12">status := &lt;-res
+                <span class="cov9" title="13">status := &lt;-res
                 results[i] = status
 </span>        }
         <span class="cov10" title="17">return results</span>
