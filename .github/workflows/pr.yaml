@@ -14,12 +14,12 @@ on:
 
 jobs:
   check-labels:
+    uses: heathcliff26/ci/.github/workflows/label-check.yaml@main
     permissions:
       pull-requests: read
-    uses: heathcliff26/ci/.github/workflows/label-check.yaml@main
 
   commit-check:
+    uses: heathcliff26/ci/.github/workflows/commit-check.yaml@main
     permissions:
       contents: read
       pull-requests: write
-    uses: heathcliff26/ci/.github/workflows/commit-check.yaml@main
