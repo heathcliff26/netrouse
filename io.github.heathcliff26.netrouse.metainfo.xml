@@ -29,6 +29,17 @@
     <color type="primary" scheme_preference="dark">#03228a</color>
   </branding>
   <releases>
+    <release type="stable" version="v0.9.4" date="2026-10-13T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.27.2</p>
+        <p>*(deps)* Update gomod</p>
+        <p>🚜 Refactor:</p>
+        <p>Rename rpm/deb packages</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(builder)* Update image ghcr.io/heathcliff26/go-fyne-ci to v202610090432</p>
+      </description>
+    </release>
     <release type="stable" version="v0.9.3" date="2026-10-04T00:00:00Z">
       <description>
         <p>This release adds the following features:</p>
@@ -44,6 +55,7 @@
           <li>*(ci)* Trigger release workflow after changelog update</li>
           <li>*(release)* Update changelog for v0.9.3-alpha.2</li>
           <li>Enforce conventional commits</li>
+          <li>*(release)* Update changelog for v0.9.3</li>
         </ul>
       </description>
     </release>

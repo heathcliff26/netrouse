@@ -1,5 +1,19 @@
 # Changelog
 
+Version v0.9.4
+--------------------
+Released: 2026-10-13
+
+🐛 Bug Fixes:
+- *(container)* Update image docker.io/library/golang to v1.27.2
+- *(deps)* Update gomod
+
+🚜 Refactor:
+- Rename rpm/deb packages
+
+⚙️ Miscellaneous Tasks:
+- *(builder)* Update image ghcr.io/heathcliff26/go-fyne-ci to v202610090432
+
 Version v0.9.3
 --------------------
 Released: 2026-10-04
@@ -18,6 +32,7 @@ Released: 2026-10-04
 - *(ci)* Trigger release workflow after changelog update
 - *(release)* Update changelog for v0.9.3-alpha.2
 - Enforce conventional commits
+- *(release)* Update changelog for v0.9.3
 
 Version v0.9.2
 --------------------
