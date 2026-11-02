@@ -319,7 +319,14 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 	wake := widget.NewButton(lang.L("Wake"), nil)
 	wake.OnTapped = func() {
 		wake.Disable()
-		defer wake.Enable()
+		origText := wake.Text
+		defer func() {
+			go func() {
+				time.Sleep(1 * time.Second)
+				wake.Text = origText
+				wake.Enable()
+			}()
+		}()
 
 		err := parent.client.Wake(parent.ctx, host.MAC)
 		if errors.Is(err, context.Canceled) {
@@ -327,8 +334,12 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
 		}
 		if err != nil {
 			slog.Error("Failed to wake host", slog.String("mac", host.MAC), slog.String("error", err.Error()))
+			wake.Text = "❌"
 			dialog.ShowInformation(lang.L("Error"), lang.L("error.wake"), parent.window)
+		} else {
+			wake.Text = "✅"
 		}
+		wake.Refresh()
 	}
 	items = append(items, container.NewBorder(nil, nil, nil, delete, wake))
 
