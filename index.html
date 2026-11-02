@@ -756,7 +756,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov6" title="6">if host.Address != "" </span>{
+                <span class="cov5" title="5">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
