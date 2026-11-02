@@ -103,6 +103,7 @@ jobs:
       artifact: "dist/netrouse*"
       artifact-name: "netrouse"
       cmd: "make release"
+      release: ""
     secrets: inherit
 
   build-android:
