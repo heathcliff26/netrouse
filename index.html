@@ -81,7 +81,7 @@
 				
 				<option value="file12">github.com/heathcliff26/netrouse/pkg/gui/utils.go (100.0%)</option>
 				
-				<option value="file13">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (64.6%)</option>
+				<option value="file13">github.com/heathcliff26/netrouse/pkg/gui/waketab.go (61.9%)</option>
 				
 				<option value="file14">github.com/heathcliff26/netrouse/pkg/ping/ping.go (87.5%)</option>
 				
@@ -756,7 +756,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov5" title="5">if host.Address != "" </span>{
+                <span class="cov6" title="6">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
@@ -1424,16 +1424,27 @@ func newHostWidget(parent *wakeTab, host types.Host) *hostWidget {
         <span class="cov3" title="3">wake := widget.NewButton(lang.L("Wake"), nil)
         wake.OnTapped = func() </span>{
                 <span class="cov0" title="0">wake.Disable()
-                defer wake.Enable()
-</span>
+                origText := wake.Text
+                defer func() </span>{
+                        <span class="cov0" title="0">go func() </span>{
+                                <span class="cov0" title="0">time.Sleep(1 * time.Second)
+                                wake.Text = origText
+                                wake.Enable()
+</span>                        }()
+                }()
+
                 <span class="cov0" title="0">err := parent.client.Wake(parent.ctx, host.MAC)
                 if errors.Is(err, context.Canceled) </span>{
                         <span class="cov0" title="0">return
 </span>                }
                 <span class="cov0" title="0">if err != nil </span>{
                         <span class="cov0" title="0">slog.Error("Failed to wake host", slog.String("mac", host.MAC), slog.String("error", err.Error()))
+                        wake.Text = "❌"
                         dialog.ShowInformation(lang.L("Error"), lang.L("error.wake"), parent.window)
+</span>                } else {
+                        <span class="cov0" title="0">wake.Text = "✅"
 </span>                }
+                <span class="cov0" title="0">wake.Refresh()</span>
         }
         <span class="cov3" title="3">items = append(items, container.NewBorder(nil, nil, nil, delete, wake))
 </span>
