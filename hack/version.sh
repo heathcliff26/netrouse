@@ -12,5 +12,6 @@ if [ -z "${RELEASE_VERSION}" ]; then
 fi
 
 export RELEASE_VERSION
+echo "Use version string: ${RELEASE_VERSION}"
 
 popd > /dev/null
