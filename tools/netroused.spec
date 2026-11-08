@@ -8,7 +8,7 @@ Summary:        Wake on Lan Utility
 %global package_id io.github.heathcliff26.%{name}
 
 License:        Apache-2.0
-URL:            https://github.com/heathcliff26/%{name}
+URL:            https://github.com/heathcliff26/netrouse
 Source:         %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires: golang >= 1.27.0
@@ -33,22 +33,13 @@ install -D -m 0644 examples/config.yaml %{buildroot}%{_sysconfdir}/netrouse/conf
 install -D -m 0644 %{package_id}.metainfo.xml %{buildroot}/%{_datadir}/metainfo/%{package_id}.metainfo.xml
 
 %post
-systemctl daemon-reload
-systemctl enable --now %{name}.service
+PLACEHOLDER_POSTINSTALL
 
 %preun
-if [ $1 == 0 ]; then #uninstall
-  systemctl unmask %{name}.service
-  systemctl stop %{name}.service
-  systemctl disable %{name}.service
-  echo "Clean up %{name} service"
-fi
+PLACEHOLDER_PREREMOVE
 
 %postun
-if [ $1 == 0 ]; then #uninstall
-  systemctl daemon-reload
-  systemctl reset-failed
-fi
+PLACEHOLDER_POSTREMOVE
 
 %files
 %license LICENSE

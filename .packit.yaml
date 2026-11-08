@@ -10,6 +10,9 @@ packages:
       post-upstream-clone:
         - mkdir -p tmp
         - cp tools/netroused.spec tmp/
+        - sed -i -e '/^PLACEHOLDER_POSTINSTALL$/r tools/postinstall.sh' -e '/^PLACEHOLDER_POSTINSTALL$/d' tmp/netroused.spec
+        - sed -i -e '/^PLACEHOLDER_PREREMOVE$/r tools/preremove.sh' -e '/^PLACEHOLDER_PREREMOVE$/d' tmp/netroused.spec
+        - sed -i -e '/^PLACEHOLDER_POSTREMOVE$/r tools/postremove.sh' -e '/^PLACEHOLDER_POSTREMOVE$/d' tmp/netroused.spec
   netrouse:
     downstream_package_name: netrouse
     upstream_package_name: netrouse
