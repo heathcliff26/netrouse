@@ -1,4 +1,11 @@
 #!/bin/sh
 
-systemctl daemon-reload
-systemctl enable --now netroused.service
+if ! command -V systemctl >/dev/null 2>&1; then
+    exit 0
+fi
+
+name=netroused
+
+systemctl daemon-reload || true
+systemctl enable "${name}.service" || true
+systemctl restart "${name}.service" || true

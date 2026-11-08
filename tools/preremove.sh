@@ -3,8 +3,12 @@
 if [ "$1" != "0" ] && [ "$1" != "remove" ] && [ "$1" != "purge" ]; then
     exit 0
 fi
+if ! command -V systemctl >/dev/null 2>&1; then
+    exit 0
+fi
 
-echo "Clean up netroused service"
-systemctl unmask netroused.service
-systemctl stop netroused.service
-systemctl disable netroused.service
+name=netroused
+
+echo "Clean up ${name} service"
+systemctl unmask "${name}.service" || true
+systemctl disable --now "${name}.service"
