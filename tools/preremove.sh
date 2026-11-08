@@ -8,4 +8,3 @@ echo "Clean up netroused service"
 systemctl unmask netroused.service
 systemctl stop netroused.service
 systemctl disable netroused.service
-
