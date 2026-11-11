@@ -81,6 +81,12 @@ nfpms:
         dst: /usr/share/icons/hicolor/scalable/apps/io.github.heathcliff26.{{ .PackageName }}.svg
       - src: io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
         dst: /usr/share/metainfo/io.github.heathcliff26.{{ .PackageName }}.metainfo.xml
+    overrides:
+      rpm:
+        dependencies:
+          - glibc
+          - libglvnd-glx
+          - libwayland-client
     rpm:
       summary: Wake on Lan Utility
   - id: cli
