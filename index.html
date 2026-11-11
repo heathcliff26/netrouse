@@ -715,7 +715,8 @@ type localClient struct {
 
 func newLocalClient() (client.Client, error) {
         <span class="cov10" title="19">path := persistence.HostsFile()
-        err := os.MkdirAll(filepath.Dir(path), 0755)
+</span>        // #nosec G301 -- Final permissions will be decided by umask, folder contains no secrets.
+        <span class="cov10" title="19">err := os.MkdirAll(filepath.Dir(path), 0755)
         if err != nil </span>{
                 <span class="cov1" title="1">return &amp;localClient{
                         store: file.NewEmptyBackend(),
@@ -756,7 +757,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov6" title="6">if host.Address != "" </span>{
+                <span class="cov5" title="5">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
@@ -903,7 +904,7 @@ func (s *Settings) Save() error {
         if err != nil </span>{
                 <span class="cov0" title="0">return err
 </span>        }
-        <span class="cov4" title="3">return os.WriteFile(SettingsFile(), buf, 0644)</span>
+        <span class="cov4" title="3">return os.WriteFile(SettingsFile(), buf, 0600)</span>
 }
 
 func SizeFromFyne(s fyne.Size) Size {
