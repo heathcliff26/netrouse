@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 type FileBackend struct {

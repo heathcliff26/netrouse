@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/heathcliff26/netrouse/pkg/server/storage"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 const (

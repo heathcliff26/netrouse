@@ -15,7 +15,7 @@ import (
 	"github.com/heathcliff26/netrouse/pkg/version"
 	"github.com/heathcliff26/netrouse/static"
 
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 type Storage struct {

@@ -8,7 +8,7 @@ import (
 	"github.com/heathcliff26/netrouse/pkg/server/storage/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 var basicTestHosts = []types.Host{
