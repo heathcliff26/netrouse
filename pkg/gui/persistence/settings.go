@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"fyne.io/fyne/v2"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 const (
