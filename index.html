@@ -757,7 +757,7 @@ func (lc *localClient) Status(_ context.Context) ([]types.HostStatus, error) {
 </span>        }
         <span class="cov7" title="8">hostsToCheck := make([]types.Host, 0, len(hosts))
         for _, host := range hosts </span>{
-                <span class="cov5" title="5">if host.Address != "" </span>{
+                <span class="cov6" title="6">if host.Address != "" </span>{
                         <span class="cov4" title="3">hostsToCheck = append(hostsToCheck, host)
 </span>                }
         }
@@ -846,7 +846,7 @@ import (
         "os"
 
         "fyne.io/fyne/v2"
-        "go.yaml.in/yaml/v3"
+        "go.yaml.in/yaml/v4"
 )
 
 const (
@@ -1877,7 +1877,7 @@ import (
         "strings"
 
         "github.com/heathcliff26/netrouse/pkg/server/storage"
-        "go.yaml.in/yaml/v3"
+        "go.yaml.in/yaml/v4"
 )
 
 const (
@@ -2196,7 +2196,7 @@ import (
         "sync"
 
         "github.com/heathcliff26/netrouse/pkg/server/storage/types"
-        "go.yaml.in/yaml/v3"
+        "go.yaml.in/yaml/v4"
 )
 
 type FileBackend struct {
@@ -2367,7 +2367,7 @@ import (
         "github.com/heathcliff26/netrouse/pkg/version"
         "github.com/heathcliff26/netrouse/static"
 
-        "go.yaml.in/yaml/v3"
+        "go.yaml.in/yaml/v4"
 )
 
 type Storage struct {
