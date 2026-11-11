@@ -64,7 +64,7 @@ func (s *Settings) Save() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(SettingsFile(), buf, 0644)
+	return os.WriteFile(SettingsFile(), buf, 0600)
 }
 
 func SizeFromFyne(s fyne.Size) Size {

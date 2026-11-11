@@ -21,6 +21,7 @@ type localClient struct {
 
 func newLocalClient() (client.Client, error) {
 	path := persistence.HostsFile()
+	// #nosec G301 -- Final permissions will be decided by umask, folder contains no secrets.
 	err := os.MkdirAll(filepath.Dir(path), 0755)
 	if err != nil {
 		return &localClient{
