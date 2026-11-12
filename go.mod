@@ -5,17 +5,17 @@ go 1.27.0
 require (
 	fyne.io/fyne/v2 v2.8.2
 	github.com/alicebob/miniredis/v2 v2.40.0
-	github.com/heathcliff26/simple-fileserver v1.3.6
+	github.com/heathcliff26/simple-fileserver v1.4.0
 	github.com/prometheus-community/pro-bing v0.9.1
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
-	github.com/valkey-io/valkey-go v1.0.78
+	github.com/valkey-io/valkey-go v1.0.79
 	go.yaml.in/yaml/v4 v4.0.0
 )
 
 require (
 	fyne.io/systray v1.12.3-0.20260810170012-af4e8e793ec4 // indirect
-	fyne.io/tools v1.7.3 // indirect
+	fyne.io/tools v1.7.4 // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/FyshOS/fancyfs v0.0.1 // indirect
 	github.com/akavel/rsrc v0.10.2 // indirect
