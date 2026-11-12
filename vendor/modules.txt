@@ -56,7 +56,7 @@ fyne.io/fyne/v2/widget
 fyne.io/systray
 fyne.io/systray/internal/generated/menu
 fyne.io/systray/internal/generated/notifier
-# fyne.io/tools v1.7.3
+# fyne.io/tools v1.7.4
 ## explicit; go 1.22.0
 fyne.io/tools/cmd/fyne
 fyne.io/tools/cmd/fyne/internal/commands
@@ -180,7 +180,7 @@ github.com/hack-pad/go-indexeddb/idb/internal/jscache
 github.com/hack-pad/safejs
 github.com/hack-pad/safejs/internal/catch
 github.com/hack-pad/safejs/internal/stackerr
-# github.com/heathcliff26/simple-fileserver v1.3.6
+# github.com/heathcliff26/simple-fileserver v1.4.0
 ## explicit; go 1.27.0
 github.com/heathcliff26/simple-fileserver/pkg/filesystem
 github.com/heathcliff26/simple-fileserver/pkg/middleware
@@ -265,7 +265,7 @@ github.com/stretchr/testify/require
 # github.com/urfave/cli/v2 v2.27.7
 ## explicit; go 1.18
 github.com/urfave/cli/v2
-# github.com/valkey-io/valkey-go v1.0.78
+# github.com/valkey-io/valkey-go v1.0.79
 ## explicit; go 1.25.0
 github.com/valkey-io/valkey-go
 github.com/valkey-io/valkey-go/internal/cmds
