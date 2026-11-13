@@ -18,6 +18,28 @@
     <category>Network</category>
   </categories>
   <releases>
+    <release type="stable" version="v0.9.5" date="2026-11-13T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>GUI displays wrong version</p>
+        <p>*(packit)* Include external scripts for hooks</p>
+        <p>Improve systemctl command checks in rpm/deb scripts</p>
+        <p>Add library dependencies to rpm</p>
+        <p>*(gui)* Mitigate or mute gosec errors</p>
+        <p>*(deps)* Upgrade to go.yaml.in/yaml/v4</p>
+        <p>*(deps)* Update gomod</p>
+        <p>🎨 Styling:</p>
+        <p>Add visual feedback to wake button</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>*(ci)* Remove gemfury job</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.27.4</p>
+        <p>*(builder)* Update image go-fyne-ci to v202611121610</p>
+      </description>
+    </release>
     <release type="stable" version="v0.9.4" date="2026-10-13T00:00:00Z">
       <description>
         <p>🐛 Bug Fixes:</p>
@@ -27,6 +49,7 @@
         <p>Rename rpm/deb packages</p>
         <p>⚙️ Miscellaneous Tasks:</p>
         <p>*(builder)* Update image ghcr.io/heathcliff26/go-fyne-ci to v202610090432</p>
+        <p>*(release)* Update changelog for v0.9.4</p>
       </description>
     </release>
     <release type="stable" version="v0.9.3" date="2026-10-04T00:00:00Z">

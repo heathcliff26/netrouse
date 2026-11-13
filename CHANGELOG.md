@@ -1,5 +1,30 @@
 # Changelog
 
+Version v0.9.5
+--------------------
+Released: 2026-11-13
+
+🐛 Bug Fixes:
+- GUI displays wrong version
+- *(packit)* Include external scripts for hooks
+- Improve systemctl command checks in rpm/deb scripts
+- Add library dependencies to rpm
+- *(gui)* Mitigate or mute gosec errors
+- *(deps)* Upgrade to go.yaml.in/yaml/v4
+- *(deps)* Update gomod
+
+🎨 Styling:
+- Add visual feedback to wake button
+
+⚙️ Miscellaneous Tasks:
+- Synced file(s) with heathcliff26/ci
+- Synced file(s) with heathcliff26/ci
+- Synced file(s) with heathcliff26/ci
+- Synced file(s) with heathcliff26/ci
+- *(ci)* Remove gemfury job
+- *(container)* Update image docker.io/library/golang to v1.27.4
+- *(builder)* Update image go-fyne-ci to v202611121610
+
 Version v0.9.4
 --------------------
 Released: 2026-10-13
@@ -13,6 +38,7 @@ Released: 2026-10-13
 
 ⚙️ Miscellaneous Tasks:
 - *(builder)* Update image ghcr.io/heathcliff26/go-fyne-ci to v202610090432
+- *(release)* Update changelog for v0.9.4
 
 Version v0.9.3
 --------------------
